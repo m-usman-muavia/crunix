@@ -1,0 +1,134 @@
+.logo-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    box-shadow: 0 25px 60px rgba(202, 196, 196, 0.6);
+    border-radius: 22px;
+}
+
+.icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #16a34a, #22d3ee);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: pulse 2.5s infinite;
+}
+
+.logo-img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+}
+
+.icon-box::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #22d3ee, #16a34a);
+    opacity: 0.4;
+    filter: blur(10px);
+    z-index: -1;
+    animation: glow 3s infinite;
+}
+
+.logo-text {
+    text-align: left;
+    font-size: 28px;
+    /* Adjusted for login card */
+    font-weight: 900;
+    color: #020617;
+    animation: fadeTag 1.8s ease forwards;
+    /* animation: slideText 1.4s ease forwards; */
+}
+
+.logo-text span {
+    background: linear-gradient(135deg, #22d3ee, #16a34a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-tagline {
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: #414a58;
+    margin-top: 2px;
+    opacity: 0;
+    animation: fadeTag 1.8s ease forwards;
+    /* animation-delay: 1s; */
+}
+
+/* Animations kept from your original code */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes glow {
+    0% {
+        opacity: 0.2;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0.2;
+    }
+}
+
+@keyframes slideText {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeTag {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

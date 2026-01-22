@@ -1,0 +1,133 @@
+
+
+.login-card {
+  background: rgb(255, 255, 255);
+  border-radius: 12px;
+  padding: 40px;
+}
+
+.logo-section {
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 1px solid #eee;
+  padding: 5px;
+}
+
+.title {
+  font-size: 24px;
+  color: #0f172a;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  text-align: left;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 5px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .icon {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 10px 10px 10px 40px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.input-wrapper input:focus {
+  border-color: #1e293b;
+}
+
+.sign-in-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #16a34a, #22d3ee); /* Dark navy/black button */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.footer-links {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #64748b;
+}
+.footer-links p{
+  margin-top: 0px;
+}
+.link {
+  color: #64748b;
+  text-decoration: none;
+}
+
+.link-bold {
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+  color: #64748b;
+  transition: transform 0.1s ease;
+}
+
+.eye-icon:active {
+  transform: scale(0.9);
+}
+
+/* Ensure the text doesn't go under the eye icon */
+.input-wrapper input {
+  padding-right: 40px !important;
+}
