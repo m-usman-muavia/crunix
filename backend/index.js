@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./db");
-const path = require("path"); // Ensure this is at the top
+const path = require("path");
+const fs = require("fs");
 const authRoutes = require("./routes/authroutes");
 const planRoutes = require("./routes/planroutes");
 const walletRoutes = require("./routes/walletroutes");
@@ -24,14 +25,19 @@ app.use("/api/accounts", accountRoutes);
 app.use("/api/referral", referralRoutes);
 
 // SERVING THE FRONTEND
-if (process.env.NODE_ENV === "production") {
-  // Since index.js is in /backend, we go UP to root then INTO /frontend/build
-  const buildPath = path.join(__dirname, "..", "frontend", "build");
-  
+const buildPath = path.join(__dirname, "..", "frontend", "build");
+
+// Check if build folder exists
+if (fs.existsSync(buildPath)) {
   app.use(express.static(buildPath));
 
   app.get("*", (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
+  });
+} else if (process.env.NODE_ENV === "production") {
+  console.warn("Build folder not found at:", buildPath);
+  app.get("*", (req, res) => {
+    res.status(500).send("Frontend build not found");
   });
 } else {
   app.get("/", (req, res) => {
@@ -39,7 +45,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// Error handling
+// Error handling middleware (must come after all routes)
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
