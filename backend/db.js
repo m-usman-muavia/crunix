@@ -3,11 +3,19 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    const mongoUri = process.env.MONGODB_URI;
+    
+    if (!mongoUri) {
+      console.warn("MONGODB_URI not set in environment variables. Skipping database connection.");
+      return;
+    }
+    
+    await mongoose.connect(mongoUri);
     console.log("MongoDB Connected Successfully");
   } catch (err) {
     console.error("MongoDB connection failed:", err.message);
-    process.exit(1);
+    // Don't exit process - allow app to run even if DB fails
+    // This allows testing without a database
   }
 };
 

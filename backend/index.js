@@ -15,8 +15,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-connectDB();
-
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/plans", planRoutes);
@@ -32,7 +30,12 @@ if (fs.existsSync(buildPath)) {
   app.use(express.static(buildPath));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(buildPath, "index.html"));
+    res.sendFile(path.join(buildPath, "index.html"), (err) => {
+      if (err) {
+        console.error("Error sending index.html:", err);
+        res.status(500).send("Error loading page");
+      }
+    });
   });
 } else if (process.env.NODE_ENV === "production") {
   console.warn("Build folder not found at:", buildPath);
@@ -47,9 +50,23 @@ if (fs.existsSync(buildPath)) {
 
 // Error handling middleware (must come after all routes)
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Error:", err.stack);
   res.status(500).send('Something broke!');
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Start server and connect to database
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+};
+
+startServer();
