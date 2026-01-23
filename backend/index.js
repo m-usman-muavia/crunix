@@ -32,7 +32,7 @@ if (fs.existsSync(buildPath)) {
 }
 
 // Catch-all route: serve index.html for SPA routing
-app.get("*", (req, res) => {
+app.get(/^(?!\/api).*/, (req, res) => {
   const indexPath = path.join(buildPath, "index.html");
   
   if (fs.existsSync(indexPath)) {
