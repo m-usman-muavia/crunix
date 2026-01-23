@@ -25,28 +25,28 @@ app.use("/api/referral", referralRoutes);
 // SERVING THE FRONTEND
 const buildPath = path.join(__dirname, "..", "frontend", "build");
 
-// Check if build folder exists
+// Serve static files from build folder if it exists
 if (fs.existsSync(buildPath)) {
   app.use(express.static(buildPath));
+  console.log("Serving static files from:", buildPath);
+}
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(buildPath, "index.html"), (err) => {
+// Catch-all route: serve index.html for SPA routing
+app.get("*", (req, res) => {
+  const indexPath = path.join(buildPath, "index.html");
+  
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath, (err) => {
       if (err) {
         console.error("Error sending index.html:", err);
-        res.status(500).send("Error loading page");
+        res.status(500).json({ error: "Error loading page" });
       }
     });
-  });
-} else if (process.env.NODE_ENV === "production") {
-  console.warn("Build folder not found at:", buildPath);
-  app.get("*", (req, res) => {
-    res.status(500).send("Frontend build not found");
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.send("Backend is running in development mode");
-  });
-}
+  } else {
+    // Fallback message if build doesn't exist
+    res.status(200).json({ message: "Backend API is running. Frontend build not found.", apis: ["/api/auth", "/api/plans", "/api/wallet", "/api/accounts", "/api/referral"] });
+  }
+});
 
 // Error handling middleware (must come after all routes)
 app.use((err, req, res, next) => {
@@ -60,9 +60,22 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(PORT, () => {
+    
+    const server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
+
+    // Handle any unhandled errors
+    process.on('unhandledRejection', (err) => {
+      console.error('Unhandled Rejection:', err);
+      process.exit(1);
+    });
+
+    process.on('uncaughtException', (err) => {
+      console.error('Uncaught Exception:', err);
+      process.exit(1);
+    });
+
   } catch (err) {
     console.error("Failed to start server:", err);
     process.exit(1);
