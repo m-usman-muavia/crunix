@@ -30,7 +30,7 @@ const VerifyEmail = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/verify-otp', {
+      const response = await axios.post('/api/auth/verify-otp', {
         email: email,
         otpCode: otp
       });

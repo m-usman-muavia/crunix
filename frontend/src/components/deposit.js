@@ -25,7 +25,7 @@ const Deposit = () => {
 
   const fetchAccount = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/accounts/active', {
+      const response = await fetch('/api/accounts/active', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

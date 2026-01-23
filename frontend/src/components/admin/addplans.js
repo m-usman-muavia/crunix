@@ -27,7 +27,7 @@ const AddPlans = () => {
     const fetchPlans = async () => {
         try {
             setLoading(true);
-            const res = await fetch('http://localhost:5000/api/auth/adminplans');
+            const res = await fetch('/api/auth/adminplans');
             const data = await parseJsonSafe(res);
             if (res.ok) {
                 setPlans(data.data || []);
@@ -60,8 +60,8 @@ const AddPlans = () => {
 
         const isEdit = !!editingId;
         const url = isEdit
-            ? `http://localhost:5000/api/auth/adminplans/${editingId}`
-            : 'http://localhost:5000/api/auth/adminplans';
+            ? `/api/auth/adminplans/${editingId}`
+            : '/api/auth/adminplans';
         const method = isEdit ? 'PATCH' : 'POST';
 
         try {
@@ -87,7 +87,7 @@ const AddPlans = () => {
         setActionBusyId(plan._id);
         const nextStatus = plan.status === 'active' ? 'inactive' : 'active';
         try {
-            const res = await fetch(`http://localhost:5000/api/auth/adminplans/${plan._id}`, {
+            const res = await fetch(`/api/auth/adminplans/${plan._id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: nextStatus })

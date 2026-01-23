@@ -18,7 +18,7 @@ const Refferrals = () => {
 
   const fetchBalance = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/wallet/balance', {
+      const response = await fetch('/api/wallet/balance', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -38,7 +38,7 @@ const Refferrals = () => {
 
   const fetchReferralCode = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/referral/code', {
+      const response = await fetch('/api/referral/code', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

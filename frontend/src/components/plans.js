@@ -25,7 +25,7 @@ const Plans = () => {
 
   const fetchPlans = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/plans/active', {
+      const response = await fetch('/api/plans/active', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -46,7 +46,7 @@ const Plans = () => {
 
   const fetchBalance = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/wallet/balance', {
+      const response = await fetch('/api/wallet/balance', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

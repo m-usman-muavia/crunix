@@ -41,7 +41,7 @@ const Registration = () => {
 
     try {
       // Send request to your backend
-      const response = await axios.post('http://localhost:5000/api/auth/register', {
+      const response = await axios.post('/api/auth/register', {
         email: formData.email,
         name: formData.name,
         referralCode: formData.referralCode,

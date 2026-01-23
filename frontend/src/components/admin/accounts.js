@@ -27,7 +27,7 @@ const Accounts = () => {
     const fetchAccounts = async () => {
         try {
             setLoading(true);
-            const res = await fetch('http://localhost:5000/api/auth/adminaccounts');
+            const res = await fetch('/api/auth/adminaccounts');
             const data = await parseJsonSafe(res);
             if (res.ok) {
                 setAccounts(data.data || []);
@@ -60,8 +60,8 @@ const Accounts = () => {
 
         const isEdit = !!editingId;
         const url = isEdit
-            ? `http://localhost:5000/api/auth/adminaccounts/${editingId}`
-            : 'http://localhost:5000/api/auth/adminaccounts';
+            ? `/api/auth/adminaccounts/${editingId}`
+            : '/api/auth/adminaccounts';
         const method = isEdit ? 'PATCH' : 'POST';
 
         try {
@@ -87,7 +87,7 @@ const Accounts = () => {
         setActionBusyId(account._id);
         const nextStatus = account.status === 'active' ? 'inactive' : 'active';
         try {
-            const res = await fetch(`http://localhost:5000/api/auth/adminaccounts/${account._id}`, {
+            const res = await fetch(`/api/auth/adminaccounts/${account._id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: nextStatus })
@@ -112,7 +112,7 @@ const Accounts = () => {
         setError('');
         setActionBusyId(account._id);
         try {
-            const res = await fetch(`http://localhost:5000/api/auth/adminaccounts/${account._id}`, {
+            const res = await fetch(`/api/auth/adminaccounts/${account._id}`, {
                 method: 'DELETE'
             });
             const data = await parseJsonSafe(res);
