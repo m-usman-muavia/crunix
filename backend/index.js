@@ -60,22 +60,25 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await connectDB();
-    
+  } catch (err) {
+    console.error("Database connection failed:", err.message);
+    // Continue anyway - app can run without DB
+  }
+
+  try {
     const server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
 
-    // Handle any unhandled errors
+    // Handle unhandled rejections - log but don't crash
     process.on('unhandledRejection', (err) => {
       console.error('Unhandled Rejection:', err);
-      process.exit(1);
     });
 
+    // Handle uncaught exceptions - log but don't crash  
     process.on('uncaughtException', (err) => {
       console.error('Uncaught Exception:', err);
-      process.exit(1);
     });
-
   } catch (err) {
     console.error("Failed to start server:", err);
     process.exit(1);
