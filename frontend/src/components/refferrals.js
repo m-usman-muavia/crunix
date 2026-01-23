@@ -4,6 +4,7 @@ import { faLock, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faCloc
 import { Link } from 'react-router-dom';
 import './css/style.css';
 import './css/refferrals.css';
+import API_BASE_URL from '../config/api';
 
 const Refferrals = () => {
   const [balance, setBalance] = useState(0);
@@ -18,9 +19,9 @@ const Refferrals = () => {
 
   const fetchBalance = async () => {
     try {
-      const response = await fetch('/api/wallet/balance', {
+      const response = await fetch(`${API_BASE_URL}/api/wallet`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
       

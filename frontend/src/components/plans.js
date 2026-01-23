@@ -9,6 +9,7 @@ import InvestModal from './InvestModal';
 import './css/dashboard.css';
 import './css/style.css';
 import './css/plans.css';
+import API_BASE_URL from '../config/api';
 
 const Plans = () => {
   const [plans, setPlans] = useState([]);
@@ -25,9 +26,9 @@ const Plans = () => {
 
   const fetchPlans = async () => {
     try {
-      const response = await fetch('/api/plans/active', {
+      const response = await fetch(`${API_BASE_URL}/api/plans/active`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
       
@@ -46,9 +47,9 @@ const Plans = () => {
 
   const fetchBalance = async () => {
     try {
-      const response = await fetch('/api/wallet/balance', {
+      const response = await fetch(`${API_BASE_URL}/api/wallet`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
       

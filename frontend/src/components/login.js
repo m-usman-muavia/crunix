@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './css/login.css';
 import './css/style.css';
+import API_BASE_URL from '../config/api';
 
 
 const Login = () => {
@@ -28,7 +29,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email: email,
         password: password
       });

@@ -8,18 +8,38 @@ const planRoutes = require("./routes/planroutes");
 const walletRoutes = require("./routes/walletroutes");
 const accountRoutes = require("./routes/accountroutes");
 const referralRoutes = require("./routes/referralroutes");
+const depositRoutes = require("./routes/depositroutes");
+const withdrawalRoutes = require("./routes/withdrawalroutes");
 
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+
+// CORS Configuration for development and production
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL || '*'
+    : 'http://localhost:3000',
+  credentials: true
+}));
+
 app.use(express.json());
+
+// Ensure uploads directory exists
+if (!fs.existsSync('uploads/deposits')) {
+  fs.mkdirSync('uploads/deposits', { recursive: true });
+}
+
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
 
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/plans", planRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/accounts", accountRoutes);
+app.use("/api/deposits", depositRoutes);
+app.use("/api/withdrawals", withdrawalRoutes);
 app.use("/api/referral", referralRoutes);
 
 // SERVING THE FRONTEND

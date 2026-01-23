@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
@@ -6,8 +6,34 @@ import './css/dashboard.css';
 import { Link } from 'react-router-dom';
 import './css/style.css';
 import './css/profile.css';
-const Dashboard = () => {
+import API_BASE_URL from '../config/api';
 
+const Dashboard = () => {
+  const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+
+  const fetchBalance = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/wallet`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch balance');
+      }
+
+      const data = await response.json();
+      setBalance(data.main_balance || 0);
+    } catch (err) {
+      console.error('Error fetching balance:', err);
+      setBalance(0);
+    }
+  };
 
   return (
     <div className="main-wrapper">
@@ -17,6 +43,9 @@ const Dashboard = () => {
               <div className="dashboard-user-info">
                 <h4 className="dashboard-greeting">HI</h4>
                 <p className="dashboard-name">MUHAMMAD USMAN</p>
+              </div>
+              <div className="dashboard-balance">
+                Balance: Rs {balance.toFixed(2)}
               </div>
               <div className=''>
               <Link to="/plans" className="link-bold dashboard-whatsapp">

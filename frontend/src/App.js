@@ -14,6 +14,8 @@ import ProtectedRoute from './components/protectedroute';
 import AddPlan from './components/admin/addplans';
 import Accounts from './components/admin/accounts';
 import AdminDashboard from './components/admin/admindashboard';
+import CheckDeposits from './components/admin/checkdeposits';
+import CheckWithdrawals from './components/admin/checkwithdrawals';
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
         <Route path="/admin/addplans" element={<ProtectedRoute><AddPlan /></ProtectedRoute>} />
         <Route path="/admin/accounts" element={<ProtectedRoute><Accounts /></ProtectedRoute>} />
         <Route path="/admin/" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/check-deposits" element={<ProtectedRoute><CheckDeposits /></ProtectedRoute>} />
+        <Route path="/check-withdrawals" element={<ProtectedRoute><CheckWithdrawals /></ProtectedRoute>} />
       </Routes>
       
       

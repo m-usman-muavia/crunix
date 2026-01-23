@@ -4,6 +4,7 @@ import axios from 'axios'; // Import axios
 import Logo from './logo';
 import './css/login.css';
 import './css/style.css';
+import API_BASE_URL from '../config/api';
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const Registration = () => {
 
     try {
       // Send request to your backend
-      const response = await axios.post('/api/auth/register', {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, {
         email: formData.email,
         name: formData.name,
         referralCode: formData.referralCode,

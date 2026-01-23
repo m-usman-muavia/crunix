@@ -4,30 +4,34 @@ import { faLock, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faCloc
 import { Link } from 'react-router-dom';
 import './css/style.css';
 import './css/refferrals.css';
+import API_BASE_URL from '../config/api';
 
 const Deposit = () => {
   const [depositData, setDepositData] = useState({
-    amount: '',
-    paymentMethod: 'bank',
-    mobileNumber: '',
-    transactionId: '',
+    deposit_amount: '',
+    sender_mobile: '',
+    transaction_id: '',
     screenshot: null
   });
 
   const [account, setAccount] = useState(null);
+  const [wallet, setWallet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     fetchAccount();
+    fetchWallet();
   }, []);
 
   const fetchAccount = async () => {
     try {
-      const response = await fetch('/api/accounts/active', {
+      const response = await fetch(`${API_BASE_URL}/api/accounts/active`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
       
@@ -37,6 +41,25 @@ const Deposit = () => {
       
       const data = await response.json();
       setAccount(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const fetchWallet = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/wallet`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch wallet');
+      }
+      
+      const data = await response.json();
+      setWallet(data);
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -69,18 +92,62 @@ const Deposit = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!depositData.screenshot) {
-      alert('Please upload a screenshot');
+    setError('');
+    setSuccessMessage('');
+
+    if (!depositData.deposit_amount || !depositData.sender_mobile || !depositData.transaction_id) {
+      setError('Please fill all fields');
       return;
     }
-    console.log('Deposit request:', depositData);
-    // Add your API call here
+
+    if (!depositData.screenshot) {
+      setError('Please upload a screenshot');
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('deposit_amount', depositData.deposit_amount);
+      formData.append('sender_mobile', depositData.sender_mobile);
+      formData.append('transaction_id', depositData.transaction_id);
+      formData.append('screenshot', depositData.screenshot);
+
+      const response = await fetch(`${API_BASE_URL}/api/deposits/create`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit deposit');
+      }
+
+      setSuccessMessage('Deposit request submitted successfully! Admin will verify soon.');
+      setDepositData({
+        deposit_amount: '',
+        sender_mobile: '',
+        transaction_id: '',
+        screenshot: null
+      });
+      
+      // Refresh wallet
+      fetchWallet();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
- <div className="main-wrapper">
+    <div className="main-wrapper">
       <div className="main-container">
         {/* Top Header Section */}
         <header className="plan-header">
@@ -90,15 +157,15 @@ const Deposit = () => {
             <p className="plan-email">رقم جمع کروائیں</p>
           </div>
           <Link to="/dashboard" className="link-bold plan-balance">
-            <span>Balance: 50</span>
+            <span>Balance: {wallet ? wallet.main_balance?.toFixed(2) : '0.00'}</span>
           </Link>  
         </header>
 
         {/* Send Payment To Section */}
         <div className="payment-details-section">
-        <div className="payment-details">
-          <h3 className="payment-details-title">Send Payment To:</h3>
-          <Link to="/refferrals" className="link-bold nav-link-col">
+          <div className="payment-details">
+            <h3 className="payment-details-title">Send Payment To:</h3>
+            <Link to="/refferrals" className="link-bold nav-link-col">
               <FontAwesomeIcon icon={faUsers} />
             </Link>
           </div>
@@ -125,7 +192,7 @@ const Deposit = () => {
                     title="Copy to clipboard"
                   >
                     <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                    {copied }
+                    {copied ? ' Copied' : ' Copy'}
                   </button>
                   {account.accountNumber}
                 </span>
@@ -144,6 +211,9 @@ const Deposit = () => {
 
         <div className="deposit-section">
           <form onSubmit={handleSubmit}>
+            {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
+            {successMessage && <p style={{ color: 'green', textAlign: 'center', marginBottom: '15px' }}>{successMessage}</p>}
+            
             {/* Amount Input */}
             <div className="deposit-amount">
               <label className="deposit-label">Enter Deposit Amount (Rs):</label>
@@ -151,8 +221,8 @@ const Deposit = () => {
                 type="number" 
                 className="deposit-input" 
                 placeholder="e.g., 1000"
-                name="amount"
-                value={depositData.amount}
+                name="deposit_amount"
+                value={depositData.deposit_amount}
                 onChange={handleInputChange}
                 required
               />
@@ -160,13 +230,13 @@ const Deposit = () => {
 
             {/* Mobile Number Input */}
             <div className="form-group">
-              <label className="deposit-label">Mobile Number (for verification):</label>
+              <label className="deposit-label">Sender Mobile Number:</label>
               <input 
                 type="tel" 
                 className="deposit-input" 
                 placeholder="e.g., 03001234567"
-                name="mobileNumber"
-                value={depositData.mobileNumber}
+                name="sender_mobile"
+                value={depositData.sender_mobile}
                 onChange={handleInputChange}
                 required
               />
@@ -179,8 +249,8 @@ const Deposit = () => {
                 type="text" 
                 className="deposit-input" 
                 placeholder="Enter transaction ID from your bank"
-                name="transactionId"
-                value={depositData.transactionId}
+                name="transaction_id"
+                value={depositData.transaction_id}
                 onChange={handleInputChange}
                 required
               />
@@ -208,8 +278,8 @@ const Deposit = () => {
             </div>
 
             {/* Submit Button */}
-            <button type="submit" className="deposit-btn submit-btn">
-              Submit Deposit Request
+            <button type="submit" className="deposit-btn submit-btn" disabled={submitting}>
+              {submitting ? 'Submitting...' : 'Submit Deposit Request'}
             </button>
           </form>
         </div>
@@ -218,13 +288,13 @@ const Deposit = () => {
           <div className="how-it-works-card">
             <div className="how-it-works-header">
               <span className="how-icon">💳</span>
-              <h3>Withdrawal Rules / قواعد</h3>
+              <h3>Deposit Rules / ڈپوزٹ کے اصول</h3>
             </div>
             <ul className="how-it-works-list">
-              <li>Minimum withdrawal: Rs 500</li>
-              <li>10% tax will be deducted from all withdrawals</li>
-              <li>Unlock weekly salary bonuses at milestones</li>
-              <li>Weekly salary continues as long as active investors are maintained</li>
+              <li>Minimum deposit: Rs 500</li>
+              <li>Send payment to account above</li>
+              <li>Upload transaction screenshot as proof</li>
+              <li>Admin will verify and approve within 24 hours</li>
             </ul>
           </div>
         </div>

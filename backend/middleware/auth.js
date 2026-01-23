@@ -10,7 +10,8 @@ const verifyToken = (req, res, next) => {
 
         const secret = process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_this_in_production_12345';
         const decoded = jwt.verify(token, secret);
-        req.userId = decoded.userId;
+        console.log('Token decoded:', decoded);
+        req.user = decoded;
         next();
     } catch (error) {
         console.error('Token verification error:', error.message);
@@ -18,4 +19,5 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-module.exports = { verifyToken };
+module.exports = verifyToken;
+module.exports.verifyToken = verifyToken;

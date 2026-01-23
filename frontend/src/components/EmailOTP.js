@@ -8,6 +8,7 @@ import Logo from './logo';
 import './css/style.css';
 import './css/profile.css';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 
 
 const VerifyEmail = () => {
@@ -30,7 +31,7 @@ const VerifyEmail = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('/api/auth/verify-otp', {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/verify-otp`, {
         email: email,
         otpCode: otp
       });

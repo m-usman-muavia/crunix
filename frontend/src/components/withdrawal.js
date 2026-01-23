@@ -1,16 +1,124 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faClock, faChartLine, faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import './css/style.css';
 import './css/refferrals.css';
-const Withdrawal = () => {
+import API_BASE_URL from '../config/api';
 
-  // Array to manage your plans easil
-  const milestones = [
-  { target: 30, salary: "2,000", current: 0, status: "Locked" },
-  { target: 100, salary: "7,000", current: 0, status: "Locked" },
-];
+const Withdrawal = () => {
+  const [balance, setBalance] = useState(0);
+  const [formData, setFormData] = useState({
+    amount: '',
+    method: 'jazzcash',
+    account_number: '',
+    mobile_number: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+
+  const fetchBalance = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/wallet`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch balance');
+      }
+
+      const data = await response.json();
+      setBalance(data.main_balance || 0);
+    } catch (err) {
+      console.error('Error fetching balance:', err);
+      setBalance(0);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    setMessageType('');
+
+    // Validation
+    if (!formData.amount || !formData.account_number || !formData.mobile_number) {
+      setMessage('All fields are required');
+      setMessageType('error');
+      return;
+    }
+
+    const amount = parseFloat(formData.amount);
+    if (isNaN(amount) || amount < 500) {
+      setMessage('Minimum withdrawal amount is Rs 500');
+      setMessageType('error');
+      return;
+    }
+
+    if (amount > balance) {
+      setMessage('Insufficient balance for withdrawal');
+      setMessageType('error');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/withdrawals/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          amount: amount,
+          method: formData.method,
+          account_number: formData.account_number,
+          mobile_number: formData.mobile_number
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create withdrawal');
+      }
+
+      setMessage('Withdrawal request submitted successfully! Admin will review it shortly.');
+      setMessageType('success');
+      setFormData({
+        amount: '',
+        method: 'jazzcash',
+        account_number: '',
+        mobile_number: ''
+      });
+      
+      // Refresh balance
+      setTimeout(() => {
+        fetchBalance();
+      }, 1000);
+    } catch (err) {
+      console.error('Error submitting withdrawal:', err);
+      setMessage(err.message || 'Error submitting withdrawal request');
+      setMessageType('error');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="main-wrapper">
       <div className="main-container">
@@ -21,35 +129,142 @@ const Withdrawal = () => {
             <h4 className="plan-username">Withdraw Funds</h4>
             <p className="plan-email">رقم نکالیں</p>
           </div>
-          <div className="plan-balance">Balance: <span> 50 </span></div>
+          <div className="plan-balance">Balance: <span> {balance.toFixed(2)} </span></div>
         </header>
 
         <div className="refferrals-section">
           <div className="refferrals-card">
-            <h3 className="refferrals-header">Your Referral Link</h3>
-            <div className="refferrals-links">
-              <p className="refferrals-code">12121</p>
-              <button className="refferrals-link-btn">Copy Link</button>
-            </div>
-            <div className="refferrals-info">
-              <div className="refferrals-info-stats">
-                <h4 >👨‍👦‍👦 Total Referrals</h4>
-                <p >01</p>
-              </div><div className="refferrals-info-stats">
-                <h4 >🙋🏻‍♂️ Active Referrals</h4>
-                <p >01</p>
-              </div><div className="refferrals-info-stats">
-                <h4 >🤑 Earnings</h4>
-                <p >01</p>
+            <h3 className="refferrals-header">Withdrawal Form</h3>
+            
+            {message && (
+              <div style={{
+                padding: '12px',
+                marginBottom: '15px',
+                borderRadius: '4px',
+                backgroundColor: messageType === 'error' ? '#fee' : '#efe',
+                color: messageType === 'error' ? '#c33' : '#3c3',
+                border: `1px solid ${messageType === 'error' ? '#fcc' : '#cfc'}`
+              }}>
+                {message}
               </div>
-              <div className="refferrals-info-stats">
-                <h4 >💸 Commission Rate</h4>
-                <p >01</p>
-              </div>
-            </div>
+            )}
 
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* Withdrawal Amount */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#333' }}>
+                  Withdrawal Amount (Gross) *
+                </label>
+                <input
+                  type="number"
+                  name="amount"
+                  value={formData.amount}
+                  onChange={handleInputChange}
+                  placeholder="Minimum Rs 500"
+                  min="500"
+                  step="0.01"
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                />
+                <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
+                  Minimum withdrawal: Rs 500
+                </small>
+              </div>
+
+              {/* Withdrawal Method */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#333' }}>
+                  Withdrawal Method *
+                </label>
+                <select
+                  name="method"
+                  value={formData.method}
+                  onChange={handleInputChange}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <option value="jazzcash">JazzCash</option>
+                  <option value="easypaisa">EasyPaisa</option>
+                  <option value="hbl">HBL</option>
+                </select>
+              </div>
+
+              {/* Account Number */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#333' }}>
+                  Account Number *
+                </label>
+                <input
+                  type="text"
+                  name="account_number"
+                  value={formData.account_number}
+                  onChange={handleInputChange}
+                  placeholder="Enter your account number"
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+
+              {/* Mobile Number */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#333' }}>
+                  Mobile Number *
+                </label>
+                <input
+                  type="tel"
+                  name="mobile_number"
+                  value={formData.mobile_number}
+                  onChange={handleInputChange}
+                  placeholder="Enter your mobile number"
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  padding: '12px',
+                  backgroundColor: loading ? '#ccc' : '#007bff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  marginTop: '10px'
+                }}
+              >
+                {loading ? 'Processing...' : 'Submit Withdrawal Request'}
+              </button>
+            </form>
           </div>
-
         </div>
 
 <div className="how-it-works-section">
