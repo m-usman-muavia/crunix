@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { register, login, verifyOTP, getAdminAccounts, addAdminAccount, updateAdminAccount, deleteAdminAccount, changePassword, forgotPassword, verifyForgotOTP, resetPassword } = require('../controllers/authcontrollers');
 const { adminPlans } = require('../controllers/plancontrollers');
-const { verifyToken } = require('../middleware/auth');
+const verifyToken = require('../middleware/auth');
 
 router.post('/register', register);
 router.post('/login', login);
