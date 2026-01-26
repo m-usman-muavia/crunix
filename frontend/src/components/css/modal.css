@@ -131,7 +131,14 @@
 }
 
 .modal-btn {
-  padding: 10px 20px;
+    padding: 8px 18px;
+    
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -150,8 +157,7 @@
 }
 
 .modal-btn-invest {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+background: linear-gradient(135deg, #16a34a, #22d3ee);  color: white;
 }
 
 .modal-btn-invest:hover {
@@ -161,8 +167,8 @@
 
 /* Error/Warning Message */
 .error-message {
-  margin: 15px 20px;
-  padding: 12px 15px;
+  margin: 5px 20px;
+  padding: 5px 15px;
   background-color: #fee;
   border: 1px solid #fcc;
   border-radius: 8px;

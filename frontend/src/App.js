@@ -6,6 +6,7 @@ import Dashboard from './components/dashboard';
 import Plan from './components/plans';
 import Deposit  from './components/deposit';
 import Withdrawal from './components/withdrawal';
+import Transactions from './components/transactions';
 import Refferrals from './components/refferrals';
 import Profile from './components/profile';
 import VerifyEmail from './components/EmailOTP';
@@ -31,6 +32,7 @@ function App() {
         <Route path="/plans" element={<ProtectedRoute><Plan /></ProtectedRoute>} />
         <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
         <Route path="/withdrawal" element={<ProtectedRoute><Withdrawal /></ProtectedRoute>} />
+        <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
         <Route path="/refferrals" element={<ProtectedRoute><Refferrals /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/admin/addplans" element={<ProtectedRoute><AddPlan /></ProtectedRoute>} />

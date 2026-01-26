@@ -3,17 +3,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import './css/modal.css';
 
-const InvestModal = ({ isOpen, onClose, plan, balance }) => {
+const InvestModal = ({ isOpen, onClose, plan, balance, onInvest }) => {
   if (!isOpen) return null;
 
-  const isInsufficientBalance = balance < (plan?.investment || 0);
+  const isInsufficientBalance = balance < (plan?.investment_amount || 0);
 
-  const handleInvest = () => {
+  const handleInvest = async () => {
     if (isInsufficientBalance) {
       return;
     }
-    console.log('Investing in plan:', plan);
-    // Add your investment logic here
+    if (onInvest) {
+      await onInvest(plan._id);
+    }
     onClose();
   };
 
@@ -25,24 +26,24 @@ const InvestModal = ({ isOpen, onClose, plan, balance }) => {
         </button>
 
         <div className="modal-header">
-          <h2>Invest in {plan?.title}</h2>
+          <h2>Invest in {plan?.name}</h2>
         </div>
 
         <div className="modal-body">
 
           <div className="modal-detail">
             <span className="modal-label"> Investment</span>
-            <span className="modal-value text-bold">Rs {plan?.investment}</span>
+            <span className="modal-value text-bold">Rs {plan?.investment_amount}</span>
           </div>
 
           <div className="modal-detail">
             <span className="modal-label">Daily Income</span>
-            <span className="modal-value text-green">Rs {plan?.dailyIncome}</span>
+            <span className="modal-value text-green">Rs {plan?.daily_profit}</span>
           </div>
 
           <div className="modal-detail">
             <span className="modal-label">Total Return</span>
-            <span className="modal-value text-success">Rs {plan?.totalReturn}</span>
+            <span className="modal-value text-success">Rs {plan?.total_profit}</span>
           </div>
           <div className="modal-detail">
             <span className="modal-label">Your Balance</span>
@@ -52,7 +53,7 @@ const InvestModal = ({ isOpen, onClose, plan, balance }) => {
 
         {isInsufficientBalance && (
           <div className="error-message red-text">
-            ⚠️ Insufficient balance. You need Rs {(plan?.investment - balance).toFixed(2)} more to invest in this plan.
+            ⚠️ Insufficient balance. You need Rs {(plan?.investment_amount - balance).toFixed(2)} more to invest in this plan.
           </div>
         )}
 

@@ -18,6 +18,7 @@ const Plans = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [balance, setBalance] = useState(0);
+  const [loadingInvest, setLoadingInvest] = useState(false);
 
   useEffect(() => {
     fetchPlans();
@@ -65,9 +66,74 @@ const Plans = () => {
     }
   };
 
-  const handleInvestClick = (plan) => {
+  const handleInvestClick = async (plan) => {
+    setLoadingInvest(true);
     setSelectedPlan(plan);
-    setIsModalOpen(true);
+    
+    try {
+      // First validate the investment with the backend
+      const response = await fetch(`${API_BASE_URL}/api/investments/invest-now`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ planId: plan._id })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        alert(`Error: ${data.message}`);
+        setLoadingInvest(false);
+        return;
+      }
+
+      // If validation successful, set the plan data from API response
+      setSelectedPlan({
+        ...plan,
+        ...data.plan
+      });
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error('Error validating investment:', err);
+      alert('Error validating investment. Please try again.');
+    } finally {
+      setLoadingInvest(false);
+    }
+  };
+
+  const handleInvestmentConfirmed = async () => {
+    // Refresh balance after successful investment
+    await fetchBalance();
+    // Refresh plans after successful investment
+    await fetchPlans();
+  };
+
+  const handleConfirmInvestment = async (planId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/investments/invest-now`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ planId, confirm: true })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        alert(`Error: ${data.message}`);
+        return;
+      }
+
+      alert('Investment successful!');
+      await handleInvestmentConfirmed();
+    } catch (err) {
+      console.error('Error confirming investment:', err);
+      alert('Error processing investment. Please try again.');
+    }
   };
 
   return (
@@ -77,10 +143,10 @@ const Plans = () => {
         <header className="plan-header">
           <div className="plan-avatar"><FontAwesomeIcon icon={faBox} /></div>
           <div className="plan-user-info">
-            <h4 className="plan-username">Investment Plans</h4>
+            <h4 className="plan-username">Plans</h4>
             <p className="plan-email">سرمایہ کاری کے منصوبے</p>
           </div>
-          <div className="plan-balance">Balance: <span>Rs {balance}</span></div>
+          <div className="plan-balance">Balance: <span>Rs {balance.toFixed(2)}</span></div>
         </header>
 
         <div className="plan-content">
@@ -94,34 +160,35 @@ const Plans = () => {
             plans.map((plan, index) => (
               <div className="plan-card" key={plan._id || index}>
                 <div className="plan-card-header">
-                  <h3 className="plan-title">{plan.title}</h3>
-                  <span className="percentage-badge">{plan.percentage}</span>
+                  <h3 className="plan-title">{plan.name}</h3>
+                  <span className="percentage-badge">{plan.roi_percentage}%</span>
                 </div>
                 
                 <div className="plan-duration">
-                  <FontAwesomeIcon icon={faClock} className="clock-icon" /> {plan.duration}
+                  <FontAwesomeIcon icon={faClock} className="clock-icon" /> {plan.duration_days} Days
                 </div>
 
                 <div className="plan-details-grid">
                   <div className="detail-row">
                     <span className="detail-label">Investment</span>
-                    <span className="detail-value text-bold">Rs {plan.investment}</span>
+                    <span className="detail-value text-bold">Rs {plan.investment_amount}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Daily Income</span>
-                    <span className="detail-value text-purple">Rs {plan.dailyIncome}</span>
+                    <span className="detail-value text-purple">Rs {plan.daily_profit}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Total Return</span>
-                    <span className="detail-value text-green">Rs {plan.totalReturn}</span>
+                    <span className="detail-value text-green">Rs {plan.total_profit}</span>
                   </div>
                 </div>
 
                 <button 
                   className="invest-now-btn"
                   onClick={() => handleInvestClick(plan)}
+                  disabled={loadingInvest}
                 >
-                  <FontAwesomeIcon icon={faChartLine} /> Invest Now
+                  <FontAwesomeIcon icon={faChartLine} /> {loadingInvest ? 'Loading...' : 'Invest Now'}
                 </button>
               </div>
             ))
@@ -174,6 +241,8 @@ const Plans = () => {
         onClose={() => setIsModalOpen(false)}
         plan={selectedPlan}
         balance={balance}
+        onInvest={handleConfirmInvestment}
+        onInvestmentConfirmed={handleInvestmentConfirmed}
       />
     </div>
   );

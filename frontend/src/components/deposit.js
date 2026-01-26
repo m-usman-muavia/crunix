@@ -156,9 +156,9 @@ const Deposit = () => {
             <h4 className="plan-username">Deposit Funds</h4>
             <p className="plan-email">رقم جمع کروائیں</p>
           </div>
-          <Link to="/dashboard" className="link-bold plan-balance">
-            <span>Balance: {wallet ? wallet.main_balance?.toFixed(2) : '0.00'}</span>
-          </Link>  
+          <Link to="/transactions" className="link-bold plan-balance">
+            <FontAwesomeIcon icon={faMoneyBillTransfer} />
+          </Link>
         </header>
 
         {/* Send Payment To Section */}
@@ -180,8 +180,8 @@ const Deposit = () => {
           ) : account ? (
             <div className="payment-details-card">
               <div className="detail-item">
-                <span className="detail-label">Account Name:</span>
-                <span className="detail-value">{account.accountName}</span>
+                <span className="detail-label">Bank Name:</span>
+                <span className="detail-value">{account.bankName}</span>
               </div>
               <div className="detail-item">
                 <span className="detail-label">Account Number:</span>
@@ -196,6 +196,10 @@ const Deposit = () => {
                   </button>
                   {account.accountNumber}
                 </span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-label">Account Name:</span>
+                <span className="detail-value">{account.accountName}</span>
               </div>
               <div className="detail-item">
                 <span className="detail-label">Account Type:</span>
@@ -278,7 +282,7 @@ const Deposit = () => {
             </div>
 
             {/* Submit Button */}
-            <button type="submit" className="deposit-btn submit-btn" disabled={submitting}>
+            <button type="submit" className="sign-in-btn submit-btn" disabled={submitting}>
               {submitting ? 'Submitting...' : 'Submit Deposit Request'}
             </button>
           </form>
@@ -291,10 +295,11 @@ const Deposit = () => {
               <h3>Deposit Rules / ڈپوزٹ کے اصول</h3>
             </div>
             <ul className="how-it-works-list">
-              <li>Minimum deposit: Rs 500</li>
-              <li>Send payment to account above</li>
-              <li>Upload transaction screenshot as proof</li>
-              <li>Admin will verify and approve within 24 hours</li>
+              <li>Select payment method and amount</li>
+              <li>Send payment to the shown account/wallet</li>
+              <li>Enter your details and transaction ID</li>
+              <li>Admin will verify within 24 hours</li>
+              <li>Balance will be added after approval</li>
             </ul>
           </div>
         </div>

@@ -39,22 +39,37 @@ const Refferrals = () => {
 
   const fetchReferralCode = async () => {
     try {
-      const response = await fetch('/api/referral/code', {
+      const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        console.error('No auth token found');
+        setReferralCode('N/A');
+        setLoading(false);
+        return;
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/api/referral/code`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
       
       if (!response.ok) {
-        throw new Error('Failed to fetch referral code');
+        throw new Error(`HTTP ${response.status}`);
       }
       
       const data = await response.json();
-      setReferralCode(data.referralCode || 'N/A');
-      setLoading(false);
+      console.log('Referral Code Response:', data);
+      
+      // Try multiple possible field names
+      const code = data.referralCode || data.referral_code || 'N/A';
+      setReferralCode(code);
     } catch (err) {
       console.error('Error fetching referral code:', err);
       setReferralCode('N/A');
+    } finally {
       setLoading(false);
     }
   };
@@ -79,8 +94,8 @@ const Refferrals = () => {
         <header className="plan-header">
           <div className="plan-avatar"><FontAwesomeIcon icon={faBox} /></div>
           <div className="plan-user-info">
-            <h4 className="plan-username">Referral Program</h4>
-            <p className="plan-email">دوستوں کو مدعو کریں اور کمائیں</p>
+            <h4 className="plan-username">Referrals</h4>
+            <p className="plan-email">دوستوں کو مدعو کریں  </p>
           </div>
           <div className="plan-balance">Balance: <span>Rs {balance}</span></div>
         </header>
@@ -89,7 +104,7 @@ const Refferrals = () => {
           <div className="refferrals-card">
             <h3 className="refferrals-header">Your Referral Code</h3>
             <div className="refferrals-links">
-              <p className="refferrals-code">{loading ? 'Loading...' : referralCode}</p>
+              <p className="refferrals-code">{referralCode || 'N/A'}</p>
               <button 
                 className="refferrals-link-btn" 
                 onClick={handleCopyReferralCode}
@@ -102,17 +117,17 @@ const Refferrals = () => {
             <div className="refferrals-info">
               <div className="refferrals-info-stats">
                 <h4 >👨‍👦‍👦 Total Referrals</h4>
-                <p >01</p>
+                <p >00</p>
               </div><div className="refferrals-info-stats">
                 <h4 >🙋🏻‍♂️ Active Referrals</h4>
-                <p >01</p>
+                <p >00</p>
               </div><div className="refferrals-info-stats">
                 <h4 >🤑 Earnings</h4>
-                <p >01</p>
+                <p >00</p>
               </div>
               <div className="refferrals-info-stats">
                 <h4 >💸 Commission Rate</h4>
-                <p >01</p>
+                <p >00</p>
               </div>
             </div>
 

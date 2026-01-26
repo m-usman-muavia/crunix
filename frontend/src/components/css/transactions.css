@@ -1,0 +1,94 @@
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tx-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #d1d5db;
+}
+
+.tx-main {
+  flex: 1;
+}
+
+.tx-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.tx-icon {
+  color: #16a34a;
+  font-size: 16px;
+}
+
+.tx-withdrawal .tx-icon {
+  color: #ef4444;
+}
+
+.tx-type {
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #111827;
+}
+
+.tx-status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.tx-meta {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.tx-details {
+  font-size: 12px;
+  color: #4b5563;
+  display: grid;
+  gap: 2px;
+}
+
+.tx-detail {
+  line-height: 1.4;
+}
+
+.tx-amount {
+  text-align: right;
+  min-width: 120px;
+}
+
+.tx-amount-deposit {
+  font-size: 18px;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.tx-amount-withdrawal {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+.tx-message {
+  text-align: center;
+  padding: 20px;
+  color: #111827;
+}
+
+.tx-error {
+  color: #ef4444;
+}

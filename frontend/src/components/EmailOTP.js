@@ -50,7 +50,7 @@ const VerifyEmail = () => {
     <div className="main-wrapper">
       <div className="main-container">
         <div className="login-card">
-          <Link to="/login" className="back-link">
+          <Link to="/" className="back-link">
             <FontAwesomeIcon icon={faArrowLeft} /> Back to sign in
           </Link>
           <Logo />  

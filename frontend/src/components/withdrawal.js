@@ -106,7 +106,7 @@ const Withdrawal = () => {
         account_number: '',
         mobile_number: ''
       });
-      
+
       // Refresh balance
       setTimeout(() => {
         fetchBalance();
@@ -129,32 +129,25 @@ const Withdrawal = () => {
             <h4 className="plan-username">Withdraw Funds</h4>
             <p className="plan-email">رقم نکالیں</p>
           </div>
-          <div className="plan-balance">Balance: <span> {balance.toFixed(2)} </span></div>
+          <Link to="/transactions" className="link-bold plan-balance">
+            <FontAwesomeIcon icon={faMoneyBillTransfer} />
+          </Link>
         </header>
 
         <div className="refferrals-section">
-          <div className="refferrals-card">
+          <div className="withdrawal-card">
             <h3 className="refferrals-header">Withdrawal Form</h3>
-            
+
             {message && (
-              <div style={{
-                padding: '12px',
-                marginBottom: '15px',
-                borderRadius: '4px',
-                backgroundColor: messageType === 'error' ? '#fee' : '#efe',
-                color: messageType === 'error' ? '#c33' : '#3c3',
-                border: `1px solid ${messageType === 'error' ? '#fcc' : '#cfc'}`
-              }}>
+              <div className={messageType === 'error' ? 'error-message' : 'success-message'}>
                 {message}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <form onSubmit={handleSubmit} className="deposit-form">
               {/* Withdrawal Amount */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#333' }}>
-                  Withdrawal Amount (Gross) *
-                </label>
+              <div className="deposit-amount" style={{marginTop: '10px'}}>
+                <label className="deposit-label">Withdrawal Amount (Gross) *</label>
                 <input
                   type="number"
                   name="amount"
@@ -162,38 +155,21 @@ const Withdrawal = () => {
                   onChange={handleInputChange}
                   placeholder="Minimum Rs 500"
                   min="500"
-                  step="0.01"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '14px',
-                    boxSizing: 'border-box'
-                  }}
+                  step="1"
+                  className="deposit-input"
+                  required
                 />
-                <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
-                  Minimum withdrawal: Rs 500
-                </small>
               </div>
 
               {/* Withdrawal Method */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#333' }}>
-                  Withdrawal Method *
-                </label>
+              <div className="form-group" style={{marginTop: '10px'}}>
+                <label className="deposit-label">Withdrawal Method *</label>
                 <select
                   name="method"
                   value={formData.method}
                   onChange={handleInputChange}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '14px',
-                    boxSizing: 'border-box'
-                  }}
+                  className="deposit-input"
+                  required
                 >
                   <option value="jazzcash">JazzCash</option>
                   <option value="easypaisa">EasyPaisa</option>
@@ -202,46 +178,30 @@ const Withdrawal = () => {
               </div>
 
               {/* Account Number */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#333' }}>
-                  Account Number *
-                </label>
+              <div className="form-group" style={{marginTop: '10px'}}>
+                <label className="deposit-label">Account Number *</label>
                 <input
                   type="text"
                   name="account_number"
                   value={formData.account_number}
                   onChange={handleInputChange}
                   placeholder="Enter your account number"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '14px',
-                    boxSizing: 'border-box'
-                  }}
+                  className="deposit-input"
+                  required
                 />
               </div>
 
               {/* Mobile Number */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', color: '#333' }}>
-                  Mobile Number *
-                </label>
+              <div className="form-group" style={{marginTop: '10px'}} >
+                <label className="deposit-label">Mobile Number *</label>
                 <input
                   type="tel"
                   name="mobile_number"
                   value={formData.mobile_number}
                   onChange={handleInputChange}
                   placeholder="Enter your mobile number"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    fontSize: '14px',
-                    boxSizing: 'border-box'
-                  }}
+                  className="deposit-input"
+                  required
                 />
               </div>
 
@@ -249,17 +209,7 @@ const Withdrawal = () => {
               <button
                 type="submit"
                 disabled={loading}
-                style={{
-                  padding: '12px',
-                  backgroundColor: loading ? '#ccc' : '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  marginTop: '10px'
-                }}
+                className="sign-in-btn submit-btn"
               >
                 {loading ? 'Processing...' : 'Submit Withdrawal Request'}
               </button>
@@ -267,30 +217,32 @@ const Withdrawal = () => {
           </div>
         </div>
 
-<div className="how-it-works-section">
-  <div className="how-it-works-card">
-    <div className="how-it-works-header">
-      <span className="how-icon">💳</span>
-      <h3>Withdrawal Rules / قواعد</h3>
-    </div>
-    <ul className="how-it-works-list">
-      <li>Minimum withdrawal: Rs 500</li>
-      <li>
-        10% tax will be deducted from all withdrawals
-      </li>
-      <li>
-        Unlock weekly salary bonuses at milestones
-      </li>
-      <li>
-        Weekly salary continues as long as active investors are maintained
-      </li>
-      {/* <li className="urdu-text">
+ 
+
+        <div className="how-it-works-section">
+          <div className="how-it-works-card">
+            <div className="how-it-works-header">
+              <span className="how-icon">💳</span>
+              <h3>Withdrawal Rules / قواعد</h3>
+            </div>
+            <ul className="how-it-works-list">
+              <li>Minimum withdrawal: Rs 500</li>
+              <li>
+                10% tax will be deducted from all withdrawals
+              </li>
+              <li>
+                Unlock weekly salary bonuses at milestones
+              </li>
+              <li>
+                Weekly salary continues as long as active investors are maintained
+              </li>
+              {/* <li className="urdu-text">
         دوستوں کو مدعو کریں، 10% کمائیں اور ہفتہ وار تنخواہ حاصل کریں
       </li> */}
-    </ul>
-  </div>
-</div>
-          
+            </ul>
+          </div>
+        </div>
+
 
         {/* Updated Plan Content Section */}
 

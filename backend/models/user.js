@@ -24,8 +24,9 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function () {
     // 1. Generate Referral Code if the user is new
     if (this.isNew && !this.referralCode) {
-        this.referralCode = 'INV-' + Math.random().toString(36).substring(2, 7).toUpperCase();
-    }
+    this.referralCode = Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 
     // 2. Hash Password if it's new or being changed
     if (this.isModified('password')) {

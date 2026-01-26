@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const verifyToken = require('../middleware/auth');
 
 // GET user's referral code
-router.get('/code', async (req, res) => {
+router.get('/code', verifyToken, async (req, res) => {
   try {
-    // Get userId from auth token (you'll need to implement auth middleware)
-    // For now, assuming userId is passed in the request
-    const userId = req.userId; // Set by auth middleware
+    // Get userId from auth token
+    const userId = req.user.id || req.user.userId;
     
     const user = await User.findById(userId);
     

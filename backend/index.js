@@ -36,6 +36,7 @@ app.use('/uploads', express.static('uploads'));
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/plans", planRoutes);
+app.use("/api/investments", planRoutes); // Investment routes use planRoutes
 app.use("/api/wallet", walletRoutes);
 app.use("/api/accounts", accountRoutes);
 app.use("/api/deposits", depositRoutes);

@@ -148,8 +148,10 @@ exports.register = async (req, res) => {
 
         // Create wallet for new user
         const newWallet = new Wallet({
-            user_id: newUser._id,
-            balance: 0
+            userId: newUser._id,
+            main_balance: 0,
+            bonus_balance: 0,
+            referral_balance: 0
         });
         await newWallet.save();
 
@@ -349,9 +351,13 @@ exports.deleteAdminAccount = async (req, res) => {
 exports.changePassword = async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
-        const userId = req.userId;
+        const userId = req.user?.id || req.user?.userId;
 
         // Validation
+        if (!userId) {
+            return res.status(401).json({ message: 'Unauthorized. Please login again.' });
+        }
+
         if (!oldPassword || !newPassword) {
             return res.status(400).json({ message: 'Old password and new password are required' });
         }
@@ -374,11 +380,8 @@ exports.changePassword = async (req, res) => {
             return res.status(400).json({ message: 'New password must be different from the old password' });
         }
 
-        // Hash new password
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-        // Update password
-        user.password = hashedPassword;
+        // Set new password (DON'T hash manually - let pre-save hook handle it)
+        user.password = newPassword;
         await user.save();
 
         res.status(200).json({ message: 'Password changed successfully' });
