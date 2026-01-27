@@ -60,14 +60,13 @@ const Registration = () => {
         password: formData.password
       });
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         // Redirect to OTP page and pass the email so the OTP page knows who to verify
         navigate('/EmailOTP', { state: { email: formData.email } });
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong. Try again.");
-    } finally {
       setLoading(false);
+      setError(err.response?.data?.message || "Something went wrong. Try again.");
     }
   };
 
