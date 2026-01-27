@@ -76,6 +76,7 @@ router.post('/invest-now', verifyToken, async (req, res) => {
         total_profit: plan.total_profit,
         duration_days: plan.duration_days,
         endDate: endDate,
+        lastAccruedAt: new Date(),
         status: 'active'
       });
 
@@ -188,6 +189,86 @@ router.put('/:planId/resume', verifyToken, async (req, res) => {
     res.json({ message: 'Investment resumed successfully', plan: userPlan });
   } catch (error) {
     console.error('Error resuming investment:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Manual force-accrue endpoint (for testing/development)
+router.post('/force-accrue', verifyToken, async (req, res) => {
+  try {
+    const MS_PER_DAY = 24 * 60 * 60 * 1000;
+    const now = new Date();
+    const activePlans = await UserPlan.find({ status: 'active' });
+    let accrued = 0;
+
+    for (const plan of activePlans) {
+      const cutoff = plan.endDate && plan.endDate < now ? plan.endDate : now;
+      const last = plan.lastAccruedAt || plan.investmentDate || now;
+      let daysToAccrue = Math.floor((cutoff - last) / MS_PER_DAY);
+      if (daysToAccrue <= 0) {
+        if ((plan.totalEarned || 0) >= (plan.total_profit || 0) || now >= plan.endDate) {
+          plan.status = 'completed';
+          await plan.save();
+        }
+        continue;
+      }
+
+      const remainingProfit = (plan.total_profit || 0) - (plan.totalEarned || 0);
+      const maxDaysByProfit = Math.floor(remainingProfit / (plan.daily_profit || 0));
+      const actualDays = Math.min(daysToAccrue, Math.max(0, maxDaysByProfit));
+      if (actualDays <= 0) {
+        plan.status = 'completed';
+        await plan.save();
+        continue;
+      }
+
+      const increment = actualDays * (plan.daily_profit || 0);
+      await Wallet.updateOne({ userId: plan.userId }, { $inc: { main_balance: increment } });
+      plan.totalEarned = (plan.totalEarned || 0) + increment;
+      plan.lastAccruedAt = new Date(last.getTime() + actualDays * MS_PER_DAY);
+      plan.accrualHistory = plan.accrualHistory || [];
+      plan.accrualHistory.push({ timestamp: new Date(), daysAccrued: actualDays, amountAdded: increment });
+
+      if (plan.totalEarned >= plan.total_profit || plan.lastAccruedAt >= plan.endDate) {
+        plan.status = 'completed';
+      }
+      await plan.save();
+      accrued++;
+    }
+    res.json({ message: `Accrued profits for ${accrued} plans`, count: accrued });
+  } catch (error) {
+    console.error('Force accrue error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get accrual history for all active plans (admin endpoint)
+router.get('/accrual-history', verifyToken, async (req, res) => {
+  try {
+    const plans = await UserPlan.find({ status: { $in: ['active', 'completed'] } })
+      .populate('userId', 'name email')
+      .sort({ createdAt: -1 })
+      .lean();
+    
+    const summary = plans.map((plan) => ({
+      _id: plan._id,
+      userName: plan.userId?.name,
+      userEmail: plan.userId?.email,
+      planName: plan.planName,
+      investmentAmount: plan.investment_amount,
+      dailyProfit: plan.daily_profit,
+      totalProfit: plan.total_profit,
+      totalEarned: plan.totalEarned,
+      status: plan.status,
+      investmentDate: plan.investmentDate,
+      endDate: plan.endDate,
+      lastAccruedAt: plan.lastAccruedAt,
+      accrualCount: (plan.accrualHistory || []).length,
+      accrualHistory: plan.accrualHistory || []
+    }));
+    res.json(summary);
+  } catch (error) {
+    console.error('Accrual history fetch error:', error);
     res.status(500).json({ message: error.message });
   }
 });

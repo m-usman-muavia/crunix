@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Added useNavigate
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Added useNavigate, useLocation
 import axios from 'axios'; // Import axios
 import Logo from './logo';
 import './css/login.css';
@@ -8,6 +8,7 @@ import API_BASE_URL from '../config/api';
 
 const Registration = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -21,6 +22,16 @@ const Registration = () => {
   });
 
   const [error, setError] = useState('');
+  const [referralLocked, setReferralLocked] = useState(false);
+    // Prefill referral code from URL if present
+    useEffect(() => {
+      const params = new URLSearchParams(location.search);
+      const code = params.get('code');
+      if (code) {
+        setFormData((prev) => ({ ...prev, referralCode: code }));
+        setReferralLocked(true);
+      }
+    }, [location.search]);
   const [loading, setLoading] = useState(false);
 
   // 2. Handle input changes
@@ -107,6 +118,9 @@ const Registration = () => {
                   name="referralCode"
                   placeholder="123456" 
                   onChange={handleChange}
+                  value={formData.referralCode}
+                  readOnly={referralLocked}
+                  disabled={referralLocked}
                 />
               </div>
             </div>

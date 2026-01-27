@@ -129,6 +129,12 @@ const CheckDeposits = () => {
                       </Link>
                     </div>
                     <div className="nav-item">
+                      <Link to="/admin/users" className="link-bold nav-link-col">
+                        <FontAwesomeIcon icon={faUsers} />
+                        <span>Users</span>
+                      </Link>
+                    </div>
+                    <div className="nav-item">
                       <Link to="/admin/accounts" className="link-bold nav-link-col">
                         <FontAwesomeIcon icon={faUser} />
                         <span>Accounts</span>
@@ -276,11 +282,18 @@ const CheckDeposits = () => {
                     </Link>
                   </div>
                   <div className="nav-item">
+                    <Link to="/admin/users" className="link-bold nav-link-col">
+                      <FontAwesomeIcon icon={faUsers} />
+                      <span>Users</span>
+                    </Link>
+                  </div>
+                  <div className="nav-item">
                     <Link to="/admin/accounts" className="link-bold nav-link-col">
                       <FontAwesomeIcon icon={faUser} />
                       <span>Accounts</span>
                     </Link>
                   </div>
+                  
                 </nav>
       </div>
     </div>

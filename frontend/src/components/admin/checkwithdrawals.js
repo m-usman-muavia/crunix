@@ -145,6 +145,12 @@ const CheckWithdrawals = () => {
               </Link>
             </div>
             <div className="nav-item">
+              <Link to="/admin/users" className="link-bold nav-link-col">
+                <FontAwesomeIcon icon={faUsers} />
+                <span>Users</span>
+              </Link>
+            </div>
+            <div className="nav-item">
               <Link to="/check-withdrawals" className="link-bold nav-link-col">
                 <FontAwesomeIcon icon={faArrowUp} />
                 <span>Withdrawals</span>
@@ -275,6 +281,12 @@ const CheckWithdrawals = () => {
             <Link to="/check-withdrawals" className="link-bold nav-link-col">
               <FontAwesomeIcon icon={faArrowUp} />
               <span>Withdrawals</span>
+            </Link>
+          </div>
+          <div className="nav-item">
+            <Link to="/admin/users" className="link-bold nav-link-col">
+              <FontAwesomeIcon icon={faUsers} />
+              <span>Users</span>
             </Link>
           </div>
           <div className="nav-item">

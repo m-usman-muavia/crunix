@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faClock } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import '../css/dashboard.css';
 import { Link } from 'react-router-dom';
@@ -34,10 +34,10 @@ const Dashboard = () => {
             <span className="btn-icon">⬆️</span>
             Check Withdrawals
           </Link>
-          <button className="action-btn buy-plan">
-            <span className="btn-icon">📦</span>
-            Verify Users
-          </button>
+          <Link to="/admin/accrual-history" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span className="btn-icon">⏱️</span>
+            Accrual History
+          </Link>
         </div>
 
         {/* Bottom Navigation */}
@@ -64,6 +64,18 @@ const Dashboard = () => {
                     <Link to="/check-withdrawals" className="link-bold nav-link-col">
                       <FontAwesomeIcon icon={faArrowUp} />
                       <span>Withdrawals</span>
+                    </Link>
+                  </div>
+                  <div className="nav-item">
+                    <Link to="/admin/users" className="link-bold nav-link-col">
+                      <FontAwesomeIcon icon={faUsers} />
+                      <span>Users</span>
+                    </Link>
+                  </div>
+                  <div className="nav-item">
+                    <Link to="/admin/accrual-history" className="link-bold nav-link-col">
+                      <FontAwesomeIcon icon={faClock} />
+                      <span>Accruals</span>
                     </Link>
                   </div>
                   <div className="nav-item">

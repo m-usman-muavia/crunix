@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox,faArrowDown,faArrowUp, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBox,faArrowDown,faArrowUp, faUser,faUsers } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import '../css/style.css';
 import '../css/refferrals.css';
@@ -314,6 +314,12 @@ const Accounts = () => {
                               <span>Withdrawals</span>
                             </Link>
                           </div>
+                                                    <div className="nav-item">
+                                                        <Link to="/admin/users" className="link-bold nav-link-col">
+                                                            <FontAwesomeIcon icon={faUsers} />
+                                                            <span>Users</span>
+                                                        </Link>
+                                                    </div>
                           <div className="nav-item">
                             <Link to="/admin/accounts" className="link-bold nav-link-col">
                               <FontAwesomeIcon icon={faUser} />

@@ -39,10 +39,19 @@ const userPlanSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    lastAccruedAt: {
+        type: Date,
+        default: Date.now
+    },
     totalEarned: {
         type: Number,
         default: 0
     },
+    accrualHistory: [{
+        timestamp: { type: Date, default: Date.now },
+        daysAccrued: { type: Number },
+        amountAdded: { type: Number }
+    }],
     status: {
         type: String,
         enum: ['active', 'paused', 'completed', 'cancelled'],

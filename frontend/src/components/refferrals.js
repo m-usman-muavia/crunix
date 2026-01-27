@@ -8,6 +8,9 @@ import API_BASE_URL from '../config/api';
 
 const Refferrals = () => {
   const [balance, setBalance] = useState(0);
+  const [referralEarnings, setReferralEarnings] = useState(0);
+  const [totalReferrals, setTotalReferrals] = useState(0);
+  const [activeReferrals, setActiveReferrals] = useState(0);
   const [referralCode, setReferralCode] = useState('');
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -15,6 +18,7 @@ const Refferrals = () => {
   useEffect(() => {
     fetchBalance();
     fetchReferralCode();
+    fetchReferralStats();
   }, []);
 
   const fetchBalance = async () => {
@@ -31,9 +35,32 @@ const Refferrals = () => {
       
       const data = await response.json();
       setBalance(data.main_balance || 0);
+      setReferralEarnings(data.referral_balance || 0);
     } catch (err) {
       console.error('Error fetching balance:', err);
       setBalance(0);
+    }
+  };
+
+  const fetchReferralStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/referral/stats`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch referral stats');
+      }
+
+      const data = await response.json();
+      setTotalReferrals(data.totalReferrals || 0);
+      setActiveReferrals(data.activeReferrals || 0);
+    } catch (err) {
+      console.error('Error fetching referral stats:', err);
+      setTotalReferrals(0);
+      setActiveReferrals(0);
     }
   };
 
@@ -75,7 +102,9 @@ const Refferrals = () => {
   };
 
   const handleCopyReferralCode = () => {
-    navigator.clipboard.writeText(referralCode).then(() => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+    const shareLink = `${origin}/registration?code=${encodeURIComponent(referralCode)}`;
+    navigator.clipboard.writeText(shareLink).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }).catch(err => {
@@ -111,23 +140,25 @@ const Refferrals = () => {
                 disabled={loading || referralCode === 'N/A'}
               >
                 <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                {copied ? ' Copied!' : ' Copy'}
+                {copied ? ' Copied!' : ' Copy Link'}
               </button>
             </div>
             <div className="refferrals-info">
               <div className="refferrals-info-stats">
-                <h4 >👨‍👦‍👦 Total Referrals</h4>
-                <p >00</p>
-              </div><div className="refferrals-info-stats">
-                <h4 >🙋🏻‍♂️ Active Referrals</h4>
-                <p >00</p>
-              </div><div className="refferrals-info-stats">
-                <h4 >🤑 Earnings</h4>
-                <p >00</p>
+                <h4>👨‍👦‍👦 Total Referrals</h4>
+                <p>{totalReferrals}</p>
+              </div>
+              <div className="refferrals-info-stats">
+                <h4>🙋🏻‍♂️ Active Referrals</h4>
+                <p>{activeReferrals}</p>
+              </div>
+              <div className="refferrals-info-stats">
+                <h4>🤑 Earnings</h4>
+                <p>Rs {referralEarnings}</p>
               </div>
               <div className="refferrals-info-stats">
                 <h4 >💸 Commission Rate</h4>
-                <p >00</p>
+                <p >10%</p>
               </div>
             </div>
 

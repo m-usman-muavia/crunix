@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Wallet = require('../models/wallet');
 const Referral = require('../models/referral');
+const UserPlan = require('../models/userplan');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -471,6 +472,68 @@ exports.verifyForgotOTP = async (req, res) => {
     } catch (error) {
         console.error('Verify OTP error:', error.message);
         res.status(500).json({ message: 'Server error verifying OTP. Please try again.' });
+    }
+};
+
+// Admin: fetch users with referral, plan, and wallet summary
+exports.getAdminUsersWithReferrals = async (req, res) => {
+    try {
+        const users = await User.find().lean();
+        const userIds = users.map((u) => u._id.toString());
+
+        const wallets = await Wallet.find({ userId: { $in: userIds } }).lean();
+        const walletMap = new Map(wallets.map((w) => [w.userId.toString(), w]));
+
+        const activePlans = await UserPlan.find({ userId: { $in: userIds }, status: 'active' }).lean();
+        const planMap = new Map();
+        activePlans.forEach((plan) => {
+            const key = plan.userId.toString();
+            planMap.set(key, (planMap.get(key) || 0) + 1);
+        });
+
+        const referrals = await Referral.find({ referrer_id: { $in: userIds } })
+            .populate('referred_user_id', 'name email')
+            .lean();
+        const referralMap = new Map();
+        referrals.forEach((ref) => {
+            const key = ref.referrer_id.toString();
+            if (!referralMap.has(key)) referralMap.set(key, []);
+            referralMap.get(key).push(ref);
+        });
+
+        const referralCodeToUser = new Map(users.map((u) => [u.referralCode, u]));
+
+        const payload = users.map((user) => {
+            const wallet = walletMap.get(user._id.toString()) || {};
+            const userReferrals = referralMap.get(user._id.toString()) || [];
+            const activeReferrals = userReferrals.filter(
+                (ref) => ref.status === 'completed' || ref.status === 'activated'
+            );
+
+            return {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                referralCode: user.referralCode,
+                referredByCode: user.referredBy || null,
+                referredByName: user.referredBy
+                    ? referralCodeToUser.get(user.referredBy)?.name || null
+                    : null,
+                totalReferrals: userReferrals.length,
+                referralNames: userReferrals
+                    .map((ref) => ref.referred_user_id?.name)
+                    .filter(Boolean),
+                activeReferrals: activeReferrals.length,
+                activePlans: planMap.get(user._id.toString()) || 0,
+                balance: wallet.main_balance || 0,
+                referralBalance: wallet.referral_balance || 0
+            };
+        });
+
+        res.status(200).json({ data: payload });
+    } catch (error) {
+        console.error('Error fetching admin user referral stats:', error);
+        res.status(500).json({ message: 'Failed to fetch users' });
     }
 };
 
