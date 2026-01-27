@@ -112,7 +112,7 @@ const AddPlans = () => {
         setError('');
         setActionBusyId(plan._id);
         try {
-            const res = await fetch(`http://localhost:5000/api/auth/adminplans/${plan._id}`, {
+            const res = await fetch(`/api/auth/adminplans/${plan._id}`, {
                 method: 'DELETE'
             });
             const data = await parseJsonSafe(res);

@@ -173,7 +173,7 @@ const Withdrawal = () => {
                 >
                   <option value="jazzcash">JazzCash</option>
                   <option value="easypaisa">EasyPaisa</option>
-                  <option value="hbl">HBL</option>
+                  <option value="hbl">SadaPay</option>
                 </select>
               </div>
 

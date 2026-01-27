@@ -145,7 +145,7 @@ const Dashboard = () => {
               <p className="dashboard-name">{user?.name || 'User'}</p>
             </div>
             <div className=''>
-              <Link to="/plans" className="link-bold dashboard-whatsapp">
+              <Link to="https://chat.whatsapp.com/F7IyUsVbF9mCYdUQVqwj44" className="link-bold dashboard-whatsapp">
 
                 <FontAwesomeIcon icon={faWhatsapp} />
               </Link>
