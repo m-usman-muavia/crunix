@@ -7,8 +7,7 @@ import { Link } from 'react-router-dom';
 import './css/style.css';
 import './css/profile.css';
 import './css/transactions.css';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+import API_BASE_URL from '../config/api';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
