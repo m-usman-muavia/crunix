@@ -161,3 +161,9 @@ exports.adminPlans = async (req, res) => {
     });
   }
 };
+
+// 👉 ADMIN PLAN UPDATE (PATCH) - Alias for updatePlan
+exports.updateAdminPlan = exports.updatePlan;
+
+// 👉 ADMIN PLAN DELETE - Alias for deletePlan
+exports.deleteAdminPlan = exports.deletePlan;
