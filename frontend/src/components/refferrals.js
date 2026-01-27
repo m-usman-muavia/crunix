@@ -113,8 +113,14 @@ const Refferrals = () => {
   };
 
   const milestones = [
-    { target: 30, salary: "2,000", current: 0, status: "Locked" },
-    { target: 100, salary: "7,000", current: 0, status: "Locked" },
+    { target: 15, salary: "1,000", current: 0, status: "Opened" },
+    { target: 25, salary: "3,000", current: 0, status: "Locked" },
+        { target: 50, salary: "7,000", current: 0, status: "Locked" },
+            { target: 100, salary: "15,000", current: 0, status: "Locked" },
+                        { target: 250, salary: "40,000", current: 0, status: "Locked" },
+
+                                                { target: 500, salary: "90,000", current: 0, status: "Locked" },
+
   ];
   return (
     <div className="main-wrapper">

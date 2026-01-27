@@ -619,7 +619,7 @@ const Profile = () => {
                                                 </div>
                                                 <div className="date-item">
                                                     <span className="date-label">Earned</span>
-                                                    <span className="date-value">Rs {plan.currentEarnings || '01'}</span>
+                                                    <span className="date-value">Rs {formatAmount(plan.currentEarnings || 0)}</span>
                                                 </div>
                                             </div>
 
