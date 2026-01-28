@@ -11,7 +11,6 @@ const Accounts = () => {
     const [loading, setLoading] = useState(false);
     const [actionBusyId, setActionBusyId] = useState(null);
     const [editingId, setEditingId] = useState(null);
-    const [showInactive, setShowInactive] = useState(false);
     const [form, setForm] = useState({
         accountTitle: '',
         accountNumber: '',
@@ -29,8 +28,13 @@ const Accounts = () => {
             setLoading(true);
             const res = await fetch('/api/auth/adminaccounts');
             const data = await parseJsonSafe(res);
+            console.log('Fetched accounts data:', data);
             if (res.ok) {
-                setAccounts(data.data || []);
+                const accountsData = data.data || [];
+                console.log('Total accounts:', accountsData.length);
+                console.log('Active accounts:', accountsData.filter(a => a.status === 'active').length);
+                console.log('Inactive accounts:', accountsData.filter(a => a.status === 'inactive').length);
+                setAccounts(accountsData);
             } else {
                 setError(data.message || 'Failed to load accounts');
             }
@@ -142,11 +146,6 @@ const Accounts = () => {
 
     const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-    // Filter accounts based on showInactive toggle
-    const filteredAccounts = showInactive 
-        ? accounts 
-        : accounts.filter((a) => a.status === 'active');
-
     return (
         <div className="main-wrapper">
             <div className="main-container">
@@ -156,7 +155,7 @@ const Accounts = () => {
                         <h4 className="plan-username">Bank Accounts</h4>
                         <p className="plan-email">Manage payout accounts</p>
                     </div>
-                    <div className="plan-balance">Accounts: <span>{filteredAccounts.length}</span></div>
+                    <div className="plan-balance">Accounts: <span>{accounts.length}</span></div>
                 </header>
 
                 <div className="addaccounts-section">
@@ -222,23 +221,13 @@ const Accounts = () => {
                     </div>  
 
                     <div className="accounts-list-card">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                            <h3 className="accounts-list-header">Bank Accounts</h3>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                                <input
-                                    type="checkbox"
-                                    checked={showInactive}
-                                    onChange={(e) => setShowInactive(e.target.checked)}
-                                />
-                                <span>Show Inactive</span>
-                            </label>
-                        </div>
+                        <h3 className="accounts-list-header">Bank Accounts</h3>
                         {loading ? (
                             <p>Loading accounts...</p>
-                        ) : filteredAccounts.length === 0 ? (
+                        ) : accounts.length === 0 ? (
                             <p>No accounts found</p>
                         ) : (
-                            filteredAccounts.map((account) => (
+                            accounts.map((account) => (
                                 <div className="plan-card" key={account._id} style={{ opacity: account.status === 'inactive' ? 0.6 : 1 }}>
                                     <div className="plan-details-grid">
                                         <div className="detail-row">

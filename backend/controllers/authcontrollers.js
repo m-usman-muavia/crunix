@@ -239,7 +239,7 @@ exports.verifyOTP = async (req, res) => {
 exports.getAdminAccounts = async (req, res) => {
     try {
         const BankAccount = require('../models/bankaccount');
-        const accounts = await BankAccount.find({ status: 'active' });
+        const accounts = await BankAccount.find(); // Get all accounts regardless of status
         
         res.status(200).json({
             success: true,
