@@ -10,6 +10,7 @@ const accountRoutes = require("./routes/accountroutes");
 const referralRoutes = require("./routes/referralroutes");
 const depositRoutes = require("./routes/depositroutes");
 const withdrawalRoutes = require("./routes/withdrawalroutes");
+const notificationRoutes = require("./routes/notificationroutes");
 const UserPlan = require("./models/userplan");
 const Wallet = require("./models/wallet");
 
@@ -44,6 +45,7 @@ app.use("/api/accounts", accountRoutes);
 app.use("/api/deposits", depositRoutes);
 app.use("/api/withdrawals", withdrawalRoutes);
 app.use("/api/referral", referralRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Daily profit accrual scheduler
 const startProfitScheduler = () => {

@@ -56,12 +56,12 @@
     background-color: #ffffff00;
     border: none;
     color: #0f172a;
-    padding: 4px 12px;
+    padding: 4px 8px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 12px;
-    margin: 4px 6px;
+    margin: 4px 1px;
     border-radius: 4px;
     cursor: pointer;
 }

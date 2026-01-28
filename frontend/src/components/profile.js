@@ -25,7 +25,11 @@ const Profile = () => {
     const [txLoading, setTxLoading] = useState(false);
     const [txError, setTxError] = useState('');
     const [txTab, setTxTab] = useState('deposits');
+    const [plansTab, setPlansTab] = useState('active');
     const [referralCode, setReferralCode] = useState('');
+    const [notifications, setNotifications] = useState([]);
+    const [notifLoading, setNotifLoading] = useState(false);
+    const [notifError, setNotifError] = useState('');
     const navigate = useNavigate();
 
     // Get user info on component mount
@@ -80,6 +84,13 @@ const Profile = () => {
     useEffect(() => {
         if (activeTab === 'transactions') {
             fetchTransactions();
+        }
+    }, [activeTab]);
+
+    // Fetch notifications when notifications tab is selected
+    useEffect(() => {
+        if (activeTab === 'notification') {
+            fetchNotifications();
         }
     }, [activeTab]);
 
@@ -163,6 +174,31 @@ const Profile = () => {
             setTransactions([]);
         } finally {
             setTxLoading(false);
+        }
+    };
+
+    const fetchNotifications = async () => {
+        try {
+            setNotifLoading(true);
+            setNotifError('');
+            const authToken = localStorage.getItem('authToken');
+
+            const response = await fetch(`${API_BASE_URL}/api/notifications`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const notifs = Array.isArray(data) ? data : (data.data || []);
+                setNotifications(notifs);
+            } else {
+                throw new Error('Failed to fetch notifications');
+            }
+        } catch (err) {
+            setNotifError(err.message);
+            setNotifications([]);
+        } finally {
+            setNotifLoading(false);
         }
     };
 
@@ -348,6 +384,15 @@ const Profile = () => {
 
     const filteredTransactions = transactions.filter(tx => tx.type === txTab.slice(0, -1));
 
+    const filteredPlans = activePlans.filter(plan => {
+        if (plansTab === 'active') {
+            return plan.status === 'active' || plan.status === 'paused';
+        } else if (plansTab === 'completed') {
+            return plan.status === 'completed';
+        }
+        return true;
+    });
+
     return (
         <div className="main-wrapper">
             <div className="main-container">
@@ -375,19 +420,26 @@ const Profile = () => {
                     >
                         Notifications
                     </button> */}
+                    {/* <button
+                        type="button"
+                        className={`profile-btn ${activeTab === 'notification' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('notification')}
+                    >
+                        Notifications
+                    </button> */}
                     <button
                         type="button"
                         className={`profile-btn ${activeTab === 'transactions' ? 'active' : ''}`}
                         onClick={() => setActiveTab('transactions')}
                     >
-                        Transactions History
+                        Transactions
                     </button>
                     <button
                         type="button"
                         className={`profile-btn ${activeTab === 'activeplans' ? 'active' : ''}`}
                         onClick={() => setActiveTab('activeplans')}
                     >
-                        Activate Plans
+                         Plans
                     </button>
                 </div>
 
@@ -476,15 +528,57 @@ const Profile = () => {
                 {/* {activeTab === 'notification' && (
                     <div className="profile-content">
                         <h2 className="profile-title">Notifications</h2>
-                        <div className="card-container">
-                            <div className="content-card">
-                                <div className="empty-state-card">
-                                    <FontAwesomeIcon icon={faBox} className="empty-icon" />
-                                    <p className="empty-state-text">No Notifications to display.</p>
-                                    <p className="empty-state-subtext">Your Notifications will appear here</p>
+                        
+                        {notifLoading ? (
+                            <p className="tx-message">Loading notifications...</p>
+                        ) : notifError ? (
+                            <p className="tx-message tx-error">Error: {notifError}</p>
+                        ) : notifications.length === 0 ? (
+                            <div className="card-container">
+                                <div className="content-card">
+                                    <div className="empty-state-card">
+                                        <FontAwesomeIcon icon={faBox} className="empty-icon" />
+                                        <p className="empty-state-text">No Notifications to display.</p>
+                                        <p className="empty-state-subtext">Your notifications will appear here</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="plan-content">
+                                <div className="transactions-list">
+                                    {notifications.map((notif) => (
+                                        <div key={notif._id} className="tx-card" style={{ borderLeftColor: '#3b82f6' }}>
+                                            <div className="tx-main">
+                                                <div className="tx-header">
+                                                    <span className="tx-type" style={{ fontSize: '14px', fontWeight: '600' }}>
+                                                        {notif.type === 'plan_activated' && '📊 Plan Activated'}
+                                                        {notif.type === 'plan_completed' && '✅ Plan Completed'}
+                                                        {notif.type === 'referral_earning' && '💰 Referral Earning'}
+                                                        {notif.type === 'deposit_approved' && '✔️ Deposit Approved'}
+                                                        {notif.type === 'withdrawal_approved' && '✔️ Withdrawal Approved'}
+                                                        {notif.type === 'daily_profit' && '💸 Daily Profit'}
+                                                        {!['plan_activated', 'plan_completed', 'referral_earning', 'deposit_approved', 'withdrawal_approved', 'daily_profit'].includes(notif.type) && '🔔 Notification'}
+                                                    </span>
+                                                    <span className="tx-status" style={{ backgroundColor: '#3b82f6', fontSize: '11px' }}>
+                                                        {formatDate(notif.createdAt || notif.date)}
+                                                    </span>
+                                                </div>
+                                                <p style={{ margin: '8px 0 0', fontSize: '13px', color: '#6b7280' }}>
+                                                    {notif.message}
+                                                </p>
+                                            </div>
+                                            {notif.amount && (
+                                                <div className="tx-amount">
+                                                    <div className="tx-amount-deposit">
+                                                        +Rs {formatAmount(notif.amount)}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )} */}
 
@@ -556,24 +650,50 @@ const Profile = () => {
                 {/* Settings Section */}
                 {activeTab === 'activeplans' && (
                     <div className="profile-content">
-                        <h2 className="profile-title">Your Active Plans</h2>
+                        <h2 className="profile-title">Your Plans</h2>
+                        <div className="addplans-section">
+                                                    <div className="addplans-card">
+                                                        <div className="profile-buttons">
+                                                            <button
+                                                                type="button"
+                                                                className={`profile-btn ${plansTab === 'active' ? 'active' : ''}`}
+                                                                onClick={() => setPlansTab('active')}
+                                                            >
+                                                                Active Plans
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className={`profile-btn ${plansTab === 'completed' ? 'active' : ''}`}
+                                                                onClick={() => setPlansTab('completed')}
+                                                            >
+                                                                Completed Plans
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
                         {plansError && <div className="error-message">{plansError}</div>}
 
                         {loadingPlans ? (
                             <div className="loading-spinner">
-                                <p>Loading your active plans...</p>
+                                <p>Loading your plans...</p>
                             </div>
-                        ) : activePlans.length === 0 ? (
+                        ) : filteredPlans.length === 0 ? (
                             <div className="empty-state">
-                                <p className="empty-state-text">You don't have any active plans yet.</p>
-                                <Link to="/plans" className="noactivate-btn">
-                                    Browse Plans
-                                </Link>
+                                <p className="empty-state-text">
+                                    {plansTab === 'active' 
+                                        ? "You don't have any active plans yet." 
+                                        : "You don't have any completed plans yet."}
+                                </p>
+                                {plansTab === 'active' && (
+                                    <Link to="/plans" className="noactivate-btn">
+                                        Browse Plans
+                                    </Link>
+                                )}
                             </div>
                         ) : (
                             <div className="active-plans-grid">
-                                {activePlans.map((plan) => {
+                                {filteredPlans.map((plan) => {
                                     const statusInfo = getStatusBadge(plan.status);
                                     const progress = calculateProgress(plan.investmentDate, plan.endDate);
 

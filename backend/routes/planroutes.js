@@ -114,7 +114,7 @@ router.get('/user/active', verifyToken, async (req, res) => {
 
     const userPlans = await UserPlan.find({ 
       userId: userId,
-      status: { $in: ['active', 'paused'] }
+      status: { $in: ['active', 'paused', 'completed'] }
     })
     .populate('planId')
     .sort({ createdAt: -1 });
