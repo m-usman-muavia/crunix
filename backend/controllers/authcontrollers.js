@@ -449,7 +449,12 @@ exports.forgotPassword = async (req, res) => {
             `
         };
 
-        await transporter.sendMail(mailOptions);
+        try {
+            await transporter.sendMail(mailOptions);
+        } catch (emailError) {
+            console.error('Email sending failed:', emailError.message);
+            // Continue anyway - email is optional, OTP is still saved
+        }
 
         res.status(200).json({ message: 'OTP sent to your email successfully' });
     } catch (error) {
