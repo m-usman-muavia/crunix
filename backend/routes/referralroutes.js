@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Referral = require('../models/referral');
+const UserPlan = require('../models/userplan');
 const verifyToken = require('../middleware/auth');
 
 // GET user's referral code
@@ -32,15 +33,76 @@ router.get('/stats', verifyToken, async (req, res) => {
       return res.status(400).json({ message: 'Invalid token' });
     }
 
-    const totalReferrals = await Referral.countDocuments({ referrer_id: userId });
-    const activeReferrals = await Referral.countDocuments({
-      referrer_id: userId,
-      status: { $in: ['completed', 'activated'] }
-    });
+    // Get all referrals for this user
+    const referrals = await Referral.find({ referrer_id: userId });
+    const totalReferrals = referrals.length;
 
-    res.json({ totalReferrals, activeReferrals });
+    // Check which referred users have activated plans
+    let activeReferralsCount = 0;
+    
+    for (const referral of referrals) {
+      // Check if the referred user has any active plans
+      const hasActivePlan = await UserPlan.exists({
+        userId: referral.referred_user_id,
+        status: { $in: ['active', 'paused', 'completed'] }
+      });
+
+      if (hasActivePlan) {
+        activeReferralsCount++;
+        
+        // Update referral status to 'activated' if not already
+        if (referral.status !== 'activated') {
+          referral.status = 'activated';
+          await referral.save();
+        }
+      }
+    }
+
+    res.json({ 
+      totalReferrals, 
+      activeReferrals: activeReferralsCount 
+    });
   } catch (error) {
     console.error('Referral stats error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// GET list of all referrals with their status
+router.get('/list', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user.userId;
+    if (!userId) {
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+
+    // Get all referrals for this user and populate user details
+    const referrals = await Referral.find({ referrer_id: userId })
+      .populate('referred_user_id', 'name email')
+      .sort({ created_at: -1 });
+
+    // Check activation status for each referral
+    const referralsList = await Promise.all(
+      referrals.map(async (referral) => {
+        // Check if the referred user has any plans
+        const hasActivePlan = await UserPlan.exists({
+          userId: referral.referred_user_id._id,
+          status: { $in: ['active', 'paused', 'completed'] }
+        });
+
+        return {
+          _id: referral._id,
+          name: referral.referred_user_id.name,
+          email: referral.referred_user_id.email,
+          status: hasActivePlan ? 'activated' : 'registered',
+          joinedDate: referral.created_at
+        };
+      })
+    );
+
+    res.json(referralsList);
+  } catch (error) {
+    console.error('Referral list error:', error);
     res.status(500).json({ message: error.message });
   }
 });

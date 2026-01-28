@@ -63,8 +63,8 @@ const Withdrawal = () => {
     }
 
     const amount = parseFloat(formData.amount);
-    if (isNaN(amount) || amount < 500) {
-      setMessage('Minimum withdrawal amount is Rs 500');
+    if (isNaN(amount) || amount < 100) {
+      setMessage('Minimum withdrawal amount is Rs 100');
       setMessageType('error');
       return;
     }
@@ -153,8 +153,8 @@ const Withdrawal = () => {
                   name="amount"
                   value={formData.amount}
                   onChange={handleInputChange}
-                  placeholder="Minimum Rs 500"
-                  min="500"
+                  placeholder="Minimum Rs 100"
+                  min="100"
                   step="1"
                   className="deposit-input"
                   required
@@ -226,7 +226,7 @@ const Withdrawal = () => {
               <h3>Withdrawal Rules / قواعد</h3>
             </div>
             <ul className="how-it-works-list">
-              <li>Minimum withdrawal: Rs 500</li>
+              <li>Minimum withdrawal: Rs 100</li>
               <li>
                 10% tax will be deducted from all withdrawals
               </li>

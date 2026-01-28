@@ -16,8 +16,8 @@ exports.createWithdrawal = async (req, res) => {
     }
 
     // Validate minimum withdrawal
-    if (!amount || amount < 500) {
-      return res.status(400).json({ message: 'Minimum withdrawal is Rs 500' });
+    if (!amount || amount < 100) {
+      return res.status(400).json({ message: 'Minimum withdrawal is Rs 100' });
     }
 
     if (!method || !account_number || !mobile_number) {
@@ -45,7 +45,7 @@ exports.createWithdrawal = async (req, res) => {
     });
   } catch (err) {
     console.error('Withdrawal create error:', err);
-    res.status(500).json({ message: err.message });
+    res.status(100).json({ message: err.message });
   }
 };
 
@@ -58,7 +58,7 @@ exports.getAllWithdrawals = async (req, res) => {
     
     res.status(200).json(withdrawals);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(100).json({ message: err.message });
   }
 };
 
@@ -71,7 +71,7 @@ exports.getUserWithdrawals = async (req, res) => {
     res.status(200).json(withdrawals);
   } catch (err) {
     console.error('Get user withdrawals error:', err);
-    res.status(500).json({ message: err.message });
+    res.status(100).json({ message: err.message });
   }
 };
 
@@ -117,7 +117,7 @@ exports.approveWithdrawal = async (req, res) => {
     });
   } catch (err) {
     console.error('Approve withdrawal error:', err);
-    res.status(500).json({ message: err.message });
+    res.status(100).json({ message: err.message });
   }
 };
 
@@ -144,6 +144,6 @@ exports.rejectWithdrawal = async (req, res) => {
     });
   } catch (err) {
     console.error('Reject withdrawal error:', err);
-    res.status(500).json({ message: err.message });
+    res.status(100).json({ message: err.message });
   }
 };

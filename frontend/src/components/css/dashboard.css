@@ -97,7 +97,7 @@ font-size: 20px;
 .dashboard-whatsapp {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
-  padding: 10px 3px 3px 3px;
+  padding: 5px 3px 3px 3px;
   /* font-size: 20px; */
   border-radius: 5px;
   color: #0f172a;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faChartLine, faBox, faArrowDown, faArrowUp, faUsers, faUser, faCopy, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { faWhatsapp, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import './css/dashboard.css';
 import { Link } from 'react-router-dom';
 import './css/style.css';
@@ -80,7 +80,7 @@ const Dashboard = () => {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setPlans(data.slice(0, 1)); // Get only first plan
@@ -97,7 +97,7 @@ const Dashboard = () => {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setAccount(data);
@@ -173,12 +173,16 @@ const Dashboard = () => {
               <h4 className="dashboard-greeting">HI</h4>
               <p className="dashboard-name">{user?.name || 'User'}</p>
             </div>
-            <div className=''>
+            <div className='' style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '10px'}}>
+              <Link to="https://www.facebook.com/share/177yhDTdEt/" className=" dashboard-whatsapp">
+                <FontAwesomeIcon icon={faFacebook} />
+              </Link>
               <Link to="https://whatsapp.com/channel/0029VbByYGN23n3lGBS2n00I" className="link-bold dashboard-whatsapp">
 
                 <FontAwesomeIcon icon={faWhatsapp} />
               </Link>
             </div>
+
           </div>
           <div className="dashboard-balance">
             <p className="dashboard-balance-label">Total Balance</p>
@@ -231,7 +235,7 @@ const Dashboard = () => {
                     <span className="detail-value text-green">Rs {plan.total_profit}</span>
                   </div>
                 </div>
-               
+
               </div>
             ))
           ) : (
@@ -304,40 +308,40 @@ const Dashboard = () => {
             <h2>Referral Now</h2>
             <Link to="/refferrals" className="section-button" style={{ background: "linear-gradient(135deg, #22d3ee, #16a34a)", color: "white" }}>View All</Link>
           </div>
-         <div className="dashboard-payment-details-section">
-           <div className="refferrals-card">
-             <div className="refferrals-links">
-               <h5 className="refferrals-header" style={{fontSize:'18px'}}>Referral Code</h5>
-               {/* <p className="refferrals-code">{referralCode || 'N/A'}</p> */}
-               <button 
-                 className="refferrals-link-btn" 
-                 onClick={handleCopyReferralCode}
-                 disabled={referralCode === 'N/A'}
-               >
-                 <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                 {copied ? ' Copied!' : ' Copy'}
-               </button>
-             </div>
-             <div className="refferrals-info">
-               <div className="refferrals-info-stats">
-                 <h4>👨‍👦‍👦 Total Referrals</h4>
-                 <p>{totalReferrals}</p>
-               </div>
-               <div className="refferrals-info-stats">
-                 <h4>🙋🏻‍♂️ Active Referrals</h4>
-                 <p>{activeReferrals}</p>
-               </div>
-               <div className="refferrals-info-stats">
-                 <h4>🤑 Earnings</h4>
-                 <p>Rs {referralEarnings}</p>
-               </div>
-               <div className="refferrals-info-stats">
-                 <h4>💸 Commission Rate</h4>
-                 <p>10%</p>
-               </div>
-             </div>
-           </div>
-         </div>
+          <div className="dashboard-payment-details-section">
+            <div className="refferrals-card">
+              <div className="refferrals-links">
+                <h5 className="refferrals-header" style={{ fontSize: '18px' }}>Referral Code</h5>
+                {/* <p className="refferrals-code">{referralCode || 'N/A'}</p> */}
+                <button
+                  className="refferrals-link-btn"
+                  onClick={handleCopyReferralCode}
+                  disabled={referralCode === 'N/A'}
+                >
+                  <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
+                  {copied ? ' Copied!' : ' Copy'}
+                </button>
+              </div>
+              <div className="refferrals-info">
+                <div className="refferrals-info-stats">
+                  <h4>👨‍👦‍👦 Total Referrals</h4>
+                  <p>{totalReferrals}</p>
+                </div>
+                <div className="refferrals-info-stats">
+                  <h4>🙋🏻‍♂️ Active Referrals</h4>
+                  <p>{activeReferrals}</p>
+                </div>
+                <div className="refferrals-info-stats">
+                  <h4>🤑 Earnings</h4>
+                  <p>Rs {referralEarnings}</p>
+                </div>
+                <div className="refferrals-info-stats">
+                  <h4>💸 Commission Rate</h4>
+                  <p>10%</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </div>
         {/* All Sections One Item End Here */}
