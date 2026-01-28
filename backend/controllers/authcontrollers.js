@@ -123,9 +123,9 @@ exports.register = async (req, res) => {
                 }
             }
 
-            // Send OTP via email
+            // Send OTP via email (with error handling)
             const mailOptions = {
-                from: process.env.EMAIL_USER || 'm.usman540582@gmail.com',
+                from: process.env.EMAIL_USER || 'payzo4810@gmail.com',
                 to: email,
                 subject: 'Email Verification OTP',
                 html: `
@@ -136,7 +136,11 @@ exports.register = async (req, res) => {
                 `
             };
 
-            await transporter.sendMail(mailOptions);
+            try {
+                await transporter.sendMail(mailOptions);
+            } catch (emailError) {
+                console.warn('Email sending failed:', emailError.message);
+            }
 
             return res.status(200).json({
                 message: 'Account updated. Please check your email for new OTP.',
@@ -175,9 +179,9 @@ exports.register = async (req, res) => {
             await newReferral.save();
         }
 
-        // Send OTP via email
+        // Send OTP via email (with error handling)
         const mailOptions = {
-            from: process.env.EMAIL_USER || 'm.usman540582@gmail.com',
+            from: process.env.EMAIL_USER || 'payzo4810@gmail.com',
             to: email,
             subject: 'Email Verification OTP',
             html: `
@@ -188,7 +192,12 @@ exports.register = async (req, res) => {
             `
         };
 
-        await transporter.sendMail(mailOptions);
+        try {
+            await transporter.sendMail(mailOptions);
+        } catch (emailError) {
+            console.warn('Email sending failed:', emailError.message);
+            // Continue anyway - registration succeeds even if email fails
+        }
 
         res.status(201).json({
             message: 'Registration successful. Please check your email for OTP.',
@@ -196,8 +205,9 @@ exports.register = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ message: 'Server error during registration' });
+        console.error('Registration error:', error.message || error);
+        console.error('Full error:', error);
+        res.status(500).json({ message: 'Server error during registration', error: error.message });
     }
 };
 
