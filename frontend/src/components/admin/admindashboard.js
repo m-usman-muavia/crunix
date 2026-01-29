@@ -26,6 +26,10 @@ const Dashboard = () => {
 
         {/* Quick Action Buttons */}
         <div className="action-buttons">
+          <Link to="/admin/addplans" className="action-btn deposit" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span className="btn-icon">⬇️</span>
+            add plans
+          </Link>
           <Link to="/check-deposits" className="action-btn deposit" style={{ textDecoration: 'none', color: 'inherit' }}>
             <span className="btn-icon">⬇️</span>
             Check Deposits
@@ -37,6 +41,10 @@ const Dashboard = () => {
           <Link to="/admin/accrual-history" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
             <span className="btn-icon">⏱️</span>
             Accrual History
+          </Link>
+          <Link to="/admin/accounts" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span className="btn-icon">⏱️</span>
+            Accounts
           </Link>
         </div>
 
@@ -54,18 +62,7 @@ const Dashboard = () => {
                       <span>Add Plans</span>
                     </Link>
                   </div>
-                  <div className="nav-item">
-                    <Link to="/check-deposits" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faArrowDown} />
-                      <span>Deposits</span>
-                    </Link>
-                  </div>
-                  <div className="nav-item">
-                    <Link to="/check-withdrawals" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faArrowUp} />
-                      <span>Withdrawals</span>
-                    </Link>
-                  </div>
+                  
                   <div className="nav-item">
                     <Link to="/admin/users" className="link-bold nav-link-col">
                       <FontAwesomeIcon icon={faUsers} />
@@ -78,11 +75,9 @@ const Dashboard = () => {
                       <span>Accruals</span>
                     </Link>
                   </div>
+                  
                   <div className="nav-item">
-                    <Link to="/admin/accounts" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faUser} />
-                      <span>Accounts</span>
-                    </Link>
+                    
                   </div>
                 </nav>
       </div>

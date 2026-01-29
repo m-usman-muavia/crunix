@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser ,faClock} from '@fortawesome/free-solid-svg-icons';
 import '../css/dashboard.css';
 import { Link } from 'react-router-dom';
 import '../css/style.css';
@@ -258,7 +258,7 @@ const CheckWithdrawals = () => {
           </div>
         )}
 
-        <nav className="bottom-nav">
+        
           <div className="nav-item">
             <Link to="/admin/" className="link-bold nav-link-col">
               <FontAwesomeIcon icon={faHouse} />
@@ -295,7 +295,37 @@ const CheckWithdrawals = () => {
               <span>Accounts</span>
             </Link>
           </div>
-        </nav>
+       <nav className="bottom-nav">
+                         <div className="nav-item">
+                           <Link to="/admin/" className="link-bold nav-link-col">
+                             <FontAwesomeIcon icon={faHouse} />
+                             <span>Dashboard</span>
+                           </Link>
+                         </div>
+                         <div className="nav-item">
+                           <Link to="/admin/addplans" className="link-bold nav-link-col">
+                             <FontAwesomeIcon icon={faBox} />
+                             <span>Add Plans</span>
+                           </Link>
+                         </div>
+                         
+                         <div className="nav-item">
+                           <Link to="/admin/users" className="link-bold nav-link-col">
+                             <FontAwesomeIcon icon={faUsers} />
+                             <span>Users</span>
+                           </Link>
+                         </div>
+                         <div className="nav-item">
+                           <Link to="/admin/accrual-history" className="link-bold nav-link-col">
+                             <FontAwesomeIcon icon={faClock} />
+                             <span>Accruals</span>
+                           </Link>
+                         </div>
+                         
+                         <div className="nav-item">
+                           
+                         </div>
+                       </nav>
       </div>
     </div>
   );

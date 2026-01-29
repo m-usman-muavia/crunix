@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox, faArrowDown, faArrowUp, faUser, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faSync,faClock } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import '../css/style.css';
 import '../css/refferrals.css';
@@ -68,6 +68,19 @@ const AccrualHistory = () => {
 
   const toggleExpand = (planId) => {
     setExpandedPlanId(expandedPlanId === planId ? null : planId);
+  };
+
+  const formatDateTime = (date) => {
+    const d = new Date(date);
+    return d.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }) + ' ' + d.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
   return (
@@ -195,6 +208,12 @@ const AccrualHistory = () => {
                       {plan.lastAccruedAt ? new Date(plan.lastAccruedAt).toLocaleDateString() : 'N/A'}
                     </p>
                   </div>
+                  <div>
+                    <span style={{ color: '#64748b', fontWeight: 600 }}>Investment Time</span>
+                    <p style={{ margin: '2px 0 0 0', fontWeight: 700 }}>
+                      {plan.investmentDate ? formatDateTime(plan.investmentDate) : 'N/A'}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Expandable Accrual History */}
@@ -241,44 +260,37 @@ const AccrualHistory = () => {
         )}
 
         {/* Bottom Navigation */}
-        <nav className="bottom-nav">
-          <div className="nav-item">
-            <Link to="/admin/" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faHouse} />
-              <span>Dashboard</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/admin/addplans" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faBox} />
-              <span>Add Plans</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/check-deposits" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowDown} />
-              <span>Deposits</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/check-withdrawals" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowUp} />
-              <span>Withdrawals</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/admin/users" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUser} />
-              <span>Users</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/admin/accounts" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUser} />
-              <span>Accounts</span>
-            </Link>
-          </div>
-        </nav>
+       <nav className="bottom-nav">
+                         <div className="nav-item">
+                           <Link to="/admin/" className="link-bold nav-link-col">
+                             <FontAwesomeIcon icon={faHouse} />
+                             <span>Dashboard</span>
+                           </Link>
+                         </div>
+                         <div className="nav-item">
+                           <Link to="/admin/addplans" className="link-bold nav-link-col">
+                             <FontAwesomeIcon icon={faBox} />
+                             <span>Add Plans</span>
+                           </Link>
+                         </div>
+                         
+                         <div className="nav-item">
+                           <Link to="/admin/users" className="link-bold nav-link-col">
+                             <FontAwesomeIcon icon={faUsers} />
+                             <span>Users</span>
+                           </Link>
+                         </div>
+                         <div className="nav-item">
+                           <Link to="/admin/accrual-history" className="link-bold nav-link-col">
+                             <FontAwesomeIcon icon={faClock} />
+                             <span>Accruals</span>
+                           </Link>
+                         </div>
+                         
+                         <div className="nav-item">
+                           
+                         </div>
+                       </nav>
       </div>
     </div>
   );

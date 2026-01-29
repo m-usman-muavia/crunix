@@ -377,9 +377,17 @@ const Profile = () => {
         });
     };
 
+    const formatTime = (date) => {
+        return new Date(date).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
     const formatAmount = (value) => {
         const num = Number(value);
-        return Number.isFinite(num) ? num.toFixed(2) : '0.00';
+        return Number.isFinite(num) ? num.toFixed(2) : '0.0';
     };
 
     const filteredTransactions = transactions.filter(tx => tx.type === txTab.slice(0, -1));
@@ -424,7 +432,7 @@ const Profile = () => {
                         type="button"
                         className={`profile-btn ${activeTab === 'notification' ? 'active' : ''}`}
                         onClick={() => setActiveTab('notification')}
-                    >
+                    >aaa
                         Notifications
                     </button> */}
                     <button
@@ -738,9 +746,20 @@ const Profile = () => {
                                                     <span className="date-value">{formatDate(plan.endDate)}</span>
                                                 </div>
                                                 <div className="date-item">
+                                                    <span className="date-label">Investment Time</span>
+                                                    <span className="date-value">{formatTime(plan.investmentDate)}</span>
+                                                </div>
+                                            </div>
+                                            <div className="plan-dates">
+                                                <div className="date-item1">
                                                     <span className="date-label">Earned</span>
                                                     <span className="date-value">Rs {formatAmount(plan.currentEarnings || 0)}</span>
                                                 </div>
+                                                <div className="date-item">
+                                                    <span className="date-label">Remaining Profit</span>
+                                                    <span className="date-value">Rs {formatAmount((plan.totalProfit || 0) - (plan.currentEarnings || 0))}</span>
+                                                </div>
+                                                
                                             </div>
 
                                         </div>

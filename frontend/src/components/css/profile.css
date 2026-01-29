@@ -215,9 +215,9 @@
 .plan-dates {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 18px;
-    padding: 12px;
+    gap: 2px;
+    margin-bottom: 3px;
+    padding: 6px 8px;
     background: #f1f5f9;
     border-radius: 8px;
 }
@@ -225,9 +225,9 @@
 .plan-investment {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 18px;
-    padding: 12px;
+    gap: 2px;
+    margin-bottom: 3px;
+    padding: 6px 8px;
     background: #f1f5f9;
     border-radius: 8px;
 }
@@ -236,13 +236,13 @@
     display: flex;
     border-left: 1px solid #e2e8f0;
     flex-direction: column;
-    gap: 4px;
+    gap: 1px;
 }
 
 .date-item1 {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 1px;
 }
 
 .date-label {

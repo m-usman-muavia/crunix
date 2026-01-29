@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser,faClock } from '@fortawesome/free-solid-svg-icons';
 import '../css/dashboard.css';
 import { Link } from 'react-router-dom';
 import '../css/style.css';
@@ -257,44 +257,36 @@ const CheckDeposits = () => {
 
         {/* Bottom Navigation */}
         <nav className="bottom-nav">
-                  <div className="nav-item">
-                    <Link to="/admin/" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faHouse} />
-                      <span>Dashboard</span>
-                    </Link>
-                  </div>
-                  <div className="nav-item">
-                    <Link to="/admin/addplans" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faBox} />
-                      <span>Add Plans</span>
-                    </Link>
-                  </div>
-                  <div className="nav-item">
-                    <Link to="/check-deposits" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faArrowDown} />
-                      <span>Deposits</span>
-                    </Link>
-                  </div>
-                  <div className="nav-item">
-                    <Link to="/check-withdrawals" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faArrowUp} />
-                      <span>Withdrawals</span>
-                    </Link>
-                  </div>
-                  <div className="nav-item">
-                    <Link to="/admin/users" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faUsers} />
-                      <span>Users</span>
-                    </Link>
-                  </div>
-                  <div className="nav-item">
-                    <Link to="/admin/accounts" className="link-bold nav-link-col">
-                      <FontAwesomeIcon icon={faUser} />
-                      <span>Accounts</span>
-                    </Link>
-                  </div>
-                  
-                </nav>
+                          <div className="nav-item">
+                            <Link to="/admin/" className="link-bold nav-link-col">
+                              <FontAwesomeIcon icon={faHouse} />
+                              <span>Dashboard</span>
+                            </Link>
+                          </div>
+                          <div className="nav-item">
+                            <Link to="/admin/addplans" className="link-bold nav-link-col">
+                              <FontAwesomeIcon icon={faBox} />
+                              <span>Add Plans</span>
+                            </Link>
+                          </div>
+                          
+                          <div className="nav-item">
+                            <Link to="/admin/users" className="link-bold nav-link-col">
+                              <FontAwesomeIcon icon={faUsers} />
+                              <span>Users</span>
+                            </Link>
+                          </div>
+                          <div className="nav-item">
+                            <Link to="/admin/accrual-history" className="link-bold nav-link-col">
+                              <FontAwesomeIcon icon={faClock} />
+                              <span>Accruals</span>
+                            </Link>
+                          </div>
+                          
+                          <div className="nav-item">
+                            
+                          </div>
+                        </nav>
       </div>
     </div>
   );
