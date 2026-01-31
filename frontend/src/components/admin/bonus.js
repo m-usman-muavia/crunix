@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faCopy,faClock } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faCopy, faClock } from '@fortawesome/free-solid-svg-icons';
 import '../css/dashboard.css';
 import { Link } from 'react-router-dom';
 import '../css/style.css';
@@ -13,6 +13,31 @@ const BonusGenerator = () => {
   const [generatedCode, setGeneratedCode] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [allBonusCodes, setAllBonusCodes] = useState([]);
+  const [loadingCodes, setLoadingCodes] = useState(true);
+
+  useEffect(() => {
+    fetchAllBonusCodes();
+  }, []);
+
+  const fetchAllBonusCodes = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/bonus/all`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAllBonusCodes(data.bonusCodes || []);
+      }
+    } catch (err) {
+      console.error('Error fetching bonus codes:', err);
+    } finally {
+      setLoadingCodes(false);
+    }
+  };
 
   const generateCode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -87,6 +112,8 @@ const BonusGenerator = () => {
       setQuantity('');
       setBonusAmount('');
       setError(''); // Clear any previous errors
+      // Refresh the bonus codes list
+      fetchAllBonusCodes();
     } catch (err) {
       console.error('Error generating code:', err);
       setError(err.message || 'Failed to generate code. Please try again.');
@@ -325,40 +352,164 @@ const BonusGenerator = () => {
             </div>
           </div>
         )}
+        <div className="section">
+          <div className="dashboard-plans-header">
+            <h2>All Bonus Codes</h2>
+          </div>
+
+          <div style={{ padding: '20px' }}>
+            {loadingCodes ? (
+              <p style={{ textAlign: 'center', color: '#666' }}>Loading bonus codes...</p>
+            ) : allBonusCodes.length === 0 ? (
+              <p style={{ textAlign: 'center', color: '#666' }}>No bonus codes generated yet</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {allBonusCodes.map((code, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      padding: '20px',
+                      backgroundColor: code.status === 'active' ? '#f0fdf4' : '#fee',
+                      border: `2px solid ${code.status === 'active' ? '#16a34a' : '#dc2626'}`,
+                      borderRadius: '12px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                      <div>
+                        <div style={{
+                          fontSize: '24px',
+                          fontWeight: 'bold',
+                          color: code.status === 'active' ? '#16a34a' : '#dc2626',
+                          fontFamily: 'monospace',
+                          letterSpacing: '2px'
+                        }}>
+                          {code.code}
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#666',
+                          marginTop: '5px'
+                        }}>
+                          Created: {new Date(code.createdAt).toLocaleDateString()} {new Date(code.createdAt).toLocaleTimeString()}
+                        </div>
+                      </div>
+                      <div style={{
+                        padding: '8px 16px',
+                        backgroundColor: code.status === 'active' ? '#16a34a' : '#dc2626',
+                        color: 'white',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase'
+                      }}>
+                        {code.status}
+                      </div>
+                    </div>
+
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                      gap: '12px',
+                      backgroundColor: 'white',
+                      padding: '15px',
+                      borderRadius: '8px'
+                    }}>
+                      <div>
+                        <div style={{ fontSize: '11px', color: '#666', marginBottom: '4px' }}>
+                          Total Amount
+                        </div>
+                        <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#333' }}>
+                          Rs {code.totalAmount}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '11px', color: '#666', marginBottom: '4px' }}>
+                          Per User
+                        </div>
+                        <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#16a34a' }}>
+                          Rs {code.perUserAmount}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '11px', color: '#666', marginBottom: '4px' }}>
+                          Used / Max
+                        </div>
+                        <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#333' }}>
+                          {code.usedCount} / {code.maxUses}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '11px', color: '#666', marginBottom: '4px' }}>
+                          Remaining
+                        </div>
+                        <div style={{ fontSize: '16px', fontWeight: 'bold', color: code.status === 'active' ? '#16a34a' : '#dc2626' }}>
+                          {code.maxUses - code.usedCount}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleCopyCode(code.code)}
+                      style={{
+                        marginTop: '12px',
+                        padding: '10px 20px',
+                        backgroundColor: '#22d3ee',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faCopy} />
+                      Copy Code
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 
 
         {/* Bottom Navigation */}
-       
+
         <nav className="bottom-nav">
-                          <div className="nav-item">
-                            <Link to="/admin/" className="link-bold nav-link-col">
-                              <FontAwesomeIcon icon={faHouse} />
-                              <span>Dashboard</span>
-                            </Link>
-                          </div>
-                          <div className="nav-item">
-                            <Link to="/admin/addplans" className="link-bold nav-link-col">
-                              <FontAwesomeIcon icon={faBox} />
-                              <span>Add Plans</span>
-                            </Link>
-                          </div>
-                          
-                          <div className="nav-item">
-                            <Link to="/admin/users" className="link-bold nav-link-col">
-                              <FontAwesomeIcon icon={faUsers} />
-                              <span>Users</span>
-                            </Link>
-                          </div>
-                          <div className="nav-item">
-                            <Link to="/admin/accrual-history" className="link-bold nav-link-col">
-                              <FontAwesomeIcon icon={faClock} />
-                              <span>Accruals</span>
-                            </Link>
-                          </div>
-                          
-                          <div className="nav-item">
-                            
-                          </div>
-                        </nav>
+          <div className="nav-item">
+            <Link to="/admin/" className="link-bold nav-link-col">
+              <FontAwesomeIcon icon={faHouse} />
+              <span>Dashboard</span>
+            </Link>
+          </div>
+          <div className="nav-item">
+            <Link to="/admin/addplans" className="link-bold nav-link-col">
+              <FontAwesomeIcon icon={faBox} />
+              <span>Add Plans</span>
+            </Link>
+          </div>
+
+          <div className="nav-item">
+            <Link to="/admin/users" className="link-bold nav-link-col">
+              <FontAwesomeIcon icon={faUsers} />
+              <span>Users</span>
+            </Link>
+          </div>
+          <div className="nav-item">
+            <Link to="/admin/accrual-history" className="link-bold nav-link-col">
+              <FontAwesomeIcon icon={faClock} />
+              <span>Accruals</span>
+            </Link>
+          </div>
+
+          <div className="nav-item">
+
+          </div>
+        </nav>
       </div>
     </div>
   );

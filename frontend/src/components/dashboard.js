@@ -278,13 +278,12 @@ const Dashboard = () => {
         {/* All Sections One Item Start Here */}
         <div className="section">
           <div className="withdrawal-card">
-            <h3 className="refferrals-header">Get A Free Bonus</h3>
-
+            <h2 style={{ margin: '0px' }}>Get A Free Bonus</h2>
             <form onSubmit={handleRedeemBonusCode} className="deposit-form">
               {bonusMessage && (
                 <div style={{
-                  padding: '12px',
-                  marginBottom: '15px',
+                  padding: '0px 5px',
+                  marginBottom: '10px',
                   borderRadius: '5px',
                   backgroundColor: bonusMessage.type === 'error' ? '#fee' : '#efe',
                   color: bonusMessage.type === 'error' ? '#c00' : '#060',
