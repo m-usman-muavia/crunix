@@ -170,10 +170,10 @@ const Transactions = () => {
                 >
                   <div className="tx-main">
                     <div className="tx-header">
-                      <FontAwesomeIcon 
+                      {/* <FontAwesomeIcon 
                         icon={tx.type === 'deposit' ? faArrowDown : faArrowUp}
                         className="tx-icon"
-                      />
+                      /> */}
                       <span className="tx-type">{tx.type}</span>
                       <span className="tx-status" style={{ backgroundColor: getStatusColor(tx.status) }}>
                         {getStatusText(tx.status)}

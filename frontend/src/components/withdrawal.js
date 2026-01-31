@@ -35,7 +35,11 @@ const Withdrawal = () => {
       }
 
       const data = await response.json();
-      setBalance(data.main_balance || 0);
+      const main = data.main_balance || 0;
+      const referral = data.referral_balance || 0;
+      const bonus = data.bonus_balance || 0;
+      const totalBalance = main + referral + bonus;
+      setBalance(totalBalance);
     } catch (err) {
       console.error('Error fetching balance:', err);
       setBalance(0);
@@ -126,12 +130,11 @@ const Withdrawal = () => {
         <header className="plan-header">
           <div className="plan-avatar"><FontAwesomeIcon icon={faMoneyBillTransfer} /></div>
           <div className="plan-user-info">
-            <h4 className="plan-username">Withdraw Funds</h4>
+            <h4 className="plan-username">Withdraw </h4>
             <p className="plan-email">رقم نکالیں</p>
           </div>
-          <Link to="/transactions" className="link-bold plan-balance">
-            <FontAwesomeIcon icon={faMoneyBillTransfer} />
-          </Link>
+                    <div className="plan-balance">Balance: <span>Rs {balance.toFixed(2)}</span></div>
+
         </header>
 
         <div className="refferrals-section">
@@ -177,6 +180,20 @@ const Withdrawal = () => {
                 </select>
               </div>
 
+              {/* Account Name */}
+              <div className="form-group" style={{marginTop: '10px'}} >
+                <label className="deposit-label">Account Name *</label>
+                <input
+                  type="text"
+                  name="mobile_number"
+                  value={formData.mobile_number}
+                  onChange={handleInputChange}
+                  placeholder="Enter your account name"
+                  className="deposit-input"
+                  required
+                />
+              </div>
+
               {/* Account Number */}
               <div className="form-group" style={{marginTop: '10px'}}>
                 <label className="deposit-label">Account Number *</label>
@@ -191,19 +208,7 @@ const Withdrawal = () => {
                 />
               </div>
 
-              {/* Mobile Number */}
-              <div className="form-group" style={{marginTop: '10px'}} >
-                <label className="deposit-label">Mobile Number *</label>
-                <input
-                  type="tel"
-                  name="mobile_number"
-                  value={formData.mobile_number}
-                  onChange={handleInputChange}
-                  placeholder="Enter your mobile number"
-                  className="deposit-input"
-                  required
-                />
-              </div>
+
 
               {/* Submit Button */}
               <button

@@ -36,7 +36,11 @@ const Refferrals = () => {
       }
       
       const data = await response.json();
-      setBalance(data.main_balance || 0);
+      const main = data.main_balance || 0;
+      const referral = data.referral_balance || 0;
+      const bonus = data.bonus_balance || 0;
+      const totalBalance = main + referral + bonus;
+      setBalance(totalBalance);
       setReferralEarnings(data.referral_balance || 0);
     } catch (err) {
       console.error('Error fetching balance:', err);

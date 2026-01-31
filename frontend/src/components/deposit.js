@@ -16,11 +16,13 @@ const Deposit = () => {
 
   const [account, setAccount] = useState(null);
   const [wallet, setWallet] = useState(null);
+  const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
+  
 
   useEffect(() => {
     fetchAccount();
@@ -60,6 +62,11 @@ const Deposit = () => {
       
       const data = await response.json();
       setWallet(data);
+      const main = data.main_balance || 0;
+      const referral = data.referral_balance || 0;
+      const bonus = data.bonus_balance || 0;
+      const totalBalance = main + referral + bonus;
+      setBalance(totalBalance);
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -153,12 +160,11 @@ const Deposit = () => {
         <header className="plan-header">
           <div className="plan-avatar"><FontAwesomeIcon icon={faMoneyBillTransfer} /></div>
           <div className="plan-user-info">
-            <h4 className="plan-username">Deposit Funds</h4>
+            <h4 className="plan-username">Deposit</h4>
             <p className="plan-email">رقم جمع کروائیں</p>
           </div>
-          <Link to="/transactions" className="link-bold plan-balance">
-            <FontAwesomeIcon icon={faMoneyBillTransfer} />
-          </Link>
+                    <div className="plan-balance">Balance: <span>Rs {balance.toFixed(2)}</span></div>
+
         </header>
 
         {/* Send Payment To Section */}
