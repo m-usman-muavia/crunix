@@ -428,13 +428,6 @@ const Profile = () => {
                     >
                         Notifications
                     </button> */}
-                    {/* <button
-                        type="button"
-                        className={`profile-btn ${activeTab === 'notification' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('notification')}
-                    >aaa
-                        Notifications
-                    </button> */}
                     <button
                         type="button"
                         className={`profile-btn ${activeTab === 'transactions' ? 'active' : ''}`}
@@ -533,7 +526,7 @@ const Profile = () => {
                 )}
 
                 {/* Notifications Section */}
-                {/* {activeTab === 'notification' && (
+                {activeTab === 'notification' && (
                     <div className="profile-content">
                         <h2 className="profile-title">Notifications</h2>
                         
@@ -552,33 +545,30 @@ const Profile = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="plan-content">
+                            <div className="plan-1">
                                 <div className="transactions-list">
                                     {notifications.map((notif) => (
-                                        <div key={notif._id} className="tx-card" style={{ borderLeftColor: '#3b82f6' }}>
+                                        <div key={notif._id} className="tx-card" >
                                             <div className="tx-main">
                                                 <div className="tx-header">
-                                                    <span className="tx-type" style={{ fontSize: '14px', fontWeight: '600' }}>
-                                                        {notif.type === 'plan_activated' && '📊 Plan Activated'}
-                                                        {notif.type === 'plan_completed' && '✅ Plan Completed'}
-                                                        {notif.type === 'referral_earning' && '💰 Referral Earning'}
-                                                        {notif.type === 'deposit_approved' && '✔️ Deposit Approved'}
-                                                        {notif.type === 'withdrawal_approved' && '✔️ Withdrawal Approved'}
-                                                        {notif.type === 'daily_profit' && '💸 Daily Profit'}
-                                                        {!['plan_activated', 'plan_completed', 'referral_earning', 'deposit_approved', 'withdrawal_approved', 'daily_profit'].includes(notif.type) && '🔔 Notification'}
+                                                    <span className="tx-type" style={{ fontSize: '12px', fontWeight: '600' }}>
+                                                        {notif.type === 'plan_activated' && ' Plan Activated'}
+                                                        {notif.type === 'plan_paused' && ' Plan Paused'}
+                                                        {notif.type === 'plan_resumed' && ' Plan Resumed'}
+                                                        {notif.type === 'plan_completed' && ' Plan Completed'}
+                                                        {notif.type === 'daily_income' && ' Daily Income'}
+                                                        {notif.type === 'referral_signup' && ' Referral Signup'}
+                                                        {notif.type === 'referral_earning' && ' Referral Earning'}
+                                                        {!['deposit_request_sent', 'deposit_approved', 'deposit_rejected', 'withdrawal_request_sent', 'withdrawal_approved', 'withdrawal_rejected', 'plan_activated', 'plan_paused', 'plan_resumed', 'plan_completed', 'daily_income', 'referral_signup', 'referral_earning'].includes(notif.type) && ' Notification'}
                                                     </span>
-                                                    <span className="tx-status" style={{ backgroundColor: '#3b82f6', fontSize: '11px' }}>
-                                                        {formatDate(notif.createdAt || notif.date)}
-                                                    </span>
+                                            
                                                 </div>
-                                                <p style={{ margin: '8px 0 0', fontSize: '13px', color: '#6b7280' }}>
-                                                    {notif.message}
-                                                </p>
+                                                
                                             </div>
-                                            {notif.amount && (
+                                        {notif.amount && (
                                                 <div className="tx-amount">
                                                     <div className="tx-amount-deposit">
-                                                        +Rs {formatAmount(notif.amount)}
+                                                        Rs {formatAmount(notif.amount)}
                                                     </div>
                                                 </div>
                                             )}
@@ -588,7 +578,7 @@ const Profile = () => {
                             </div>
                         )}
                     </div>
-                )} */}
+                )}
 
                     {activeTab === 'transactions' && (
                     <div className="profile-content">
@@ -614,7 +604,7 @@ const Profile = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="plan-content">
+                                                <div className="plan-content1">
                                                     {txLoading ? (
                                                         <p className="tx-message">Loading transactions...</p>
                                                     ) : txError ? (

@@ -46,6 +46,10 @@ const Dashboard = () => {
             <span className="btn-icon">⏱️</span>
             Accounts
           </Link>
+          <Link to="/admin/bonus" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span className="btn-icon">⏱️</span>
+            bonus
+          </Link>
         </div>
 
         {/* Bottom Navigation */}

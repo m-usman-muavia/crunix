@@ -66,7 +66,9 @@
     cursor: pointer;
 }
 
-.profile-btn:active,
+.profile-btn:active{
+    background-color: #ffffff !important;
+}
 .profile-btn:hover {
     background-color: #ffffff;
 }

@@ -1,6 +1,7 @@
 const Withdrawal = require('../models/withdrawal');
 const Wallet = require('../models/wallet');
 const User = require('../models/user');
+const { createNotification } = require('./notificationcontrollers');
 
 // Create withdrawal request
 exports.createWithdrawal = async (req, res) => {
@@ -39,6 +40,16 @@ exports.createWithdrawal = async (req, res) => {
     });
 
     await withdrawal.save();
+    
+    // Create notification for withdrawal request
+    await createNotification(
+      userId,
+      'withdrawal_request_sent',
+      `Your withdrawal request of Rs ${amount} via ${method} has been submitted for processing.`,
+      amount,
+      { withdrawalId: withdrawal._id }
+    );
+
     res.status(201).json({ 
       message: 'Withdrawal request submitted successfully',
       withdrawal 
@@ -110,6 +121,15 @@ exports.approveWithdrawal = async (req, res) => {
     withdrawal.approved_at = new Date();
     await withdrawal.save();
 
+    // Create notification
+    await createNotification(
+      userId,
+      'withdrawal_approved',
+      `Your withdrawal of Rs ${amount} has been approved and processed.`,
+      amount,
+      { withdrawalId: withdrawal._id }
+    );
+
     res.status(200).json({ 
       message: 'Withdrawal approved successfully',
       withdrawal,
@@ -137,6 +157,15 @@ exports.rejectWithdrawal = async (req, res) => {
 
     withdrawal.status = 'rejected';
     await withdrawal.save();
+
+    // Create notification
+    await createNotification(
+      withdrawal.userId,
+      'withdrawal_rejected',
+      `Your withdrawal request of Rs ${withdrawal.amount} has been rejected.`,
+      withdrawal.amount,
+      { withdrawalId: withdrawal._id }
+    );
 
     res.status(200).json({ 
       message: 'Withdrawal rejected',

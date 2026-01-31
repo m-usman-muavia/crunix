@@ -220,7 +220,7 @@ const Deposit = () => {
             
             {/* Amount Input */}
             <div className="deposit-amount">
-              <label className="deposit-label">Enter Deposit Amount (Rs):</label>
+              <label className="deposit-label">Enter Deposit Amount (Rs) *</label>
               <input 
                 type="number" 
                 className="deposit-input" 
@@ -234,7 +234,7 @@ const Deposit = () => {
 
             {/* Mobile Number Input */}
             <div className="form-group">
-              <label className="deposit-label">Sender Mobile Number:</label>
+              <label className="deposit-label">Sender Mobile Number *</label>
               <input 
                 type="tel" 
                 className="deposit-input" 
@@ -248,7 +248,7 @@ const Deposit = () => {
 
             {/* Transaction ID Input */}
             <div className="form-group">
-              <label className="deposit-label">Transaction ID / Reference Number:</label>
+              <label className="deposit-label">Transaction ID / Reference Number *</label>
               <input 
                 type="text" 
                 className="deposit-input" 

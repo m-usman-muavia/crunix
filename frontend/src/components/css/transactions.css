@@ -1,18 +1,27 @@
 .transactions-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
-
+.plan-1 {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin: 10px 0 20px 0;
+}
 .tx-card {
+  background: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  padding: 5px 15px 2px 15px;  
+  transition: all 0.3s ease;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border-left: 5px solid #d1d5db;
+  /* align-items: center; */
 }
 
 .tx-main {
@@ -22,7 +31,7 @@
 .tx-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 40px;
   margin-bottom: 8px;
 }
 
@@ -67,12 +76,12 @@
 }
 
 .tx-amount {
-  text-align: right;
+  text-align: right;  
   min-width: 120px;
 }
 
 .tx-amount-deposit {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 700;
   color: #16a34a;
 }

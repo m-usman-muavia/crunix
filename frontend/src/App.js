@@ -19,6 +19,7 @@ import CheckDeposits from './components/admin/checkdeposits';
 import CheckWithdrawals from './components/admin/checkwithdrawals';
 import CheckUser from './components/admin/checkusers';
 import AccrualHistory from './components/admin/accrualhistory';
+import BonusGenerator from './components/admin/bonus';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/admin/accrual-history" element={<ProtectedRoute><AccrualHistory /></ProtectedRoute>} />
         <Route path="/check-deposits" element={<ProtectedRoute><CheckDeposits /></ProtectedRoute>} />
         <Route path="/check-withdrawals" element={<ProtectedRoute><CheckWithdrawals /></ProtectedRoute>} />
+        <Route path="/admin/bonus" element={<ProtectedRoute><BonusGenerator /></ProtectedRoute>} />
       </Routes>
       
       

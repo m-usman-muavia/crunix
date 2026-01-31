@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faChartLine, faBox, faArrowDown, faArrowUp, faUsers, faUser, faCopy, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
-import { faWhatsapp, faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faWhatsapp, faFacebook, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import './css/dashboard.css';
 import { Link } from 'react-router-dom';
 import './css/style.css';
@@ -17,9 +17,14 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
   const [user, setUser] = useState(null);
+  const [mainBalance, setMainBalance] = useState(0);
   const [referralEarnings, setReferralEarnings] = useState(0);
+  const [bonusBalance, setBonusBalance] = useState(0);
   const [totalReferrals, setTotalReferrals] = useState(0);
   const [activeReferrals, setActiveReferrals] = useState(0);
+  const [bonusCode, setBonusCode] = useState('');
+  const [redeemingBonus, setRedeemingBonus] = useState(false);
+  const [bonusMessage, setBonusMessage] = useState('');
 
   useEffect(() => {
     fetchBalance();
@@ -43,11 +48,21 @@ const Dashboard = () => {
       }
 
       const data = await response.json();
-      setBalance(data.main_balance || 0);
-      setReferralEarnings(data.referral_balance || 0);
+      // Calculate total balance (main + referral + bonus)
+      const main = data.main_balance || 0;
+      const referral = data.referral_balance || 0;
+      const bonus = data.bonus_balance || 0;
+      const totalBalance = main + referral + bonus;
+      setBalance(totalBalance);
+      setMainBalance(main);
+      setReferralEarnings(referral);
+      setBonusBalance(bonus);
     } catch (err) {
       console.error('Error fetching balance:', err);
       setBalance(0);
+      setMainBalance(0);
+      setReferralEarnings(0);
+      setBonusBalance(0);
     }
   };
 
@@ -163,6 +178,55 @@ const Dashboard = () => {
     }
   };
 
+  const handleRedeemBonusCode = async (e) => {
+    e.preventDefault();
+    setBonusMessage('');
+
+    if (!bonusCode.trim()) {
+      setBonusMessage({ type: 'error', text: 'Please enter a bonus code' });
+      return;
+    }
+
+    setRedeemingBonus(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/bonus/redeem`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code: bonusCode })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setBonusMessage({ type: 'error', text: data.message || 'Failed to redeem bonus code' });
+        return;
+      }
+
+      // Success - update bonus balance and show message
+      setBonusBalance(data.newBonusBalance);
+      setBalance(balance + data.bonusAmount);
+      setBonusMessage({
+        type: 'success',
+        text: `Bonus of Rs ${data.bonusAmount} added successfully!`
+      });
+      setBonusCode('');
+
+      // Refresh balance after 2 seconds
+      setTimeout(() => {
+        fetchBalance();
+      }, 2000);
+    } catch (err) {
+      setBonusMessage({ type: 'error', text: 'Error redeeming bonus code. Please try again.' });
+      console.error('Error redeeming bonus code:', err);
+    } finally {
+      setRedeemingBonus(false);
+    }
+  };
+
   return (
     <div className="main-wrapper">
       <div className="main-container">
@@ -173,20 +237,29 @@ const Dashboard = () => {
               <h4 className="dashboard-greeting">HI</h4>
               <p className="dashboard-name">{user?.name || 'User'}</p>
             </div>
-            <div className='' style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '10px'}}>
+            <div className='' style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '7px' }}>
+              <Link to="http://t.me/latasha100" className=" dashboard-whatsapp">
+                <FontAwesomeIcon icon={faTelegram} />
+              </Link>
               <Link to="https://www.facebook.com/share/177yhDTdEt/" className=" dashboard-whatsapp">
                 <FontAwesomeIcon icon={faFacebook} />
               </Link>
               <Link to="https://whatsapp.com/channel/0029VbByYGN23n3lGBS2n00I" className="link-bold dashboard-whatsapp">
-
                 <FontAwesomeIcon icon={faWhatsapp} />
               </Link>
             </div>
 
           </div>
-          <div className="dashboard-balance">
-            <p className="dashboard-balance-label">Total Balance</p>
-            <h2 className="dashboard-balance-amount">Rs {balance.toFixed(2)}</h2>
+          <div className="dashboard-balance-card">
+            <div className="dashboard-main-balance">
+              <p className="dashboard-main-balance-label">Total Balance</p>
+              <h2 className="dashboard-main-balance-amount">Rs {balance.toFixed(2)}</h2>
+            </div>
+            <div className="dashboard-sub-balance">
+              <h2 className="dashboard-sub-balance-amount">Main: Rs {mainBalance}</h2>
+              <h2 className="dashboard-sub-balance-amount">Referral: Rs {referralEarnings}</h2>
+              <h2 className="dashboard-sub-balance-amount">Bonus: Rs {bonusBalance}</h2>
+            </div>
           </div>
           <div className="dashboard-buttons">
             <Link to="/plans" className="dashboard-shortcut-buttons">Plans</Link>
@@ -203,6 +276,52 @@ const Dashboard = () => {
 
 
         {/* All Sections One Item Start Here */}
+        <div className="section">
+          <div className="withdrawal-card">
+            <h3 className="refferrals-header">Get A Free Bonus</h3>
+
+            <form onSubmit={handleRedeemBonusCode} className="deposit-form">
+              {bonusMessage && (
+                <div style={{
+                  padding: '12px',
+                  marginBottom: '15px',
+                  borderRadius: '5px',
+                  backgroundColor: bonusMessage.type === 'error' ? '#fee' : '#efe',
+                  color: bonusMessage.type === 'error' ? '#c00' : '#060',
+                  border: `1px solid ${bonusMessage.type === 'error' ? '#fcc' : '#0f0'}`
+                }}>
+                  {bonusMessage.text}
+                </div>
+              )}
+              {/* Bonus Code Input */}
+              <div className="deposit-amount" style={{ marginTop: '10px' }}>
+                <label className="deposit-label">Bonus Code *</label>
+                <input
+                  type="text"
+                  value={bonusCode}
+                  onChange={(e) => setBonusCode(e.target.value.toUpperCase())}
+                  placeholder="Enter Bonus Code"
+                  className="deposit-input"
+                  disabled={redeemingBonus}
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={redeemingBonus}
+                  className="section-button"
+                  style={{
+                    background: redeemingBonus ? '#ccc' : "linear-gradient(135deg, #22d3ee, #16a34a)",
+                    color: "white",
+                    cursor: redeemingBonus ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {redeemingBonus ? 'Processing...' : 'Get Now'}
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
 
         <div className="section">
           <div className="dashboard-plans-header">
@@ -344,6 +463,8 @@ const Dashboard = () => {
           </div>
 
         </div>
+
+
         {/* All Sections One Item End Here */}
 
 

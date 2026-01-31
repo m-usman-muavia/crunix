@@ -13,13 +13,23 @@
   justify-content: space-between;
   align-items: center !important; 
 }
-.dashboard-balance {
-  margin: 30px 15px 20px 15px;
-  padding: 0px 30px;
+.dashboard-balance-card{
+  margin: 20px 15px 10px 15px;
+  padding: 10px 25px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.6 );
+  text-align: left;
+}
+.dashboard-main-balance {
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+}
+.dashboard-sub-balance{
+      margin-top: -10px;
+  padding: 0px 10px;
   text-align: left;
   display: flex;
   justify-content: space-between;
@@ -48,12 +58,24 @@
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.dashboard-balance-label{
+.dashboard-main-balance-label{
 font-size: 20px;
   font-weight: bold;
   color: #0f172a;
 }
-.dashboard-balance-amount{
+.dashboard-sub-balance-amount{
+    font-size: 10px;
+    font-weight: bold;
+    padding: 4px 6px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    border-radius: 5px;
+    gap: 0px;
+    color: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dashboard-main-balance-amount{
   font-size: 20px;
   font-weight: bold;
   color: #0f172a;
@@ -105,7 +127,7 @@ font-size: 20px;
   font-weight: bold;
 }
 .dashboard-whatsapp svg {
-    font-size: 30px;
+    font-size: 20px;
 } 
 .greeting {
   font-size: 14px;
@@ -343,9 +365,8 @@ font-size: 20px;
 
 .section-button {
   font-size: 14px;
-  color: #3b82f6;
   text-decoration: none;
-  background: #eff6ff;
+  border: none;
   padding: 5px 10px;
   border-radius: 5px;
   transition: background 0.3s;

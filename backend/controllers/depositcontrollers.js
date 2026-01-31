@@ -1,6 +1,7 @@
 const Deposit = require('../models/deposit');
 const Wallet = require('../models/wallet');
 const User = require('../models/user');
+const { createNotification } = require('./notificationcontrollers');
 const fs = require('fs');
 const path = require('path');
 
@@ -36,6 +37,16 @@ exports.createDeposit = async (req, res) => {
     });
 
     await deposit.save();
+    
+    // Create notification for deposit request
+    await createNotification(
+      userId,
+      'deposit_request_sent',
+      `Your deposit request of Rs ${deposit_amount} has been sent for verification. Your transaction ID is ${transaction_id}.`,
+      deposit_amount,
+      { depositId: deposit._id }
+    );
+
     res.status(201).json({ 
       message: 'Deposit request submitted successfully',
       deposit 
@@ -103,6 +114,15 @@ exports.approveDeposit = async (req, res) => {
     deposit.approved_at = new Date();
     await deposit.save();
 
+    // Create notification
+    await createNotification(
+      userId,
+      'deposit_approved',
+      `Your deposit of Rs ${deposit_amount} has been approved and added to your wallet.`,
+      deposit_amount,
+      { depositId: deposit._id }
+    );
+
     res.status(200).json({ 
       message: 'Deposit approved successfully',
       deposit,
@@ -130,6 +150,15 @@ exports.rejectDeposit = async (req, res) => {
 
     deposit.status = 'rejected';
     await deposit.save();
+
+    // Create notification
+    await createNotification(
+      deposit.userId,
+      'deposit_rejected',
+      `Your deposit request of Rs ${deposit.deposit_amount} has been rejected. Reason: ${reason || 'Invalid details'}`,
+      deposit.deposit_amount,
+      { depositId: deposit._id }
+    );
 
     res.status(200).json({ 
       message: 'Deposit rejected',

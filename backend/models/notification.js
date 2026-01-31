@@ -8,7 +8,22 @@ const notificationSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['plan_activated', 'plan_completed', 'referral_earning', 'deposit_approved', 'withdrawal_approved', 'daily_profit', 'general'],
+        enum: [
+            'deposit_request_sent',
+            'deposit_approved',
+            'deposit_rejected',
+            'withdrawal_request_sent',
+            'withdrawal_approved',
+            'withdrawal_rejected',
+            'plan_activated',
+            'plan_completed',
+            'plan_paused',
+            'plan_resumed',
+            'daily_income',
+            'referral_earning',
+            'referral_signup',
+            'general'
+        ],
         required: true
     },
     message: {

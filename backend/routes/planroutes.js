@@ -3,7 +3,10 @@ const router = express.Router();
 const Plan = require('../models/plan');
 const Wallet = require('../models/wallet');
 const UserPlan = require('../models/userplan');
+const User = require('../models/user');
+const Notification = require('../models/notification');
 const { adminPlans } = require('../controllers/plancontrollers');
+const { createNotification } = require('../controllers/notificationcontrollers');
 const verifyToken = require('../middleware/auth');
 
 // GET active plans for users
@@ -81,6 +84,15 @@ router.post('/invest-now', verifyToken, async (req, res) => {
       });
 
       await userPlan.save();
+
+      // Create notification
+      await createNotification(
+        userId,
+        'plan_activated',
+        `You have successfully activated the ${plan.name} plan with Rs ${plan.investment_amount} investment.`,
+        plan.investment_amount,
+        { planId: plan._id, userPlanId: userPlan._id }
+      );
 
       return res.status(201).json({
         message: 'Investment successful',
@@ -161,6 +173,15 @@ router.put('/:planId/pause', verifyToken, async (req, res) => {
     userPlan.status = 'paused';
     await userPlan.save();
 
+    // Create notification
+    await createNotification(
+      userId,
+      'plan_paused',
+      `Your ${userPlan.planName} plan has been paused. Daily accruals will resume when you reactivate it.`,
+      0,
+      { planId: userPlan._id }
+    );
+
     res.json({ message: 'Investment paused successfully', plan: userPlan });
   } catch (error) {
     console.error('Error pausing investment:', error);
@@ -186,6 +207,15 @@ router.put('/:planId/resume', verifyToken, async (req, res) => {
     userPlan.status = 'active';
     await userPlan.save();
 
+    // Create notification
+    await createNotification(
+      userId,
+      'plan_resumed',
+      `Your ${userPlan.planName} plan has been resumed. Daily accruals will continue.`,
+      0,
+      { planId: userPlan._id }
+    );
+
     res.json({ message: 'Investment resumed successfully', plan: userPlan });
   } catch (error) {
     console.error('Error resuming investment:', error);
@@ -200,6 +230,7 @@ router.post('/force-accrue', verifyToken, async (req, res) => {
     const now = new Date();
     const activePlans = await UserPlan.find({ status: 'active' });
     let accrued = 0;
+    let commissionsGiven = 0;
 
     for (const plan of activePlans) {
       const cutoff = plan.endDate && plan.endDate < now ? plan.endDate : now;
@@ -234,8 +265,39 @@ router.post('/force-accrue', verifyToken, async (req, res) => {
       }
       await plan.save();
       accrued++;
+
+      // Credit 10% commission to parent user (referrer)
+      try {
+        const childUser = await User.findById(plan.userId);
+        if (childUser && childUser.referredBy) {
+          const parentUser = await User.findOne({ referralCode: childUser.referredBy });
+          if (parentUser) {
+            const commission = increment * 0.10; // 10% of daily income
+            await Wallet.updateOne(
+              { userId: parentUser._id },
+              { $inc: { referral_balance: commission } },
+              { upsert: true }
+            );
+            commissionsGiven++;
+
+            // Create notification for parent user
+            await Notification.create({
+              userId: parentUser._id,
+              type: 'referral_earning',
+              message: `You earned Rs ${commission.toFixed(2)} (10% commission) from your referral's daily income.`,
+              amount: commission
+            });
+          }
+        }
+      } catch (commissionError) {
+        console.error('Error crediting commission for plan:', plan._id, commissionError);
+      }
     }
-    res.json({ message: `Accrued profits for ${accrued} plans`, count: accrued });
+    res.json({ 
+      message: `Accrued profits for ${accrued} plans. Credited ${commissionsGiven} referral commissions.`, 
+      count: accrued,
+      commissionsGiven 
+    });
   } catch (error) {
     console.error('Force accrue error:', error);
     res.status(500).json({ message: error.message });

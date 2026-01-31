@@ -136,7 +136,7 @@ const Withdrawal = () => {
 
         <div className="refferrals-section">
           <div className="withdrawal-card">
-            <h3 className="refferrals-header">Withdrawal Form</h3>
+            <h3 className="refferrals-header">Withdrawal Now</h3>
 
             {message && (
               <div className={messageType === 'error' ? 'error-message' : 'success-message'}>
