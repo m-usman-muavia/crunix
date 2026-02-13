@@ -1,4 +1,6 @@
 const Plan = require('../models/plan.js');
+const fs = require('fs');
+const path = require('path');
 
 // 👉 GET ALL PLANS
 exports.getPlans = async (req, res) => {
@@ -25,7 +27,8 @@ exports.createPlan = async (req, res) => {
       investment_amount,
       daily_profit,
       duration_days,
-      status
+      status,
+      purchase_limit
     } = req.body;
 
     const total_profit = daily_profit * duration_days;
@@ -39,7 +42,9 @@ exports.createPlan = async (req, res) => {
       duration_days,
       total_profit,
       roi_percentage,
-      status
+      status,
+      image_path: req.file ? req.file.path : '',
+      purchase_limit: purchase_limit || 0
     };
 
     const newPlan = new Plan(planData);
@@ -68,7 +73,8 @@ exports.updatePlan = async (req, res) => {
       investment_amount,
       daily_profit,
       duration_days,
-      status
+      status,
+      purchase_limit
     } = req.body;
 
     const plan = await Plan.findById(id);
@@ -85,6 +91,16 @@ exports.updatePlan = async (req, res) => {
     if (daily_profit) plan.daily_profit = daily_profit;
     if (duration_days) plan.duration_days = duration_days;
     if (status) plan.status = status;
+    if (purchase_limit !== undefined) plan.purchase_limit = purchase_limit;
+    
+    // Handle image update
+    if (req.file) {
+      // Delete old image if exists
+      if (plan.image_path && fs.existsSync(plan.image_path)) {
+        fs.unlinkSync(plan.image_path);
+      }
+      plan.image_path = req.file.path;
+    }
 
     // Recalculate total profit and ROI if amounts or duration changed
     if (investment_amount || daily_profit || duration_days) {
@@ -119,6 +135,11 @@ exports.deletePlan = async (req, res) => {
         success: false,
         message: 'Plan not found'
       });
+    }
+    
+    // Delete image file if exists
+    if (plan.image_path && fs.existsSync(plan.image_path)) {
+      fs.unlinkSync(plan.image_path);
     }
 
     return res.status(200).json({

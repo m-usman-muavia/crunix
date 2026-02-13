@@ -477,18 +477,6 @@ const Dashboard = () => {
             </Link>
           </div>
           <div className="nav-item">
-            <Link to="/plans" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faBox} />
-              <span>Plans</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/deposit" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowDown} />
-              <span>Deposit</span>
-            </Link>
-          </div>
-          <div className="nav-item">
             <Link to="/withdrawal" className="link-bold nav-link-col">
               <FontAwesomeIcon icon={faArrowUp} />
               <span>Withdraw</span>

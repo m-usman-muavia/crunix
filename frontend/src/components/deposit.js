@@ -158,65 +158,54 @@ const Deposit = () => {
       <div className="main-container">
         {/* Top Header Section */}
         <header className="plan-header">
-          <div className="plan-avatar"><FontAwesomeIcon icon={faMoneyBillTransfer} /></div>
           <div className="plan-user-info">
             <h4 className="plan-username">Deposit</h4>
-            <p className="plan-email">رقم جمع کروائیں</p>
           </div>
-                    <div className="plan-balance">Balance: <span>Rs {balance.toFixed(2)}</span></div>
-
         </header>
+        <div className="plan-image">
+          <img 
+            src="/planimage.webp" 
+            alt="Investment Plans" 
+            style={{ 
+              width: '100%', 
+              height: '200px', 
+              objectFit: 'cover',
+              borderRadius: '0px 0px 15px 15px',
+              borderBottom: '2px solid #000000',
+            }} 
+          />
+        </div>
 
         {/* Send Payment To Section */}
         <div className="payment-details-section">
-          <div className="payment-details">
-            <h3 className="payment-details-title">Send Payment To:</h3>
-            <Link to="/refferrals" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUsers} />
-            </Link>
+          <div className="payment-details-header">
+            <h3 className="payment-details-title">Send Payment To</h3>
+            <p className="payment-details-subtitle">Scan the QR or use the Till ID</p>
           </div>
-          {loading ? (
-            <div className="payment-details-card">
+
+          <div className="payment-details-body">
+            {account ? (
+              <div className="payment-details-card">
+                <div className="payment-qr">
+                  {account.qrImagePath ? (
+                    <img
+                      src={`/${account.qrImagePath}`}
+                      alt="QR code"
+                      className="payment-qr-image"
+                    />
+                  ) : (
+                    <div className="payment-qr-placeholder">No QR</div>
+                  )}
+                </div>
+                <div className="payment-till">
+                  <span className="payment-label">Till ID</span>
+                  <span className="payment-value">{account.tillId || 'N/A'}</span>
+                </div>
+              </div>
+            ) : (
               <p>Loading account details...</p>
-            </div>
-          ) : error ? (
-            <div className="payment-details-card">
-              <p>Error: {error}</p>
-            </div>
-          ) : account ? (
-            <div className="payment-details-card">
-              <div className="detail-item">
-                <span className="detail-label">Bank Name:</span>
-                <span className="detail-value">{account.bankName}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Account Number:</span>
-                <span className="detail-value copy-value">
-                  <button 
-                    className="copy-btn" 
-                    onClick={handleCopyAccountNumber}
-                    title="Copy to clipboard"
-                  >
-                    <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                    {copied ? ' Copied' : ' Copy'}
-                  </button>
-                  {account.accountNumber}
-                </span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Account Name:</span>
-                <span className="detail-value">{account.accountName}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Account Type:</span>
-                <span className="detail-value">{account.accountType}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="payment-details-card">
-              <p>No account details available</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className="deposit-section">
@@ -294,21 +283,6 @@ const Deposit = () => {
           </form>
         </div>
 
-        <div className="how-it-works-section">
-          <div className="how-it-works-card">
-            <div className="how-it-works-header">
-              <span className="how-icon">💳</span>
-              <h3>Deposit Rules / ڈپوزٹ کے اصول</h3>
-            </div>
-            <ul className="how-it-works-list">
-              <li>Select payment method and amount</li>
-              <li>Send payment to the shown account/wallet</li>
-              <li>Enter your details and transaction ID</li>
-              <li>Admin will verify within 24 hours</li>
-              <li>Balance will be added after approval</li>
-            </ul>
-          </div>
-        </div>
 
         {/* Bottom Navigation Section */}
         <nav className="bottom-nav">

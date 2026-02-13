@@ -155,35 +155,38 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="main-wrapper">
-      <div className="login-container">
-        <div className="login-card">
-          <Link to="/" className="back-link">
-            <FontAwesomeIcon icon={faArrowLeft} /> Back to sign in
-          </Link>
-          <Logo />  
-          <h1 className="title">Forgot Password</h1>
-                      {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '10px' }}>{error}</p>}
+    <div className="login-page">
+      <div className="login-gradient-wrapper">
+        <div className="login-bg-shape login-bg-shape-1"></div>
+        <div className="login-bg-shape login-bg-shape-2"></div>
+
+        <div className="login-page-content">
+          <div className="login-brand">
+            <Logo />
+          </div>
+
+          <div className="login-card">
+            <Link to="/" className="back-link">
+              <FontAwesomeIcon icon={faArrowLeft} /> Back to sign in
+            </Link>
+            <h1 className="login-title">Forgot Password</h1>
+            {error && <p className="login-error">{error}</p>}
 
 
           {/* Step 1: Enter Email */}
           {step === 1 && (
             <form onSubmit={handleSendOTP} className="login-form">
-              <p className="subtitle">Enter your email to receive an OTP</p>
-              <div className="input-group">
-                <label>Email Address</label>
-                <div className="input-wrapper">
-                  <span className="icon">✉</span>
-                  <input 
-                    type="email" 
-                    placeholder="you@example.com" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required 
-                  />
-                </div>
+              <p className="login-subtitle">Enter your email to receive an OTP</p>
+              <div className="input-field">
+                <input 
+                  type="email" 
+                  placeholder="Email Address" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required 
+                />
               </div>
-              <button type="submit" className="sign-in-btn" disabled={isLoading}>
+              <button type="submit" className="primary-btn" disabled={isLoading}>
                 {isLoading ? 'Sending OTP...' : 'Send OTP'}
               </button>
             </form>
@@ -192,22 +195,18 @@ const ForgotPassword = () => {
           {/* Step 2: Enter OTP */}
           {step === 2 && (
             <form onSubmit={handleVerifyOTP} className="login-form">
-              <p className="subtitle" style={{ textAlign: 'center' }}>Enter the 6-digit OTP sent to {email}</p>
-              <div className="input-group">
-                <label>Enter OTP</label>
-                <div className="input-wrapper">
-                  <span className="icon">🔐</span>
-                  <input 
-                    type="text" 
-                    placeholder="000000" 
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    maxLength="6"
-                    required 
-                  />
-                </div>
+              <p className="login-subtitle">Enter the 6-digit OTP sent to {email}</p>
+              <div className="input-field">
+                <input 
+                  type="text" 
+                  placeholder="000000" 
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  maxLength="6"
+                  required 
+                />
               </div>
-              <button type="submit" className="sign-in-btn" disabled={isLoading}>
+              <button type="submit" className="primary-btn" disabled={isLoading}>
                 {isLoading ? 'Verifying OTP...' : 'Verify OTP'}
               </button>
               <button 
@@ -227,34 +226,26 @@ const ForgotPassword = () => {
           {/* Step 3: Enter New Password */}
           {step === 3 && (
             <form onSubmit={handleResetPassword} className="login-form">
-              <p className="subtitle">Enter your new password</p>
-              <div className="input-group">
-                <label>New Password</label>
-                <div className="input-wrapper">
-                  <span className="icon">🔒</span>
-                  <input 
-                    type="password" 
-                    placeholder="At least 6 characters" 
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required 
-                  />
-                </div>
+              <p className="login-subtitle">Enter your new password</p>
+              <div className="input-field">
+                <input 
+                  type="password" 
+                  placeholder="New Password" 
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required 
+                />
               </div>
-              <div className="input-group">
-                <label>Confirm Password</label>
-                <div className="input-wrapper">
-                  <span className="icon">🔒</span>
-                  <input 
-                    type="password" 
-                    placeholder="Confirm your password" 
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required 
-                  />
-                </div>
+              <div className="input-field">
+                <input 
+                  type="password" 
+                  placeholder="Confirm Password" 
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required 
+                />
               </div>
-              <button type="submit" className="sign-in-btn" disabled={isLoading}>
+              <button type="submit" className="primary-btn" disabled={isLoading}>
                 {isLoading ? 'Resetting Password...' : 'Reset Password'}
               </button>
               <button 
@@ -271,9 +262,11 @@ const ForgotPassword = () => {
               </button>
             </form>
           )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+  
   );
 };
 

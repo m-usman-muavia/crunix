@@ -15,7 +15,9 @@ router.get('/active', async (req, res) => {
       accountName: account.account_name,
       accountNumber: account.account_number,
       bankName: account.bank_name,
-      accountType: account.account_type
+      accountType: account.account_type,
+      tillId: account.till_id,
+      qrImagePath: account.qr_image_path
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

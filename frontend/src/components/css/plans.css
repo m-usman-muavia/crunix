@@ -1,34 +1,18 @@
-.plan-header {
-  background: linear-gradient(135deg, #22d3ee, #16a34a);
-  color: #0f172a;
-  padding: 15px 20px 15px 20px;
-  display: flex;
-  align-items: flex-start !important;
+.plan-header { 
+  background: linear-gradient(135deg, #003366, #001f4d); 
+  color: #0f172a; 
+  padding: 14px; 
+  display: flex; align-items: 
+  flex-start !important;
   justify-content: center;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
+  color: #ffffff;
 }
 
-.plan-avatar {
-  width: 45px; height: 45px;
-    background: rgba(255, 255, 255, 25%);
-  backdrop-filter: blur(60px);
-  border: 1px solid rgba(255,255,255,25%);  
-  border-radius: 50%;
-  font-size: 24px;
-  margin: 0px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: bold;
-}  
-
-.plan-user-info{
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    text-align: left;
-    padding: 2px 10px;
-}
 .plan-username {
+  font-family: 'Michroma', sans-serif;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  font-weight: bold;
     font-size: 20px;   
 }
 .plan-email {
@@ -153,4 +137,260 @@
 
 .invest-now-btn:active {
   transform: scale(0.97);
+}
+/* Admin Action Buttons Container */
+.invest-now-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.small-now-btn {
+  flex: 1;
+  min-width: 90px;
+  background: linear-gradient(135deg, #003366, #0052a3);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 51, 102, 0.2);
+  text-transform: capitalize;
+}
+
+.small-now-btn:hover {
+  background: linear-gradient(135deg, #0052a3, #003366);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+}
+
+.small-now-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 51, 102, 0.2);
+}
+
+.small-now-btn:disabled {
+  background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+/* Different button colors for different actions */
+.small-now-btn:nth-child(2) {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.small-now-btn:nth-child(2):hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.small-now-btn:nth-child(3) {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.small-now-btn:nth-child(3):hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+@media (max-width: 500px) {
+  .invest-now-container {
+    gap: 6px;
+  }
+  
+  .small-now-btn {
+    min-width: 80px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* New Plan Card Design */
+.plan-card-new {
+  position: relative;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e8f0f7 100%);
+  border-radius: 6px;
+  padding: 20px 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.limited-badge {
+  position: absolute;
+  /* top: 10px; */
+  right: 10px;
+  background: #ef4444;
+  color: white;
+  padding: 3px 5px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 10;
+}
+
+.plan-card-top {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 1px;
+}
+
+.plan-product-image {
+  position: relative;
+  width: 120px;
+  height: 140px;
+  min-width: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.plan-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.plan-product-image .no-image {
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: center;
+}
+
+.image-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  z-index: 5;
+  backdrop-filter: blur(4px);
+}
+
+.plan-product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-title {
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: left;
+  margin: 0;
+  line-height: 1;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label-new {
+  font-size: 14px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.detail-value-new {
+  font-size: 16px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.cycle-info {
+  font-size: 15px;
+  color: #64748b;
+  margin-bottom: 16px;
+  padding-left: 4px;
+}
+
+.buy-now-btn {
+  width: fit-content;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: right;
+  padding: 6px 16px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.buy-now-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.buy-now-btn:active {
+  transform: translateY(0);
+}
+
+.buy-now-btn:disabled {
+  background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 500px) {
+  .plan-card-top {
+    gap: 12px;
+  }
+  
+  .plan-product-image {
+    width: 100px;
+    height: 133px;
+    min-width: 100px;
+  }
+  
+  .image-badge {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+  
+  .product-title {
+    font-size: 16px;
+  }
+  
+  .detail-label-new {
+    font-size: 13px;
+  }
+  
+  .detail-value-new {
+    font-size: 14px;
+  }
+  
+  .buy-now-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
 }

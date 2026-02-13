@@ -33,6 +33,12 @@ app.use(express.json());
 if (!fs.existsSync('uploads/deposits')) {
   fs.mkdirSync('uploads/deposits', { recursive: true });
 }
+if (!fs.existsSync('uploads/plans')) {
+  fs.mkdirSync('uploads/plans', { recursive: true });
+}
+if (!fs.existsSync('uploads/accounts')) {
+  fs.mkdirSync('uploads/accounts', { recursive: true });
+}
 
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));

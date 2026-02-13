@@ -15,7 +15,9 @@ const Accounts = () => {
         accountTitle: '',
         accountNumber: '',
         bankName: '',
-        accountType: ''
+        accountType: '',
+        tillId: '',
+        qrImage: null
     });
 
     const parseJsonSafe = async (res) => {
@@ -48,21 +50,27 @@ const Accounts = () => {
     useEffect(() => { fetchAccounts(); }, []);
 
     const resetForm = () => {
-        setForm({ accountTitle: '', accountNumber: '', bankName: '', accountType: '' });
+        setForm({ accountTitle: '', accountNumber: '', bankName: '', accountType: '', tillId: '', qrImage: null });
         setEditingId(null);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        const payload = {
-            account_name: form.accountTitle,
-            account_number: form.accountNumber,
-            bank_name: form.bankName,
-            account_type: form.accountType
-        };
+        const formData = new FormData();
+        formData.append('account_name', form.accountTitle);
+        formData.append('account_number', form.accountNumber);
+        formData.append('bank_name', form.bankName);
+        formData.append('account_type', form.accountType);
+        formData.append('till_id', form.tillId || '');
+        if (form.qrImage) {
+            formData.append('qr_image', form.qrImage);
+        }
 
         const isEdit = !!editingId;
+        if (!isEdit) {
+            formData.append('status', 'active');
+        }
         const url = isEdit
             ? `/api/auth/adminaccounts/${editingId}`
             : '/api/auth/adminaccounts';
@@ -71,8 +79,7 @@ const Accounts = () => {
         try {
             const res = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(isEdit ? payload : { ...payload, status: 'active' })
+                body: formData
             });
             const data = await parseJsonSafe(res);
             if (res.ok) {
@@ -139,12 +146,20 @@ const Accounts = () => {
             accountTitle: account.account_name || '',
             accountNumber: account.account_number || '',
             bankName: account.bank_name || '',
-            accountType: account.account_type || ''
+            accountType: account.account_type || '',
+            tillId: account.till_id || '',
+            qrImage: null
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+
+    const handleQrImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setForm((f) => ({ ...f, qrImage: e.target.files[0] }));
+        }
+    };
 
     return (
         <div className="main-wrapper">
@@ -206,6 +221,29 @@ const Accounts = () => {
                                     required
                                 />
                             </div>  
+                            <div className="input-group">
+                                <label>Till ID</label>
+                                <input
+                                    type="text"
+                                    name="tillId"
+                                    value={form.tillId}
+                                    onChange={onChange}
+                                    placeholder="Enter Till ID"
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label>QR Image</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleQrImageChange}
+                                />
+                                {form.qrImage && (
+                                    <span style={{ fontSize: '12px', color: 'green', marginTop: '5px', display: 'block' }}>
+                                        Selected: {form.qrImage.name}
+                                    </span>
+                                )}
+                            </div>
                             {error && <p style={{ color: 'red' }}>{error}</p>}
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <button type="submit" className="add-account-btn">
@@ -229,6 +267,15 @@ const Accounts = () => {
                         ) : (
                             accounts.map((account) => (
                                 <div className="plan-card" key={account._id} style={{ opacity: account.status === 'inactive' ? 0.6 : 1 }}>
+                                    {account.qr_image_path && (
+                                        <div style={{ marginBottom: '10px' }}>
+                                            <img
+                                                src={`/${account.qr_image_path}`}
+                                                alt="QR"
+                                                style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '10px' }}
+                                            />
+                                        </div>
+                                    )}
                                     <div className="plan-details-grid">
                                         <div className="detail-row">
                                             <span className="detail-label">Account title</span>
@@ -237,6 +284,10 @@ const Accounts = () => {
                                         <div className="detail-row">
                                             <span className="detail-label">Account number</span>
                                             <span className="detail-value text-purple">{account.account_number}</span>
+                                        </div>
+                                        <div className="detail-row">
+                                            <span className="detail-label">Till ID</span>
+                                            <span className="detail-value text-bold">{account.till_id || '-'}</span>
                                         </div>
                                         <div className="detail-row">
                                             <span className="detail-label">Account type</span>

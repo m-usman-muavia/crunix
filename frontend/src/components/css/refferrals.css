@@ -300,18 +300,13 @@
 
 /* Deposit Form Styles */
 .deposit-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    transition: all 0.3s ease;
-
+  background: linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+  border: 1px solid #dbe7f5;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  transition: all 0.3s ease;
   margin: 20px;
-  /* padding: 20px;
-  background-color: #f1f5f9;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); */
 }
 
 .deposit-section form {
@@ -331,65 +326,124 @@
 .deposit-label {
   text-align: left;
   font-weight: 600;
-  color: #0f172a;
-  font-size: 14px;
+  color: #1f2937;
+  font-size: 13px;
+  letter-spacing: 0.02em;
 }
 
 .deposit-input,
 .deposit-select {
-  padding: 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1px solid #d1e0f2;
+  border-radius: 12px;
   font-size: 14px;
-  background-color: white;
+  background-color: #ffffff;
   color: #0f172a;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .deposit-input:focus,
 .deposit-select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 /* Payment Details Section */
 .payment-details-section {
-  background: linear-gradient(135deg, #f1f5f9 0%, #f1f5f9 100%);
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px 20px;
-    margin: 20px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    transition: all 0.3s ease;
-
-  /* margin: 20px;
-  padding: 20px;
-  text-align: left;
-  background-color: #f1f5f9;
-  border-radius: 12px;
-  box-shadow: 12px rgba(0, 0, 0, 0.05); */
+  background: linear-gradient(135deg, #eef5ff 0%, #f8fbff 100%);
+  border: 1px solid #dbe7f5;
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+  transition: all 0.3s ease;
 }
-.payment-details{
-  justify-content: space-between;
+.payment-details,
+.payment-details-body {
   display: flex;
-  align-items: top;
+  align-items: flex-start;
+}
 
+.payment-details-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .payment-details-title {
-  margin: 0 0 15px 0;
+  margin: 0;
   color: #0f172a;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.payment-details-subtitle {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .payment-details-card {
-  align-items: left;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 10px 0 4px 0;
+}
+
+.payment-qr {
+  width: 140px;
+  height: 140px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #dbe7f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
+}
+
+.payment-qr-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.payment-qr-placeholder {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.payment-till {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.payment-label {
+  color: #475569;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.payment-value {
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  text-align: left;
 }
 
 /* Admin users grid */
@@ -614,4 +668,177 @@
   display: flex;
   gap: 0px;
   transition: all 0.3s ease;
+}
+
+/* Add Plans Section Styles */
+.addplans-section {
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.addplans-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.addplans-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.addplans-header {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 20px 0;
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.addplans-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.addplans-form .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addplans-form .input-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.addplans-form .input-group input[type="text"],
+.addplans-form .input-group input[type="number"],
+.addplans-form .input-group input[type="file"] {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 15px;
+  color: #0f172a;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.addplans-form .input-group input[type="text"]:focus,
+.addplans-form .input-group input[type="number"]:focus,
+.addplans-form .input-group input[type="file"]:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background-color: #ffffff;
+}
+
+.addplans-form .input-group input[type="text"]::placeholder,
+.addplans-form .input-group input[type="number"]::placeholder {
+  color: #94a3b8;
+}
+
+.addplans-form .input-group input[type="file"] {
+  padding: 10px;
+  cursor: pointer;
+  border-style: dashed;
+}
+
+.addplans-form .input-group input[type="file"]:hover {
+  border-color: #3b82f6;
+  background-color: #f8fafc;
+}
+
+.addplan-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #003366, #0052a3);
+  border: none;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 51, 102, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.addplan-btn:hover {
+  background: linear-gradient(135deg, #0052a3, #003366);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 51, 102, 0.3);
+}
+
+.addplan-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 51, 102, 0.2);
+}
+
+.addplan-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Button container for multiple buttons */
+.addplans-form > div[style*="display: flex"] {
+  gap: 12px;
+}
+
+.addplans-form > div[style*="display: flex"] .addplan-btn {
+  flex: 1;
+}
+
+.addplans-form > div[style*="display: flex"] .addplan-btn:last-child {
+  background: linear-gradient(135deg, #64748b, #475569);
+}
+
+.addplans-form > div[style*="display: flex"] .addplan-btn:last-child:hover {
+  background: linear-gradient(135deg, #475569, #334155);
+}
+
+/* Form validation styles */
+.addplans-form .input-group input:invalid {
+  border-color: #ef4444;
+}
+
+.addplans-form .input-group input:valid {
+  border-color: #10b981;
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+  .addplans-section {
+    padding: 15px;
+  }
+  
+  .addplans-card {
+    padding: 18px;
+  }
+  
+  .addplans-header {
+    font-size: 18px;
+  }
+  
+  .addplans-form .input-group input {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+  
+  .addplan-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
 }

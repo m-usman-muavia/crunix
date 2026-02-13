@@ -16,7 +16,9 @@ const AddPlans = () => {
         planTitle: '',
         investmentAmount: '',
         dailyProfit: '',
-        duration: ''
+        duration: '',
+        purchaseLimit: '',
+        image: null
     });
 
     const parseJsonSafe = async (res) => {
@@ -44,19 +46,26 @@ const AddPlans = () => {
     useEffect(() => { fetchPlans(); }, []);
 
     const resetForm = () => {
-        setForm({ planTitle: '', investmentAmount: '', dailyProfit: '', duration: '' });
+        setForm({ planTitle: '', investmentAmount: '', dailyProfit: '', duration: '', purchaseLimit: '', image: null });
         setEditingId(null);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        const payload = {
-            name: form.planTitle,
-            investment_amount: Number(form.investmentAmount),
-            daily_profit: Number(form.dailyProfit),
-            duration_days: Number(form.duration)
-        };
+        
+        const formData = new FormData();
+        formData.append('name', form.planTitle);
+        formData.append('investment_amount', form.investmentAmount);
+        formData.append('daily_profit', form.dailyProfit);
+        formData.append('duration_days', form.duration);
+        formData.append('purchase_limit', form.purchaseLimit || 0);
+        if (!editingId) {
+            formData.append('status', 'active');
+        }
+        if (form.image) {
+            formData.append('image', form.image);
+        }
 
         const isEdit = !!editingId;
         const url = isEdit
@@ -67,8 +76,7 @@ const AddPlans = () => {
         try {
             const res = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(isEdit ? payload : { ...payload, status: 'active' })
+                body: formData
             });
             const data = await parseJsonSafe(res);
             if (res.ok) {
@@ -135,12 +143,20 @@ const AddPlans = () => {
             planTitle: plan.name || '',
             investmentAmount: plan.investment_amount || '',
             dailyProfit: plan.daily_profit || '',
-            duration: plan.duration_days || ''
+            duration: plan.duration_days || '',
+            purchaseLimit: plan.purchase_limit || '',
+            image: null
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+    
+    const handleImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setForm((f) => ({ ...f, image: e.target.files[0] }));
+        }
+    };
 
     const filteredPlans = showInactive 
         ? plans 
@@ -179,7 +195,30 @@ const AddPlans = () => {
                                 />
                             </div>
 
-                            <div style={{ display: 'flex', gap: '0px', margin: '1px' }}>
+                            <div className="input-group">
+                                <label>
+                                    Plan Image <span style={{ color: 'gray', fontSize: '12px' }}>(Optional)</span>
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    style={{
+                                        padding: '10px',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '8px',
+                                        fontSize: '14px',
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                                {form.image && (
+                                    <span style={{ fontSize: '12px', color: 'green', marginTop: '5px', display: 'block' }}>
+                                        Selected: {form.image.name}
+                                    </span>
+                                )}
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
                                 <div className="input-group" style={{ flex: 1, margin: '0px' }}>
                                     <label>
                                         Investment Amount (Rs) <span style={{ color: 'red' }}>*</span>
@@ -194,7 +233,7 @@ const AddPlans = () => {
                                     />
                                 </div>
 
-                                <div className="input-group" style={{ flex: 1 }}>
+                                <div className="input-group" style={{ flex: 1, margin: '0px' }}>
                                     <label>
                                         Daily Profit (Rs) <span style={{ color: 'red' }}>*</span>
                                     </label>
@@ -220,6 +259,20 @@ const AddPlans = () => {
                                     onChange={onChange}
                                     placeholder="Enter Duration in Days"
                                     required
+                                />
+                            </div>
+
+                            <div className="input-group">
+                                <label>
+                                    Purchase Limit <span style={{ color: 'gray', fontSize: '12px' }}>(0 = Unlimited)</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    name="purchaseLimit"
+                                    value={form.purchaseLimit}
+                                    onChange={onChange}
+                                    placeholder="Enter Purchase Limit (0 for unlimited)"
+                                    min="0"
                                 />
                             </div>
 
@@ -254,6 +307,26 @@ const AddPlans = () => {
                     {!loading && filteredPlans.length === 0 && <p>No plans found.</p>}
                     {!loading && filteredPlans.map((plan) => (
                         <div className="plan-card" key={plan._id} style={{ opacity: plan.status === 'inactive' ? 0.6 : 1 }}>
+                            {plan.image_path && (
+                                <div style={{ 
+                                    width: '100%', 
+                                    height: '150px', 
+                                    overflow: 'hidden',
+                                    borderRadius: '12px 12px 0 0',
+                                    marginBottom: '12px'
+                                }}>
+                                    <img 
+                                        src={`/${plan.image_path}`} 
+                                        alt={plan.name}
+                                        style={{ 
+                                            width: '100%', 
+                                            height: '100%', 
+                                            objectFit: 'cover' 
+                                        }}
+                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                </div>
+                            )}
                             <div className="plan-card-header">
                                 <h3 className="plan-title">{plan.name}</h3>
                                 <span className="percentage-badge" style={{ color: plan.status === 'active' ? 'green' : 'red' }}>
@@ -277,6 +350,12 @@ const AddPlans = () => {
                                 <div className="detail-row">
                                     <span className="detail-label">Total Return</span>
                                     <span className="detail-value text-green">Rs {plan.total_profit}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Purchase Limit</span>
+                                    <span className="detail-value text-bold">
+                                        {plan.purchase_limit === 0 || !plan.purchase_limit ? 'Unlimited' : `${plan.purchase_limit} times`}
+                                    </span>
                                 </div>
                             </div>
                             <div className="invest-now-container">

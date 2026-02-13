@@ -5,6 +5,7 @@ const UserPlan = require('../models/userplan');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 // Set up the "Post Office" (Sender)
 const transporter = nodemailer.createTransport({
@@ -20,6 +21,15 @@ const transporter = nodemailer.createTransport({
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        // Check database connection
+        const mongoose = require('mongoose');
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ 
+                message: 'Database connection unavailable. Please ensure MongoDB is connected and your IP is whitelisted.',
+                error: 'DB_CONNECTION_ERROR'
+            });
+        }
 
         // Check if user exists
         const user = await User.findOne({ email });
@@ -56,8 +66,20 @@ const login = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Login error:', error.message);
-        res.status(500).json({ message: 'Server error during login. Please try again.' });
+        console.error('Login error:', error);
+        console.error('Error details:', error.message, error.stack);
+        
+        if (error.name === 'MongooseError' || error.name === 'MongoServerError') {
+            return res.status(503).json({ 
+                message: 'Database connection error. Please check if MongoDB is connected.',
+                error: 'DB_ERROR'
+            });
+        }
+        
+        res.status(500).json({ 
+            message: 'Server error during login. Please try again.',
+            error: error.message
+        });
     }
 };
 
@@ -68,6 +90,15 @@ exports.login = login;
 exports.register = async (req, res) => {
     try {
         const { email, name, password, referralCode } = req.body;
+
+        // Check database connection
+        const mongoose = require('mongoose');
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ 
+                message: 'Database connection unavailable. Please ensure MongoDB is connected and your IP is whitelisted.',
+                error: 'DB_CONNECTION_ERROR'
+            });
+        }
 
         // Validate input
         if (!email || !name || !password) {
@@ -205,9 +236,27 @@ exports.register = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Registration error:', error.message || error);
-        console.error('Full error:', error);
-        res.status(500).json({ message: 'Server error during registration', error: error.message });
+        console.error('Registration error:', error);
+        console.error('Error details:', error.message, error.stack);
+        
+        if (error.name === 'MongooseError' || error.name === 'MongoServerError') {
+            return res.status(503).json({ 
+                message: 'Database connection error. Please check if MongoDB is connected.',
+                error: 'DB_ERROR'
+            });
+        }
+        
+        if (error.code === 11000) {
+            return res.status(400).json({ 
+                message: 'Email already exists. Please use a different email.',
+                error: 'DUPLICATE_EMAIL'
+            });
+        }
+        
+        res.status(500).json({ 
+            message: 'Server error during registration', 
+            error: error.message 
+        });
     }
 };
 
@@ -276,7 +325,7 @@ exports.getAdminAccounts = async (req, res) => {
 // Admin: Add new bank account
 exports.addAdminAccount = async (req, res) => {
     try {
-        const { account_name, account_number, bank_name, account_type, status } = req.body;
+        const { account_name, account_number, bank_name, account_type, status, till_id } = req.body;
         
         // Validate required fields
         if (!account_name || !account_number || !bank_name || !account_type) {
@@ -303,7 +352,9 @@ exports.addAdminAccount = async (req, res) => {
             account_number,
             bank_name,
             account_type,
-            status: status || 'active'
+            status: status || 'active',
+            till_id: till_id || '',
+            qr_image_path: req.file ? req.file.path : ''
         });
 
         await newAccount.save();
@@ -327,7 +378,7 @@ exports.updateAdminAccount = async (req, res) => {
     try {
         const BankAccount = require('../models/bankaccount');
         const { id } = req.params;
-        const { account_name, account_number, bank_name, account_type, status } = req.body;
+        const { account_name, account_number, bank_name, account_type, status, till_id } = req.body;
 
         const account = await BankAccount.findById(id);
         if (!account) {
@@ -339,6 +390,14 @@ exports.updateAdminAccount = async (req, res) => {
         if (bank_name !== undefined) account.bank_name = bank_name;
         if (account_type !== undefined) account.account_type = account_type;
         if (status !== undefined) account.status = status;
+        if (till_id !== undefined) account.till_id = till_id;
+
+        if (req.file) {
+            if (account.qr_image_path && fs.existsSync(account.qr_image_path)) {
+                fs.unlinkSync(account.qr_image_path);
+            }
+            account.qr_image_path = req.file.path;
+        }
 
         await account.save();
 
@@ -358,6 +417,10 @@ exports.deleteAdminAccount = async (req, res) => {
         const deleted = await BankAccount.findByIdAndDelete(id);
         if (!deleted) {
             return res.status(404).json({ success: false, message: 'Account not found' });
+        }
+
+        if (deleted.qr_image_path && fs.existsSync(deleted.qr_image_path)) {
+            fs.unlinkSync(deleted.qr_image_path);
         }
 
         res.status(200).json({ success: true, message: 'Account deleted' });

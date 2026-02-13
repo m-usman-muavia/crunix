@@ -62,55 +62,66 @@ const Login = () => {
   };
 
   return (
-    <div className="main-wrapper">
-      <div className="login-container">
-        <div className="login-card">
-          <Logo />
-          
-          <h1 className="title">Welcome to PayzoPk Investments</h1>
-          <p className="subtitle">Sign in to continue</p>
+    <div className="login-page">
+      <div className="login-gradient-wrapper">
+        
+          <div className="login-brand">
+            <Logo />
+          </div>
+
+          <div className="login-card">
+          <h1 className="login-title">Welcome Back</h1>
+          <p className="login-subtitle">Enter your details below</p>
 
           <form className="login-form" onSubmit={handleSubmit}>
-            <div className="input-group">
-              <label>Email</label>
-              <div className="input-wrapper">
-                <span className="icon">✉</span>
-                <input 
-                  type="email" 
-                  placeholder="you@example.com" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required 
-                />
-              </div>
+            <div className="input-field">
+              <input
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
 
-            <div className="input-group">
-              <label>Password</label>
-              <div className="input-wrapper">
-                <span className="icon">🔒</span>
-                <input 
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required 
-                />
-              </div>
+            <div className="input-field password-field">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="toggle-btn"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 5c5.05 0 9.27 3.12 11 7-1.73 3.88-5.95 7-11 7S2.73 15.88 1 12c1.73-3.88 5.95-7 11-7zm0 2c-3.76 0-7.12 2.05-8.68 5 1.56 2.95 4.92 5 8.68 5s7.12-2.05 8.68-5C19.12 9.05 15.76 7 12 7zm0 2.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
             </div>
 
-            {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '10px' }}>{error}</p>}
+            {error && <p className="login-error">{error}</p>}
 
-            <button type="submit" className="sign-in-btn" disabled={loading}>
+            <button type="submit" className="primary-btn" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 
-          <div className="footer-links">
-            <Link to="/forgotpassword" className="link-bold">Forgot password?</Link>
-            <p>Need an account? <Link to="/registration" className="link-bold">Sign up</Link></p>
+          <div className="auth-links-row">
+            <Link to="/forgotpassword" className="forgot-link">Forgot your password?</Link>
+            <span className="links-separator">•</span>
+            <Link to="/registration" className="signup-link">Don't have an account? <span>Sign up</span></Link>
           </div>
-        </div>
+
+          </div>
+  
       </div>
     </div>
   );

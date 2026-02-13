@@ -145,13 +145,26 @@ const Plans = () => {
       <div className="main-container">
         {/* Top Header Section */}
         <header className="plan-header">
-          <div className="plan-avatar"><FontAwesomeIcon icon={faBox} /></div>
           <div className="plan-user-info">
-            <h4 className="plan-username">Plans</h4>
-            <p className="plan-email">سرمایہ کاری کے منصوبے</p>
+            <h4 className="plan-username">Investment Plans</h4>
           </div>
-          <div className="plan-balance">Balance: <span>Rs {balance.toFixed(2)}</span></div>
         </header>
+        
+        <div className="plan-image">
+          <img 
+            src="/planimage.webp" 
+            alt="Investment Plans" 
+            style={{ 
+              width: '100%', 
+              height: '200px', 
+              objectFit: 'cover',
+              borderRadius: '0px 0px 15px 15px',
+              borderBottom: '2px solid #000000',
+            }} 
+          />
+        </div>
+        
+        <div className="plan-balance">Balance: <span>Rs {balance.toFixed(2)}</span></div>
 
         <div className="plan-content">
           {loading ? (
@@ -162,38 +175,69 @@ const Plans = () => {
             <p>No active plans available</p>
           ) : (
             plans.map((plan, index) => (
-              <div className="plan-card" key={plan._id || index}>
-                <div className="plan-card-header">
-                  <h3 className="plan-title">{plan.name}</h3>
-                  <span className="percentage-badge">{plan.roi_percentage}%</span>
-                </div>
+              <div className="plan-card-new" key={plan._id || index}>
+                {/* Limited Badge */}
+                {plan.purchase_limit > 0 && (
+                  <div className="limited-badge">
+                    Limited {(plan.user_purchase_count || 0)}/{plan.purchase_limit}
+                  </div>
+                )}
                 
-                <div className="plan-duration">
-                  <FontAwesomeIcon icon={faClock} className="clock-icon" /> {plan.duration_days} Days
-                </div>
+                {/* Top Section with Image and Details */}
+                <div className="plan-card-top">
+                  {/* Product Image */}
+                  <div className="plan-product-image">
+                    {plan.image_path ? (
+                      <>
+                        <img 
+                          src={`/${plan.image_path}`} 
+                          alt={plan.name}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                        {/* Purchase count badge on image */}
+                        {plan.purchase_limit > 0 && (
+                          <div className="image-badge">
+                            {plan.purchase_limit} Days
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="no-image">No Image</div>
+                    )}
+                  </div>
+                  
+                  {/* Product Info */}
+                  <div className="plan-product-info">
+                    <h3 className="product-title">{plan.name}</h3>
+                    
+                    <div className="product-details">
+                      <div className="detail-item">
+                        <span className="detail-label-new">Price:</span>
+                        <span className="detail-value-new">Rs {plan.investment_amount}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label-new">Daily income:</span>
+                        <span className="detail-value-new">Rs {plan.daily_profit}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label-new">Total income:</span>
+                        <span className="detail-value-new">Rs {plan.total_profit}</span>
+                      </div>
+                    </div>
 
-                <div className="plan-details-grid">
-                  <div className="detail-row">
-                    <span className="detail-label">Investment</span>
-                    <span className="detail-value text-bold">Rs {plan.investment_amount}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="detail-label">Daily Income</span>
-                    <span className="detail-value text-purple">Rs {plan.daily_profit}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="detail-label">Total Return</span>
-                    <span className="detail-value text-green">Rs {plan.total_profit}</span>
-                  </div>
-                </div>
-
-                <button 
-                  className="invest-now-btn"
+                    <button 
+                  className="buy-now-btn"
                   onClick={() => handleInvestClick(plan)}
-                  disabled={loadingInvest}
+                  disabled={loadingInvest || (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit)}
                 >
-                  <FontAwesomeIcon icon={faChartLine} /> {loadingInvest ? 'Loading...' : 'Invest Now'}
+                  {loadingInvest ? 'Loading...' : 
+                   (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'LIMIT REACHED' : 
+                   'BUY NOW'}
                 </button>
+                  </div>
+                </div>
+              
+              
               </div>
             ))
           )}

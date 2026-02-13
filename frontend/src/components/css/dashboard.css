@@ -296,7 +296,7 @@ font-size: 20px;
   bottom: 0;
   width: 100%;
   max-width: 400px;
-  background: linear-gradient(135deg, #22d3ee, #16a34a);
+  background-color: #FFFFFF;
   display: flex;
   justify-content: space-around;
   padding: 10px 0 8px 0;

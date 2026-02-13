@@ -18,6 +18,14 @@ const bankAccountSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    till_id: {
+        type: String,
+        default: ''
+    },
+    qr_image_path: {
+        type: String,
+        default: ''
+    },
     status: {
         type: String,
         enum: ['active', 'inactive'],

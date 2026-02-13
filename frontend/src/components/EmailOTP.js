@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft,faShieldAlt } from '@fortawesome/free-solid-svg-icons';
-import './css/emailOTP.css';
-import './css/dashboard.css';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import './css/login.css';
+import './css/style.css';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logo from './logo';
-import './css/style.css';
-import './css/profile.css';
 import axios from 'axios';
 import API_BASE_URL from '../config/api';
 
@@ -47,42 +45,51 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="main-wrapper">
-      <div className="main-container">
+    <div className="login-page">
+      <div className="login-gradient-wrapper">
+
+        <div className="login-brand">
+          <Logo />
+        </div>
+
         <div className="login-card">
           <Link to="/" className="back-link">
             <FontAwesomeIcon icon={faArrowLeft} /> Back to sign in
           </Link>
-          <Logo />  
-          <h1 className="title">Verify your email</h1>
-          <p className="subtitle">We've sent a 6-digit code to</p>
-            <p className="email-address">
-              {email}
-            </p>
-          <form className="otp-form" onSubmit={handleSubmit}>
-            <div className="input-group">
-              <label>Enter OTP</label>
-              <div className="input-wrapper">
-                <span className="icon">🔐</span>
-                <input 
-                  type="text" 
-                  placeholder="000000" 
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  maxLength="6"
-                  required
-                  className="otp-input"
-                  autoFocus
-                />
-              </div>
+
+          <h1 className="login-title">Verify your email</h1>
+          <p className="login-subtitle">We've sent a 6-digit code to</p>
+          <p className="email-display">{email}</p>
+
+          <form className="login-form" onSubmit={handleSubmit}>
+            <div className="input-field">
+              <input 
+                type="text" 
+                placeholder="Enter 6-digit OTP" 
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                maxLength="6"
+                required
+                autoFocus
+              />
             </div>
+
             <p className="otp-instruction">Enter the 6-digit verification code sent to your email</p>
-            {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
-            <button type="submit" className="sign-in-btn" disabled={loading}>
+
+            {error && <p className="login-error">{error}</p>}
+
+            <button type="submit" className="primary-btn" disabled={loading}>
               {loading ? 'Verifying...' : 'Verify Email'}
             </button>
           </form>
+
+          <div className="auth-links-row">
+            <span className="resend-text">Didn't receive code?</span>
+            <span className="links-separator">•</span>
+            <Link to="/" className="forgot-link">Resend OTP</Link>
+          </div>
         </div>
+
       </div>
     </div>
   );

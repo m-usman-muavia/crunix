@@ -29,6 +29,15 @@ const planSchema = new mongoose.Schema({
     type: String, 
     enum: ['active', 'inactive'], 
     default: 'inactive' 
+  },
+  image_path: {
+    type: String,
+    default: ''
+  },
+  purchase_limit: {
+    type: Number,
+    default: 0,
+    min: 0
   }
 }, { timestamps: true });
 

@@ -23,7 +23,9 @@ router.get('/active', async (req, res) => {
       investment_amount: plan.investment_amount,
       daily_profit: plan.daily_profit,
       total_profit: plan.total_profit,
-      status: plan.status
+      status: plan.status,
+      image_path: plan.image_path,
+      purchase_limit: plan.purchase_limit
     }));
     
     res.json(transformedPlans);
