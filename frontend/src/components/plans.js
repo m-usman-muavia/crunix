@@ -182,7 +182,7 @@ const Plans = () => {
                     {plan.image_path ? (
                       <>
                         <img 
-                          src={`/${plan.image_path}`} 
+                          src={`${API_BASE_URL}/${plan.image_path}`} 
                           alt={plan.name}
                           onError={(e) => { e.target.style.display = 'none'; }}
                         />
