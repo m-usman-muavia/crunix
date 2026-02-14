@@ -1,9 +1,9 @@
-// Use REACT_APP_API_URL environment variable if set, otherwise use default
-// In production (Heroku), use empty string for relative paths since backend and frontend are on same server
-// In development, use localhost:5000
+// Determine API base URL
+// If REACT_APP_API_URL is set in environment, use it
+// Otherwise, check if we're on localhost (development) or production
 const API_BASE_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' 
-    ? '' // Empty string makes API calls relative in production
-    : 'http://localhost:5000');
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : ''); // Use relative paths in production
 
 export default API_BASE_URL;
