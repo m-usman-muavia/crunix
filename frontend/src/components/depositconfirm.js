@@ -160,7 +160,7 @@ const DepositConfirm = () => {
                 <div className="payment-qr">
                   {account.qrImagePath ? (
                     <img
-                      src={`${API_BASE_URL}/${account.qrImagePath}`}
+                      src={`/${account.qrImagePath}`}
                       alt="QR code"
                       className="payment-qr-image"
                     />
