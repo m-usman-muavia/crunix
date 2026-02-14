@@ -28,7 +28,7 @@ body {
   width: 100%;
   max-width: 400px;
   min-height: 100vh;
-  background: url('C:\Users\musma\Downloads\React\PayzoPAK\Crunix\frontend\public\loginbkimage.png')  ;
+  background: url('../../../public/loginbkimage.png');
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -385,9 +385,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  .login-page {
-    padding: 16px;
-  }
+
 
   .login-card {
 
