@@ -13,7 +13,7 @@ body {
   max-width: 1500px;
   min-height: 100vh;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: #e6e9ff;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,7 +28,7 @@ body {
   width: 100%;
   max-width: 400px;
   min-height: 100vh;
-  background: url('../../assets/Loginbkimage.png') center/cover no-repeat;
+  background: url('C:\Users\musma\Downloads\React\PayzoPAK\Crunix\frontend\public\loginbkimage.png')  ;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -200,7 +200,7 @@ body {
 .primary-btn {
   width: 100%;
   border: none;
-  border-radius: 14px;
+  border-radius: 6px;
   padding: 13px;
   background: linear-gradient(135deg, #003366, #0055A4, #003366);
   color: #ffffff;

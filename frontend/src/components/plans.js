@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faHouse, faBox, faArrowDown, faArrowUp, 
-  faUsers, faUser, faClock, faChartLine 
-} from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { faClock, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import InvestModal from './InvestModal';
 import './css/dashboard.css';
 import './css/style.css';
 import './css/plans.css';
 import API_BASE_URL from '../config/api';
+import BottomNav from './BottomNav';
 
 const Plans = () => {
   const [plans, setPlans] = useState([]);
@@ -144,11 +141,7 @@ const Plans = () => {
     <div className="main-wrapper">
       <div className="main-container">
         {/* Top Header Section */}
-        <header className="plan-header">
-          <div className="plan-user-info">
-            <h4 className="plan-username">Investment Plans</h4>
-          </div>
-        </header>
+        <div className="deposit-header">Investment Plans</div>
         
         <div className="plan-image">
           <img 
@@ -164,7 +157,6 @@ const Plans = () => {
           />
         </div>
         
-        <div className="plan-balance">Balance: <span>Rs {balance.toFixed(2)}</span></div>
 
         <div className="plan-content">
           {loading ? (
@@ -243,45 +235,8 @@ const Plans = () => {
           )}
         </div>
 
-        {/* Bottom Navigation Section */}
-        <nav className="bottom-nav">
-          <div className="nav-item">
-            <Link to="/dashboard" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faHouse} />
-              <span>Dashboard</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/plans" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faBox} />
-              <span>Plans</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/deposit" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowDown} />
-              <span>Deposit</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/withdrawal" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowUp} />
-              <span>Withdraw</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/refferrals" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUsers} />
-              <span>Referral</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/profile" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUser} />
-              <span>Profile</span>
-            </Link>
-          </div>
-        </nav>
+        {/* Bottom Navigation */}
+        <BottomNav />
       </div>
 
       <InvestModal 

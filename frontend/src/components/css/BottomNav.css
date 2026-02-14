@@ -1,0 +1,133 @@
+.modern-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 400px;
+  height: 50px;
+  background: linear-gradient(135deg, #003366, #0055A4, #003366);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 10px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.nav-item-modern {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 8px;
+  min-width: 60px;
+}
+
+.nav-item-modern svg {
+  font-size: 18px;
+}
+
+.nav-item-modern span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.nav-item-modern:hover {
+  color: #cfcfcf;
+}
+
+.nav-item-modern.active {
+  color: #ffffff;
+}
+
+/* Center elevated deposit button */
+.nav-item-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  text-decoration: none;
+  color: #ffffff;
+  position: relative;
+  margin-top: -30px;
+}
+
+.center-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(180deg, #003366, #0055a4b9, #003366);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(91, 79, 245, 0.4);
+  transition: all 0.3s ease;
+  border: 3px solid #1a1d29;
+}
+
+.center-icon-wrapper svg {
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.nav-item-center span {
+  font-size: 11px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.nav-item-center:hover .center-icon-wrapper {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(91, 79, 245, 0.5);
+}
+
+.nav-item-center:active .center-icon-wrapper {
+  transform: scale(0.95);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .modern-bottom-nav {
+    padding: 0 10px;
+  }
+
+  .nav-item-modern {
+    min-width: 50px;
+    padding: 8px 6px;
+  }
+
+  .nav-item-modern svg {
+    font-size: 20px;
+  }
+
+  .nav-item-modern span {
+    font-size: 10px;
+  }
+
+  .center-icon-wrapper {
+    width: 52px;
+    height: 52px;
+  }
+
+  .center-icon-wrapper svg {
+    font-size: 22px;
+  }
+
+  .nav-item-center span {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .nav-item-modern span,
+  .nav-item-center span {
+    font-size: 9px;
+  }
+}

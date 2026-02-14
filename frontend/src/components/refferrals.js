@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faClock, faChartLine, faCopy, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { faCopy, faCheck, faBox, faLock } from '@fortawesome/free-solid-svg-icons';
 import './css/style.css';
 import './css/refferrals.css';
 import API_BASE_URL from '../config/api';
+import BottomNav from './BottomNav';
 
 const Refferrals = () => {
   const [balance, setBalance] = useState(0);
@@ -342,45 +342,8 @@ const Refferrals = () => {
 
         {/* Updated Plan Content Section */}
 
-        {/* Bottom Navigation Section */}
-        <nav className="bottom-nav">
-          <div className="nav-item">
-            <Link to="/dashboard" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faHouse} />
-              <span>Dashboard</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/plans" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faBox} />
-              <span>Plans</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/deposit" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowDown} />
-              <span>Deposit</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/withdrawal" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowUp} />
-              <span>Withdraw</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/refferrals" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUsers} />
-              <span>Referral</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/profile" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUser} />
-              <span>Profile</span>
-            </Link>
-          </div>
-        </nav>
+        {/* Bottom Navigation */}
+        <BottomNav />
       </div>
     </div>
   );

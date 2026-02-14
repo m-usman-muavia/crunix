@@ -333,9 +333,9 @@
 
 .deposit-input,
 .deposit-select {
-  padding: 12px 14px;
+  padding: 8px 12px;
   border: 1px solid #d1e0f2;
-  border-radius: 12px;
+  border-radius: 6px;
   font-size: 14px;
   background-color: #ffffff;
   color: #0f172a;
@@ -351,7 +351,8 @@
 
 /* Payment Details Section */
 .payment-details-section {
-  background: linear-gradient(135deg, #eef5ff 0%, #f8fbff 100%);
+  /* background: linear-gradient(135deg, #eef5ff 0%, #f8fbff 100%); */
+  background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7fb 100%);
   border: 1px solid #dbe7f5;
   border-radius: 16px;
   padding: 18px 20px;
@@ -431,6 +432,7 @@
 }
 
 .payment-label {
+  text-align: left;
   color: #475569;
   font-weight: 700;
   font-size: 12px;
@@ -444,6 +446,33 @@
   font-size: 18px;
   letter-spacing: 0.02em;
   text-align: left;
+}
+
+.copy-till-btn {
+  background: linear-gradient(135deg, #003366, #0055A4, #003366);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  margin-top: 4px;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.copy-till-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+}
+
+.copy-till-btn:active {
+  transform: translateY(0);
 }
 
 /* Admin users grid */
@@ -589,6 +618,32 @@
   text-align: right;
 }
 
+.withdrawal-balance-card {
+  margin: 20px;
+  padding: 0px 15px;
+  background: linear-gradient(135deg,#eaf4ff 100%, #ffffff 50%, #eaf4ff 100%);
+  border: 2px solid #0055A4;
+  border-radius: 8px;
+  text-align: left;
+
+}
+.withdrawal-main-balance{
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.withdrawal-sub-balance{
+  margin-top: -10px;
+  padding: 0px 10px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+}
+.withdrawal-main-balance-label{
+  font-size: 18px;
+  color: #475569;
+  font-weight: 600;
+}
 /* File Upload Area */
 .file-upload-area {
   position: relative;
@@ -607,13 +662,13 @@
   padding: 30px;
   border: 2px dashed #cbd5e1;
   border-radius: 8px;
-  background-color: white;
+      background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7fb 100%);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .file-label:hover {
-  border-color: #667eea;
+  border-color:  #003366;  
   background-color: #f8f9ff;
 }
 

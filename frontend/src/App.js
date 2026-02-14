@@ -5,6 +5,7 @@ import Registration from './components/registration'; // Make sure this file exi
 import Dashboard from './components/dashboard';
 import Plan from './components/plans';
 import Deposit  from './components/deposit';
+import DepositConfirm from './components/depositconfirm';
 import Withdrawal from './components/withdrawal';
 import Transactions from './components/transactions';
 import Refferrals from './components/refferrals';
@@ -34,6 +35,7 @@ function App() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/plans" element={<ProtectedRoute><Plan /></ProtectedRoute>} />
         <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
+        <Route path="/depositconfirm" element={<ProtectedRoute><DepositConfirm /></ProtectedRoute>} />
         <Route path="/withdrawal" element={<ProtectedRoute><Withdrawal /></ProtectedRoute>} />
         <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
         <Route path="/refferrals" element={<ProtectedRoute><Refferrals /></ProtectedRoute>} />

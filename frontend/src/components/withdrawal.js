@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock, faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faClock, faChartLine, faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';
 import './css/style.css';
 import './css/refferrals.css';
 import API_BASE_URL from '../config/api';
+import BottomNav from './BottomNav';
 
 const Withdrawal = () => {
   const [balance, setBalance] = useState(0);
+  const [mainBalance, setMainBalance] = useState(0);
+  const [referralEarnings, setReferralEarnings] = useState(0);
+  const [bonusBalance, setBonusBalance] = useState(0);
   const [formData, setFormData] = useState({
     amount: '',
     method: 'jazzcash',
@@ -40,9 +43,15 @@ const Withdrawal = () => {
       const bonus = data.bonus_balance || 0;
       const totalBalance = main + referral + bonus;
       setBalance(totalBalance);
+      setMainBalance(main);
+      setReferralEarnings(referral);
+      setBonusBalance(bonus);
     } catch (err) {
       console.error('Error fetching balance:', err);
       setBalance(0);
+      setMainBalance(0);
+      setReferralEarnings(0);
+      setBonusBalance(0);
     }
   };
 
@@ -127,19 +136,18 @@ const Withdrawal = () => {
     <div className="main-wrapper">
       <div className="main-container">
         {/* Top Header Section */}
-        <header className="plan-header">
-          <div className="plan-avatar"><FontAwesomeIcon icon={faMoneyBillTransfer} /></div>
-          <div className="plan-user-info">
-            <h4 className="plan-username">Withdraw </h4>
-            <p className="plan-email">رقم نکالیں</p>
-          </div>
-                    <div className="plan-balance">Balance: <span>Rs {balance.toFixed(2)}</span></div>
+              <div className="deposit-header">Withdrawal</div>
 
-        </header>
+        <div className="withdrawal-balance-card">
+            <div className="withdrawal-main-balance">
+              <p className="withdrawal-main-balance-label">Total Balance</p>
+              <h2 className="withdrawal-main-balance-amount">${balance.toFixed(2)}</h2>
+            </div>
+          </div>      
 
         <div className="refferrals-section">
           <div className="withdrawal-card">
-            <h3 className="refferrals-header">Withdrawal Now</h3>
+            <h3 className="refferrals-header">Apply for Withdraw</h3>
 
             {message && (
               <div className={messageType === 'error' ? 'error-message' : 'success-message'}>
@@ -150,7 +158,7 @@ const Withdrawal = () => {
             <form onSubmit={handleSubmit} className="deposit-form">
               {/* Withdrawal Amount */}
               <div className="deposit-amount" style={{marginTop: '10px'}}>
-                <label className="deposit-label">Withdrawal Amount (Gross) *</label>
+                <label className="deposit-label">Withdrawal Amount *</label>
                 <input
                   type="number"
                   name="amount"
@@ -214,7 +222,8 @@ const Withdrawal = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="sign-in-btn submit-btn"
+                className="primary-btn"
+                style={{ marginTop: '14px' }}
               >
                 {loading ? 'Processing...' : 'Submit Withdrawal Request'}
               </button>
@@ -224,72 +233,12 @@ const Withdrawal = () => {
 
  
 
-        <div className="how-it-works-section">
-          <div className="how-it-works-card">
-            <div className="how-it-works-header">
-              <span className="how-icon">💳</span>
-              <h3>Withdrawal Rules / قواعد</h3>
-            </div>
-            <ul className="how-it-works-list">
-              <li>Minimum withdrawal: Rs 100</li>
-              <li>
-                10% tax will be deducted from all withdrawals
-              </li>
-              <li>
-                Unlock weekly salary bonuses at milestones
-              </li>
-              <li>
-                Weekly salary continues as long as active investors are maintained
-              </li>
-              {/* <li className="urdu-text">
-        دوستوں کو مدعو کریں، 10% کمائیں اور ہفتہ وار تنخواہ حاصل کریں
-      </li> */}
-            </ul>
-          </div>
-        </div>
 
 
         {/* Updated Plan Content Section */}
 
-        {/* Bottom Navigation Section */}
-        <nav className="bottom-nav">
-          <div className="nav-item">
-            <Link to="/dashboard" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faHouse} />
-              <span>Dashboard</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/plans" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faBox} />
-              <span>Plans</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/deposit" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowDown} />
-              <span>Deposit</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/withdrawal" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowUp} />
-              <span>Withdraw</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/refferrals" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUsers} />
-              <span>Referral</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/profile" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUser} />
-              <span>Profile</span>
-            </Link>
-          </div>
-        </nav>
+        {/* Bottom Navigation */}
+        <BottomNav />
       </div>
     </div>
   );

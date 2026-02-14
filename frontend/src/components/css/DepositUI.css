@@ -1,0 +1,259 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  margin: 0;
+}
+
+.deposit-container {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+}
+
+.deposit-header {
+      background: linear-gradient(135deg, #003366, #0055A4, #003366);   
+  color: white;
+  text-align: center;
+  padding: 18px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.deposit-card {
+  background: white;
+  padding: 20px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-row p {
+  margin: 0;
+  font-size: 14px;
+  color: gray;
+}
+
+.top-row span {
+  color: #003366;
+  font-weight: bold;
+}
+
+.top-row h4 {
+  color: #0055A4;
+  margin: 0;
+  font-weight: bold;
+}
+
+.deposit-card input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 15px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.pkr-text {
+  font-size: 14px;
+  color: #0055A4;
+  margin-top: 8px;
+}
+
+.quick-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 8px;
+}
+
+.quick-buttons button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7fb 100%);
+  border-radius: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.quick-buttons button:hover {
+  background: #e1e1e1;
+  transform: translateY(-2px);
+}
+
+.large-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #f1f1f1;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.large-btn:hover {
+  background: #e1e1e1;
+  transform: translateY(-2px);
+}
+
+.channel-title {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.channels {
+  margin-bottom: 14px;
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.channel-box {
+  flex: 1;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.channel-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.channel-box.active {
+  border-color: #0055A4;
+  background: #eaf4ff;
+}
+
+.channel-name {
+  font-weight: bold;
+  margin: 0;
+  font-size: 14px;
+}
+
+.channel-box span {
+  font-size: 12px;
+  color: rgb(255, 255, 255);
+}
+.channel-box span1{
+  font-size: 12px;
+  color: grey;
+}
+
+.badge {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: linear-gradient(135deg, #003366, #0055A4, #003366);
+  color: white;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+.deposit-btn {
+  width: 100%;
+  background: #178bff;
+  color: white;
+  border: none;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 12px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.deposit-btn:hover {
+  background: #1270d9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(23, 139, 255, 0.4);
+}
+
+.deposit-btn:active {
+  transform: translateY(0);
+}
+
+.notes {
+  margin-top: 18px;
+  padding-left: 18px;
+  font-size: 13px;
+  color: gray;
+}
+
+.notes li {
+  margin-bottom: 6px;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.nav-link-col {
+  color: #6b7280;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link-col:hover {
+  color: #178bff;
+}
+
+.nav-item svg {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 480px) {
+  .deposit-card {
+    padding: 15px;
+    margin: 10px;
+  }
+
+  .channels {
+    flex-direction: column;
+  }
+
+  .quick-buttons {
+    gap: 5px;
+  }
+}

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faChartLine, faBox, faArrowDown, faArrowUp, faUsers, faUser, faCopy, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faCopy, faCheck, faClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp, faFacebook, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import './css/dashboard.css';
 import { Link } from 'react-router-dom';
 import './css/style.css';
 import './css/profile.css';
 import API_BASE_URL from '../config/api';
+import BottomNav from './BottomNav';
 
 const Dashboard = () => {
   const [balance, setBalance] = useState(0);
@@ -230,26 +231,32 @@ const Dashboard = () => {
   return (
     <div className="main-wrapper">
       <div className="main-container">
+            {/* Top Header Section */}
+            <div className="deposit-header">
+              <h4>Home</h4>
+              <div className="helpcenter">
+                <button className="helpcenter-button">icon of customer help</button>
+                <button className="helpcenter-button">icon of messages box</button>
+              </div>
+            </div>
+        
+        <div className="plan-image">
+          <img 
+            src="/planimage.webp" 
+            alt="Investment Plans" 
+            style={{ 
+              width: '100%', 
+              height: '200px', 
+              objectFit: 'cover',
+              borderRadius: '0px 0px 15px 15px',
+              borderBottom: '2px solid #000000',
+            }} 
+          />
+        </div>
+
         {/* Top Header Section */}
         <header className="dashboard-header">
-          <div className="dashboard-content">
-            <div className="dashboard-user-info">
-              <h4 className="dashboard-greeting">HI</h4>
-              <p className="dashboard-name">{user?.name || 'User'}</p>
-            </div>
-            <div className='' style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '7px' }}>
-              <Link to="http://t.me/latasha100" className=" dashboard-whatsapp">
-                <FontAwesomeIcon icon={faTelegram} />
-              </Link>
-              <Link to="https://www.facebook.com/share/177yhDTdEt/" className=" dashboard-whatsapp">
-                <FontAwesomeIcon icon={faFacebook} />
-              </Link>
-              <Link to="https://whatsapp.com/channel/0029VbByYGN23n3lGBS2n00I" className="link-bold dashboard-whatsapp">
-                <FontAwesomeIcon icon={faWhatsapp} />
-              </Link>
-            </div>
 
-          </div>
           <div className="dashboard-balance-card">
             <div className="dashboard-main-balance">
               <p className="dashboard-main-balance-label">Total Balance</p>
@@ -469,32 +476,7 @@ const Dashboard = () => {
 
 
         {/* Bottom Navigation */}
-        <nav className="bottom-nav">
-          <div className="nav-item">
-            <Link to="/dashboard" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faHouse} />
-              <span>Dashboard</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/withdrawal" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faArrowUp} />
-              <span>Withdraw</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/refferrals" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUsers} />
-              <span>Referral</span>
-            </Link>
-          </div>
-          <div className="nav-item">
-            <Link to="/profile" className="link-bold nav-link-col">
-              <FontAwesomeIcon icon={faUser} />
-              <span>Profile</span>
-            </Link>
-          </div>
-        </nav>
+        <BottomNav />
 
       </div>
     </div>
