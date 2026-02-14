@@ -244,14 +244,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  .deposit-card {
-    padding: 15px;
-    margin: 10px;
-  }
 
-  .channels {
-    flex-direction: column;
-  }
 
   .quick-buttons {
     gap: 5px;

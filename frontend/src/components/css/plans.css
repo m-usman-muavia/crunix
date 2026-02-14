@@ -364,13 +364,19 @@
   .plan-card-top {
     gap: 12px;
   }
-  
+  .plan-product-info{
+    margin-top: 3px;
+    gap:8px;
+  }
   .plan-product-image {
     width: 100px;
     height: 133px;
-    min-width: 100px;
+    min-width: 120px;
   }
-  
+  .plan-card-new {
+    padding: 14px 10px;
+  }
+
   .image-badge {
     font-size: 10px;
     padding: 3px 6px;
