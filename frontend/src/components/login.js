@@ -115,7 +115,7 @@ const Login = () => {
           </form>
 
           <div className="auth-links-row">
-            <Link to="/forgotpassword" className="forgot-link">Forgot your password?</Link>
+            <Link to="/forgotpassword" className="forgot-link">Forgot password?</Link>
             <span className="links-separator">•</span>
             <Link to="/registration" className="signup-link">Don't have an account? <span>Sign up</span></Link>
           </div>
