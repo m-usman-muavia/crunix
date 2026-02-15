@@ -255,7 +255,7 @@ const Dashboard = () => {
         </div>
 
         {/* Top Header Section */}
-        <header className="dashboard-header">
+        {/* <header className="dashboard-header">
 
           <div className="dashboard-balance-card">
             <div className="dashboard-main-balance">
@@ -279,11 +279,11 @@ const Dashboard = () => {
 
 
 
-        </header>
+        </header> */}
 
 
         {/* All Sections One Item Start Here */}
-        <div className="section">
+        {/* <div className="section">
           <div className="withdrawal-card">
             <h2 style={{ margin: '0px' }}>Get A Free Bonus</h2>
             <form onSubmit={handleRedeemBonusCode} className="deposit-form">
@@ -299,7 +299,6 @@ const Dashboard = () => {
                   {bonusMessage.text}
                 </div>
               )}
-              {/* Bonus Code Input */}
               <div className="deposit-amount" style={{ marginTop: '10px' }}>
                 <label className="deposit-label">Bonus Code *</label>
                 <input
@@ -327,9 +326,9 @@ const Dashboard = () => {
             </form>
           </div>
 
-        </div>
+        </div> */}
 
-        <div className="section">
+        {/* <div className="section">
           <div className="dashboard-plans-header">
             <h2>Investment Plans</h2>
             <Link to="/plans" className="section-button" style={{ background: "linear-gradient(135deg, #22d3ee, #16a34a)", color: "white" }}>View All</Link>
@@ -368,9 +367,9 @@ const Dashboard = () => {
               <p style={{ textAlign: 'center', padding: '20px' }}>No plans available</p>
             </div>
           )}
-        </div>
+        </div> */}
 
-        <div className="section">
+        {/* <div className="section">
           <div className="dashboard-plans-header">
             <h2>Deposit Now</h2>
             <Link to="/deposit" className="section-button" style={{ background: "linear-gradient(135deg, #22d3ee, #16a34a)", color: "white" }}>View All</Link>
@@ -426,9 +425,9 @@ const Dashboard = () => {
             )}
           </div>
 
-        </div>
+        </div> */}
 
-        <div className="section">
+        {/* <div className="section">
           <div className="dashboard-plans-header">
             <h2>Referral Now</h2>
             <Link to="/refferrals" className="section-button" style={{ background: "linear-gradient(135deg, #22d3ee, #16a34a)", color: "white" }}>View All</Link>
@@ -437,7 +436,6 @@ const Dashboard = () => {
             <div className="refferrals-card">
               <div className="refferrals-links">
                 <h5 className="refferrals-header" style={{ fontSize: '18px' }}>Referral Code</h5>
-                {/* <p className="refferrals-code">{referralCode || 'N/A'}</p> */}
                 <button
                   className="refferrals-link-btn"
                   onClick={handleCopyReferralCode}
@@ -468,7 +466,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-        </div>
+        </div> */}
 
 
         {/* All Sections One Item End Here */}

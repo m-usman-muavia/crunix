@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/DepositUI.css';
 import API_BASE_URL from '../config/api';
+import ErrorModal from './ErrorModal';
 import BottomNav from './BottomNav';
 
 const Deposit = () => {
@@ -11,6 +12,8 @@ const Deposit = () => {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
   const [selectedChannel, setSelectedChannel] = useState('jazzcash');
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const quickAmounts = [5, 10, 25, 50,100];
 
@@ -50,7 +53,8 @@ const Deposit = () => {
 
   const handleDeposit = () => {
     if (!amount || parseFloat(amount) <= 0) {
-      alert('Please enter a valid amount');
+      setErrorMessage('Please enter a valid amount');
+      setErrorModalOpen(true);
       return;
     }
     // Navigate to confirmation page with amount
@@ -59,6 +63,15 @@ const Deposit = () => {
 
   return (
     <div className="deposit-container">
+      {/* Error Modal */}
+      <ErrorModal
+        isOpen={errorModalOpen}
+        message={errorMessage}
+        onClose={() => setErrorModalOpen(false)}
+        autoClose={true}
+        closeDuration={3000}
+      />
+
       {/* Header */}
       <div className="deposit-header">Deposit</div>
 

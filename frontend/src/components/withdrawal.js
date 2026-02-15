@@ -5,6 +5,7 @@ import './css/style.css';
 import './css/refferrals.css';
 import API_BASE_URL from '../config/api';
 import BottomNav from './BottomNav';
+import ErrorModal from './ErrorModal';
 
 const Withdrawal = () => {
   const [balance, setBalance] = useState(0);
@@ -20,6 +21,7 @@ const Withdrawal = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   useEffect(() => {
     fetchBalance();
@@ -72,6 +74,7 @@ const Withdrawal = () => {
     if (!formData.amount || !formData.account_number || !formData.mobile_number) {
       setMessage('All fields are required');
       setMessageType('error');
+      setShowErrorModal(true);
       return;
     }
 
@@ -79,12 +82,14 @@ const Withdrawal = () => {
     if (isNaN(amount) || amount < 100) {
       setMessage('Minimum withdrawal amount is Rs 100');
       setMessageType('error');
+      setShowErrorModal(true);
       return;
     }
 
     if (amount > balance) {
-      setMessage('Insufficient balance for withdrawal');
+      setMessage(`You need Rs ${(amount - balance).toFixed(2)} more to withdraw this amount.`);
       setMessageType('error');
+      setShowErrorModal(true);
       return;
     }
 
@@ -128,6 +133,7 @@ const Withdrawal = () => {
       console.error('Error submitting withdrawal:', err);
       setMessage(err.message || 'Error submitting withdrawal request');
       setMessageType('error');
+      setShowErrorModal(true);
     } finally {
       setLoading(false);
     }
@@ -135,25 +141,28 @@ const Withdrawal = () => {
   return (
     <div className="main-wrapper">
       <div className="main-container">
+        {/* Error Modal */}
+        <ErrorModal
+          isOpen={showErrorModal}
+          message={message}
+          onClose={() => setShowErrorModal(false)}
+          autoClose={true}
+          closeDuration={3000}
+        />
+
         {/* Top Header Section */}
-              <div className="deposit-header">Withdrawal</div>
+        <div className="deposit-header">Withdrawal</div>
 
         <div className="withdrawal-balance-card">
-            <div className="withdrawal-main-balance">
-              <p className="withdrawal-main-balance-label">Total Balance</p>
-              <h2 className="withdrawal-main-balance-amount">${balance.toFixed(2)}</h2>
-            </div>
-          </div>      
+          <div className="withdrawal-main-balance">
+            <p className="withdrawal-main-balance-label">Total Balance</p>
+            <h2 className="withdrawal-main-balance-amount">${balance.toFixed(2)}</h2>
+          </div>
+        </div>
 
         <div className="refferrals-section">
           <div className="withdrawal-card">
             <h3 className="refferrals-header">Apply for Withdraw</h3>
-
-            {message && (
-              <div className={messageType === 'error' ? 'error-message' : 'success-message'}>
-                {message}
-              </div>
-            )}
 
             <form onSubmit={handleSubmit} className="deposit-form">
               {/* Withdrawal Amount */}

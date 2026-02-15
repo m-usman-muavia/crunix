@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import InvestModal from './InvestModal';
+import ErrorModal from './ErrorModal';
 import './css/dashboard.css';
 import './css/style.css';
 import './css/plans.css';
@@ -16,6 +17,8 @@ const Plans = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [balance, setBalance] = useState(0);
   const [loadingInvest, setLoadingInvest] = useState(false);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     fetchPlans();
@@ -68,6 +71,13 @@ const Plans = () => {
   };
 
   const handleInvestClick = async (plan) => {
+    // Check if purchase limit is reached
+    if (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) {
+      setErrorMessage(`You have reached the maximum purchase limit for "${plan.name}" plan.`);
+      setErrorModalOpen(true);
+      return;
+    }
+
     setLoadingInvest(true);
     setSelectedPlan(plan);
     
@@ -85,7 +95,8 @@ const Plans = () => {
       const data = await response.json();
       
       if (!response.ok) {
-        alert(`Error: ${data.message}`);
+        setErrorMessage(data.message);
+        setErrorModalOpen(true);
         setLoadingInvest(false);
         return;
       }
@@ -98,7 +109,8 @@ const Plans = () => {
       setIsModalOpen(true);
     } catch (err) {
       console.error('Error validating investment:', err);
-      alert('Error validating investment. Please try again.');
+      setErrorMessage('Error validating investment. Please try again.');
+      setErrorModalOpen(true);
     } finally {
       setLoadingInvest(false);
     }
@@ -107,7 +119,7 @@ const Plans = () => {
   const handleInvestmentConfirmed = async () => {
     // Refresh balance after successful investment
     await fetchBalance();
-    // Refresh plans after successful investment
+    // Refresh plans after successful investment to update purchase counts
     await fetchPlans();
   };
 
@@ -125,21 +137,32 @@ const Plans = () => {
       const data = await response.json();
       
       if (!response.ok) {
-        alert(`Error: ${data.message}`);
+        setErrorMessage(data.message);
+        setErrorModalOpen(true);
         return;
       }
 
-      alert('Investment successful!');
+      // Investment successful - refresh data silently
       await handleInvestmentConfirmed();
     } catch (err) {
       console.error('Error confirming investment:', err);
-      alert('Error processing investment. Please try again.');
+      setErrorMessage('Error processing investment. Please try again.');
+      setErrorModalOpen(true);
     }
   };
 
   return (
     <div className="main-wrapper">
       <div className="main-container">
+        {/* Error Modal */}
+        <ErrorModal
+          isOpen={errorModalOpen}
+          message={errorMessage}
+          onClose={() => setErrorModalOpen(false)}
+          autoClose={true}
+          closeDuration={3000}
+        />
+
         {/* Top Header Section */}
         <div className="deposit-header">Investment Plans</div>
         
@@ -205,15 +228,15 @@ const Plans = () => {
                     <div className="product-details">
                       <div className="detail-item">
                         <span className="detail-label-new">Price:</span>
-                        <span className="detail-value-new">Rs {plan.investment_amount}</span>
+                        <span className="detail-value-new">${plan.investment_amount}</span>
                       </div>
                       <div className="detail-item">
                         <span className="detail-label-new">Daily income:</span>
-                        <span className="detail-value-new">Rs {plan.daily_profit}</span>
+                        <span className="detail-value-new">${plan.daily_profit}</span>
                       </div>
                       <div className="detail-item">
                         <span className="detail-label-new">Total income:</span>
-                        <span className="detail-value-new">Rs {plan.total_profit}</span>
+                        <span className="detail-value-new">${plan.total_profit}</span>
                       </div>
                     </div>
 
@@ -221,6 +244,10 @@ const Plans = () => {
                   className="buy-now-btn"
                   onClick={() => handleInvestClick(plan)}
                   disabled={loadingInvest || (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit)}
+                  style={{
+                    opacity: (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 0.5 : 1,
+                    cursor: (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'not-allowed' : 'pointer'
+                  }}
                 >
                   {loadingInvest ? 'Loading...' : 
                    (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'LIMIT REACHED' : 

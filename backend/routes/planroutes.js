@@ -10,22 +10,32 @@ const { createNotification } = require('../controllers/notificationcontrollers')
 const verifyToken = require('../middleware/auth');
 
 // GET active plans for users
-router.get('/active', async (req, res) => {
+router.get('/active', verifyToken, async (req, res) => {
   try {
+    const userId = req.user.userId || req.user.id;
     const plans = await Plan.find({ status: 'active' }).sort({ createdAt: -1 });
     
-    // Return data to match frontend expectations
-    const transformedPlans = plans.map(plan => ({
-      _id: plan._id,
-      name: plan.name,
-      roi_percentage: plan.roi_percentage,
-      duration_days: plan.duration_days,
-      investment_amount: plan.investment_amount,
-      daily_profit: plan.daily_profit,
-      total_profit: plan.total_profit,
-      status: plan.status,
-      image_path: plan.image_path,
-      purchase_limit: plan.purchase_limit
+    // Return data to match frontend expectations with user purchase count
+    const transformedPlans = await Promise.all(plans.map(async (plan) => {
+      // Count how many times this user has purchased this plan
+      const purchaseCount = await UserPlan.countDocuments({
+        userId: userId,
+        planId: plan._id
+      });
+
+      return {
+        _id: plan._id,
+        name: plan.name,
+        roi_percentage: plan.roi_percentage,
+        duration_days: plan.duration_days,
+        investment_amount: plan.investment_amount,
+        daily_profit: plan.daily_profit,
+        total_profit: plan.total_profit,
+        status: plan.status,
+        image_path: plan.image_path,
+        purchase_limit: plan.purchase_limit,
+        user_purchase_count: purchaseCount
+      };
     }));
     
     res.json(transformedPlans);

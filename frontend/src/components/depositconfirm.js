@@ -25,13 +25,22 @@ const DepositConfirm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // USDT BEP20 static details
+  const usdtDetails = {
+    qrImagePath: 'InternationalQRcode.jpeg',
+    tillId: 'TAbBYea4sh7f9RZRKE26JgtcxpoMfbyYR3'
+  };
+
   useEffect(() => {
     if (!amount) {
       navigate('/deposit');
       return;
     }
-    fetchAccount();
-  }, [amount, navigate]);
+    // Only fetch account from database for JazzCash/EasyPaisa
+    if (channel === 'jazzcash') {
+      fetchAccount();
+    }
+  }, [amount, channel, navigate]);
 
   const fetchAccount = async () => {
     try {
@@ -151,31 +160,32 @@ const DepositConfirm = () => {
         <div className="payment-details-section">
           <div className="payment-details-header">
             <h3 className="payment-details-title">Send Payment To</h3>
-            <p className="payment-details-subtitle">Scan the QR or use the Till ID</p>
+            <p className="payment-details-subtitle">
+              {channel === 'usdt' ? 'Scan the QR or use the USDT BEP20 address' : 'Scan the QR or use the Till ID'}
+            </p>
           </div>
 
           <div className="payment-details-body">
-            {account ? (
+            {channel === 'usdt' ? (
+              // Display USDT static details
               <div className="payment-details-card">
                 <div className="payment-qr">
-                  {account.qrImagePath ? (
-                    <img
-                      src={`/${account.qrImagePath}`}
-                      alt="QR code"
-                      className="payment-qr-image"
-                    />
-                  ) : (
-                    <div className="payment-qr-placeholder">No QR</div>
-                  )}
+                  <img
+                    src={`/${usdtDetails.qrImagePath}`}
+                    alt="USDT BEP20 QR code"
+                    className="payment-qr-image"
+                  />
                 </div>
                 <div className="payment-till">
-                  <span className="payment-label">Till ID</span>
-                  <span className="payment-value">{account.tillId || 'N/A'}</span>
+                  <span className="payment-label">USDT BEP20 Address</span>
+                  <span className="payment-value" style={{ fontSize: '12px', wordBreak: 'break-all' }}>
+                    {usdtDetails.tillId}
+                  </span>
                   <button
                     type="button"
                     className="copy-till-btn"
                     onClick={() => {
-                      navigator.clipboard.writeText(account.tillId).then(() => {
+                      navigator.clipboard.writeText(usdtDetails.tillId).then(() => {
                         setCopied(true);
                         setTimeout(() => setCopied(false), 2000);
                       }).catch(err => {
@@ -189,7 +199,43 @@ const DepositConfirm = () => {
                 </div>
               </div>
             ) : (
-              <p>Loading account details...</p>
+              // Display JazzCash/EasyPaisa account from database
+              account ? (
+                <div className="payment-details-card">
+                  <div className="payment-qr">
+                    {account.qrImagePath ? (
+                      <img
+                        src={`/${account.qrImagePath}`}
+                        alt="QR code"
+                        className="payment-qr-image"
+                      />
+                    ) : (
+                      <div className="payment-qr-placeholder">No QR</div>
+                    )}
+                  </div>
+                  <div className="payment-till">
+                    <span className="payment-label">Till ID</span>
+                    <span className="payment-value">{account.tillId || 'N/A'}</span>
+                    <button
+                      type="button"
+                      className="copy-till-btn"
+                      onClick={() => {
+                        navigator.clipboard.writeText(account.tillId).then(() => {
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 2000);
+                        }).catch(err => {
+                          console.error('Failed to copy:', err);
+                        });
+                      }}
+                    >
+                      <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
+                      <span>{copied ? 'Copied!' : 'Copy'}</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p>Loading account details...</p>
+              )
             )}
           </div>
         </div>
