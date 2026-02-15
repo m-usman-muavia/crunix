@@ -433,7 +433,7 @@ const Profile = () => {
                             <div className="content-card password-card">
                                 <form onSubmit={handleChangePassword} className="password-form">
                                     <div className="form-group">
-                                        <label className="form-label">Name</label>
+                                        {/* <label className="form-label">Name</label>
                                         <input
                                             className="form-input"
                                             placeholder={user?.name || 'N/A'}
@@ -451,7 +451,7 @@ const Profile = () => {
                                             className="form-input"
                                             value={referralCode || user?.referralCode || 'N/A'}
                                             disabled
-                                        />
+                                        /> */}
                                         <label className="form-label">Old Password:</label>
                                         <input
                                             type="password"
@@ -491,7 +491,7 @@ const Profile = () => {
 
                                     <button
                                         type="submit"
-                                        className="sign-in-btn submit-btn"
+                                        className="primary-btn"
                                         disabled={isLoading}
                                     >
                                         {isLoading ? 'Changing Password...' : 'Change Password'}

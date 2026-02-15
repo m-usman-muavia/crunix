@@ -1,81 +1,95 @@
 .dashboard-header {
-  background: linear-gradient(135deg, #22d3ee, #16a34a);
   color: white;
-  padding: 15px 20px 15px 20px;
   text-align: left;
   align-items: center !important;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
 }
-.dashboard-content{
+
+.dashboard-content {
   text-align: left;
   display: flex;
   justify-content: space-between;
-  align-items: center !important; 
+  align-items: center !important;
 }
-.dashboard-balance-card{
-  margin: 20px 15px 10px 15px;
+
+.dashboard-balance-card {
+  margin: -40px 15px 10px 15px;
   padding: 10px 25px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.6 );
+      background: linear-gradient(135deg, #003366, #0055A4, #003366);   
+  backdrop-filter: blur(10px);
+  border: 2px solid #0055A4;
   text-align: left;
 }
+
+.dashboard-balance-card:hover {
+  background: #eaf4ff;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(0, 0, 0, 0.8);
+}
+
 .dashboard-main-balance {
   text-align: left;
   display: flex;
   justify-content: space-between;
 }
-.dashboard-sub-balance{
-      margin-top: -10px;
+
+.dashboard-sub-balance {
+  margin-top: -10px;
   padding: 0px 10px;
   text-align: left;
   display: flex;
   justify-content: space-between;
 }
-.dashboard-plans-header{
+
+.dashboard-plans-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0 15px;
 }
-.dashboard-buttons{
-  text-align: center ;
+
+.dashboard-buttons {
+  text-align: center;
   align-content: center;
 }
-.dashboard-shortcut-buttons{
+
+.dashboard-shortcut-buttons {
   margin-left: auto;
-    font-size: 12px;
-    font-weight: bold;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    margin: 0px 5px;
-    padding: 2px 10px;
-    text-decoration: none;
-    border-radius: 5px;
-    gap: 0px;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  margin: 0px 5px;
+  padding: 2px 10px;
+  text-decoration: none;
+  border-radius: 5px;
+  gap: 0px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.dashboard-main-balance-label{
-font-size: 20px;
+
+.dashboard-main-balance-label {
+  font-size: 20px;
   font-weight: bold;
   color: #0f172a;
 }
-.dashboard-sub-balance-amount{
-    font-size: 10px;
-    font-weight: bold;
-    padding: 4px 6px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    text-decoration: none;
-    border-radius: 5px;
-    gap: 0px;
-    color: #0f172a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+
+.dashboard-sub-balance-amount {
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  text-decoration: none;
+  border-radius: 5px;
+  gap: 0px;
+  color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.dashboard-main-balance-amount{
+
+.dashboard-main-balance-amount {
   font-size: 20px;
   font-weight: bold;
   color: #0f172a;
@@ -93,26 +107,28 @@ font-size: 20px;
   font-weight: bold;
   text-transform: capitalize;
 }
+
 .dashboard-payment-details-section {
   background: linear-gradient(135deg, #f1f5f9 0%, #f1f5f9 100%);
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 20px;
 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
 
 }
+
 .refferrals-card {
   background: linear-gradient(135deg, #f1f5f9 0%, #f1f5f9 100%);
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px 20px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
 
-    text-align: left;
+  text-align: left;
 
 }
 
@@ -126,9 +142,11 @@ font-size: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   font-weight: bold;
 }
+
 .dashboard-whatsapp svg {
-    font-size: 20px;
-} 
+  font-size: 20px;
+}
+
 .greeting {
   font-size: 14px;
   opacity: 0.9;
@@ -149,6 +167,48 @@ font-size: 20px;
   align-items: center;
   justify-content: center;
   font-weight: bold;
+}
+
+.helpcenter-button {
+  padding: 0px 3px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  background: none;
+  border: none
+}
+
+.helpcenter-button-icon {
+  font-size: 20px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding: 16px 20px 6px 20px;
+}
+
+.dashboard-grid-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #0f172a;
+  background: none;
+  border: none;
+  padding: 10px 6px;
+}
+
+.dashboard-grid-icon {
+  font-size: 22px;
+}
+
+.dashboard-grid-text {
+  font-size: 12px;
+  margin-top: 6px;
+  text-align: center;
 }
 
 /* Balance Card */
