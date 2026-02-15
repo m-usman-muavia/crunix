@@ -35,6 +35,15 @@ exports.createPlan = async (req, res) => {
     const roi_percentage =
       Math.floor((total_profit / investment_amount) * 100 - 100);
 
+    let imageBase64 = '';
+    if (req.file) {
+      // Read file and convert to base64
+      const imageBuffer = fs.readFileSync(req.file.path);
+      imageBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+      // Delete the temporary file
+      fs.unlinkSync(req.file.path);
+    }
+
     const planData = {
       name,
       investment_amount,
@@ -43,7 +52,8 @@ exports.createPlan = async (req, res) => {
       total_profit,
       roi_percentage,
       status,
-      image_path: req.file ? req.file.path : '',
+      image_path: '', // Keep for backward compatibility
+      image_base64: imageBase64,
       purchase_limit: purchase_limit || 0
     };
 
@@ -95,11 +105,12 @@ exports.updatePlan = async (req, res) => {
     
     // Handle image update
     if (req.file) {
-      // Delete old image if exists
-      if (plan.image_path && fs.existsSync(plan.image_path)) {
-        fs.unlinkSync(plan.image_path);
-      }
-      plan.image_path = req.file.path;
+      // Read file and convert to base64
+      const imageBuffer = fs.readFileSync(req.file.path);
+      plan.image_base64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+      // Delete the temporary file
+      fs.unlinkSync(req.file.path);
+      plan.image_path = ''; // Clear old path
     }
 
     // Recalculate total profit and ROI if amounts or duration changed
@@ -137,10 +148,7 @@ exports.deletePlan = async (req, res) => {
       });
     }
     
-    // Delete image file if exists
-    if (plan.image_path && fs.existsSync(plan.image_path)) {
-      fs.unlinkSync(plan.image_path);
-    }
+    // No need to delete files anymore since we store base64
 
     return res.status(200).json({
       success: true,

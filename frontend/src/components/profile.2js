@@ -404,22 +404,42 @@ const Profile = () => {
     return (
         <div className="main-wrapper">
             <div className="main-container">
-                <div className="deposit-header">Profile</div>
-                <div className="plan-image">
-                    <img
-                        src="/planimage.webp"
-                        alt="Investment Plans"
-                        style={{
-                            width: '100%',
-                            height: '200px',
-                            objectFit: 'cover',
-                            borderRadius: '0px 0px 15px 15px',
-                            borderBottom: '2px solid #000000',
-                        }}
-                    />
+                {/* Top Header Section */}
+                {/* Top Header Section */}
+        <div className="deposit-header">Profile</div>
+        
+       
+
+                <div className="profile-buttons">
+                    <button
+                        type="button"
+                        className={`profile-btn ${activeTab === 'profile' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('profile')}
+                    >
+                        Profile
+                    </button>
+                    {/* <button
+                        type="button"
+                        className={`profile-btn ${activeTab === 'notification' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('notification')}
+                    >
+                        Notifications
+                    </button> */}
+                    <button
+                        type="button"
+                        className={`profile-btn ${activeTab === 'transactions' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('transactions')}
+                    >
+                        Transactions
+                    </button>
+                    <button
+                        type="button"
+                        className={`profile-btn ${activeTab === 'activeplans' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('activeplans')}
+                    >
+                         Plans
+                    </button>
                 </div>
-
-
 
 
 
@@ -427,7 +447,7 @@ const Profile = () => {
                 {/* Profile Section */}
                 {activeTab === 'profile' && (
                     <div className="profile-content">
-                        <h2 className="profile-title"></h2>
+                        <h2 className="profile-title">Profile</h2>
 
                         <div className="card-container">
                             <div className="content-card password-card">
@@ -502,9 +522,244 @@ const Profile = () => {
                     </div>
                 )}
 
+                {/* Notifications Section */}
+                {activeTab === 'notification' && (
+                    <div className="profile-content">
+                        <h2 className="profile-title">Notifications</h2>
+                        
+                        {notifLoading ? (
+                            <p className="tx-message">Loading notifications...</p>
+                        ) : notifError ? (
+                            <p className="tx-message tx-error">Error: {notifError}</p>
+                        ) : notifications.length === 0 ? (
+                            <div className="card-container">
+                                <div className="content-card">
+                                    <div className="empty-state-card">
+                                        <FontAwesomeIcon icon={faBox} className="empty-icon" />
+                                        <p className="empty-state-text">No Notifications to display.</p>
+                                        <p className="empty-state-subtext">Your notifications will appear here</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="plan-1">
+                                <div className="transactions-list">
+                                    {notifications.map((notif) => (
+                                        <div key={notif._id} className="tx-card" >
+                                            <div className="tx-main">
+                                                <div className="tx-header">
+                                                    <span className="tx-type" style={{ fontSize: '12px', fontWeight: '600' }}>
+                                                        {notif.type === 'plan_activated' && ' Plan Activated'}
+                                                        {notif.type === 'plan_paused' && ' Plan Paused'}
+                                                        {notif.type === 'plan_resumed' && ' Plan Resumed'}
+                                                        {notif.type === 'plan_completed' && ' Plan Completed'}
+                                                        {notif.type === 'daily_income' && ' Daily Income'}
+                                                        {notif.type === 'referral_signup' && ' Referral Signup'}
+                                                        {notif.type === 'referral_earning' && ' Referral Earning'}
+                                                        {!['deposit_request_sent', 'deposit_approved', 'deposit_rejected', 'withdrawal_request_sent', 'withdrawal_approved', 'withdrawal_rejected', 'plan_activated', 'plan_paused', 'plan_resumed', 'plan_completed', 'daily_income', 'referral_signup', 'referral_earning'].includes(notif.type) && ' Notification'}
+                                                    </span>
+                                            
+                                                </div>
+                                                
+                                            </div>
+                                        {notif.amount && (
+                                                <div className="tx-amount">
+                                                    <div className="tx-amount-deposit">
+                                                        Rs {formatAmount(notif.amount)}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                    {activeTab === 'transactions' && (
+                    <div className="profile-content">
+                        <h2 className="profile-title">Transactions History</h2>
+                                                <div className="addplans-section">
+                                                    <div className="addplans-card">
+                                                        <div className="profile-buttons">
+                                                            <button
+                                                                type="button"
+                                                                className={`profile-btn ${txTab === 'deposits' ? 'active' : ''}`}
+                                                                onClick={() => setTxTab('deposits')}
+                                                            >
+                                                                Deposits
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className={`profile-btn ${txTab === 'withdrawals' ? 'active' : ''}`}
+                                                                onClick={() => setTxTab('withdrawals')}
+                                                            >
+                                                                Withdrawals
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="plan-content1">
+                                                    {txLoading ? (
+                                                        <p className="tx-message">Loading transactions...</p>
+                                                    ) : txError ? (
+                                                        <p className="tx-message tx-error">Error: {txError}</p>
+                                                    ) : filteredTransactions.length === 0 ? (
+                                                        <p className="tx-message">No transactions found</p>
+                                                    ) : (
+                                                        <div className="transactions-list">
+                                                            {filteredTransactions.map((tx) => (
+                                                                <div
+                                                                    key={tx._id}
+                                                                    className={`tx-card ${tx.type === 'deposit' ? 'tx-deposit' : 'tx-withdrawal'}`}
+                                                                    style={{ borderLeftColor: getStatusColor(tx.status) }}
+                                                                >
+                                                                    <div className="tx-main">
+                                                                        <div className="tx-header">
+                                                                            
+                                                                            <span className="tx-type" style={{ fontSize: '12px' }}>
+                                                                                {tx.type}</span>
+                                                                            <span className="tx-status" style={{ backgroundColor: getStatusColor(tx.status) }}>
+                                                                                {getStatusText(tx.status)}
+                                                                            </span>
+                                                                        </div>
+
+                                                                        
+                                                                    </div>
+
+                                                                    <div className="tx-amount">
+                                                                        <div className={tx.type === 'deposit' ? 'tx-amount-deposit' : 'tx-amount-withdrawal'}>
+                                                                            {tx.type === 'deposit' ? '+' : '-'}Rs {formatAmount(tx.amount)}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                    </div>
+                )}
+
+                {/* Settings Section */}
+                {activeTab === 'activeplans' && (
+                    <div className="profile-content">
+                        <h2 className="profile-title">Your Plans</h2>
+                        <div className="addplans-section">
+                                                    <div className="addplans-card">
+                                                        <div className="profile-buttons">
+                                                            <button
+                                                                type="button"
+                                                                className={`profile-btn ${plansTab === 'active' ? 'active' : ''}`}
+                                                                onClick={() => setPlansTab('active')}
+                                                            >
+                                                                Active Plans
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className={`profile-btn ${plansTab === 'completed' ? 'active' : ''}`}
+                                                                onClick={() => setPlansTab('completed')}
+                                                            >
+                                                                Completed Plans
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                        {plansError && <div className="error-message">{plansError}</div>}
+
+                        {loadingPlans ? (
+                            <div className="loading-spinner">
+                                <p>Loading your plans...</p>
+                            </div>
+                        ) : filteredPlans.length === 0 ? (
+                            <div className="empty-state">
+                                <p className="empty-state-text">
+                                    {plansTab === 'active' 
+                                        ? "You don't have any active plans yet." 
+                                        : "You don't have any completed plans yet."}
+                                </p>
+                                {plansTab === 'active' && (
+                                    <Link to="/plans" className="noactivate-btn">
+                                        Browse Plans
+                                    </Link>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="active-plans-grid">
+                                {filteredPlans.map((plan) => {
+                                    const statusInfo = getStatusBadge(plan.status);
+                                    const progress = calculateProgress(plan.investmentDate, plan.endDate);
+
+                                    return (
+                                        <div className="active-plan-card" key={plan._id}>
+                                            <div className="active-plan-header">
+                                                <div className="plan-name-section">
+                                                    <h3 className="active-plan-title">{plan.planName || plan.plan?.name || 'Investment Plan'}</h3>
+
+                                                </div>
+
+                                                <div className="status-badge">
+                                                    <FontAwesomeIcon icon={statusInfo.icon} />
+                                                    {plan.status.charAt(0).toUpperCase() + plan.status.slice(1)}
+
+                                                </div>
+                                            </div>
+
+
+                                            <div className="plan-investment">
+                                                <div className="date-item1">
+                                                    <span className="date-label">Invested</span>
+                                                    <span className="date-value">Rs {plan.investmentAmount || '01'}</span>
+                                                </div>
+                                                <div className="date-item">
+                                                    <span className="date-label">Daily Income</span>
+                                                    <span className="date-value">Rs {plan.dailyProfit || '01'}</span>
+                                                </div>
+                                                <div className="date-item">
+                                                    <span className="date-label">Total Return</span>
+                                                    <span className="date-value">Rs {plan.totalProfit || '01'}</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="plan-dates">
+                                                <div className="date-item1">
+                                                    <span className="date-label">Start Date</span>
+                                                    <span className="date-value">{formatDate(plan.investmentDate)}</span>
+                                                </div>
+                                                <div className="date-item">
+                                                    <span className="date-label">End Date</span>
+                                                    <span className="date-value">{formatDate(plan.endDate)}</span>
+                                                </div>
+                                                <div className="date-item">
+                                                    <span className="date-label">Investment Time</span>
+                                                    <span className="date-value">{formatTime(plan.investmentDate)}</span>
+                                                </div>
+                                            </div>
+                                            <div className="plan-dates">
+                                                <div className="date-item1">
+                                                    <span className="date-label">Earned</span>
+                                                    <span className="date-value">Rs {formatAmount(plan.currentEarnings || 0)}</span>
+                                                </div>
+                                                <div className="date-item">
+                                                    <span className="date-label">Remaining Profit</span>
+                                                    <span className="date-value">Rs {formatAmount((plan.totalProfit || 0) - (plan.currentEarnings || 0))}</span>
+                                                </div>
+                                                
+                                            </div>
+
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <div className="logout-section">
 
-                    <button className="primary-btn" style={{margin: '0 50px'}} onClick={handleLogout}>Logout</button>
+                    <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
 
                 {/* Bottom Navigation */}

@@ -205,7 +205,7 @@ const DepositConfirm = () => {
                   <div className="payment-qr">
                     {account.qrImagePath ? (
                       <img
-                        src={`/${account.qrImagePath}`}
+                        src={account.qrImagePath.startsWith('data:') ? account.qrImagePath : `/${account.qrImagePath}`}
                         alt="QR code"
                         className="payment-qr-image"
                       />

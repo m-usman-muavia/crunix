@@ -307,7 +307,7 @@ const AddPlans = () => {
                     {!loading && filteredPlans.length === 0 && <p>No plans found.</p>}
                     {!loading && filteredPlans.map((plan) => (
                         <div className="plan-card" key={plan._id} style={{ opacity: plan.status === 'inactive' ? 0.6 : 1 }}>
-                            {plan.image_path && (
+                            {(plan.image_base64 || plan.image_path) && (
                                 <div style={{ 
                                     width: '100%', 
                                     height: '150px', 
@@ -316,7 +316,7 @@ const AddPlans = () => {
                                     marginBottom: '12px'
                                 }}>
                                     <img 
-                                        src={`/${plan.image_path}`} 
+                                        src={plan.image_base64 || `/${plan.image_path}`} 
                                         alt={plan.name}
                                         style={{ 
                                             width: '100%', 

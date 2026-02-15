@@ -168,7 +168,7 @@ const Plans = () => {
         
         <div className="plan-image">
           <img 
-            src="/planimage.jpg" 
+            src="/planimage.webp" 
             alt="Investment Plans" 
             style={{ 
               width: '100%', 
@@ -202,10 +202,10 @@ const Plans = () => {
                 <div className="plan-card-top">
                   {/* Product Image */}
                   <div className="plan-product-image">
-                    {plan.image_path ? (
+                    {(plan.image_base64 || plan.image_path) ? (
                       <>
                         <img 
-                          src={`/${plan.image_path}`} 
+                          src={plan.image_base64 || `/${plan.image_path}`} 
                           alt={plan.name}
                           onError={(e) => { e.target.style.display = 'none'; }}
                         />

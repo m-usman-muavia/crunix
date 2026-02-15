@@ -242,7 +242,7 @@ const Dashboard = () => {
         
         <div className="plan-image">
           <img 
-            src="/planimage.jpg" 
+            src="/image2.webp" 
             alt="Investment Plans" 
             style={{ 
               width: '100%', 

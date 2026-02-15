@@ -34,6 +34,10 @@ const planSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  image_base64: {
+    type: String,
+    default: ''
+  },
   purchase_limit: {
     type: Number,
     default: 0,

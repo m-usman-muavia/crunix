@@ -585,7 +585,8 @@
 
 .logout-btn {
     align-self: flex-start;
-    padding: 12px 32px;
+    object-fit: cover;
+    /* padding: auto; */
     margin-top: 12px;
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     border: none;

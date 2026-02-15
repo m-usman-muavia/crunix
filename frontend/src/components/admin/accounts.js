@@ -267,10 +267,10 @@ const Accounts = () => {
                         ) : (
                             accounts.map((account) => (
                                 <div className="plan-card" key={account._id} style={{ opacity: account.status === 'inactive' ? 0.6 : 1 }}>
-                                    {account.qr_image_path && (
+                                    {(account.qr_image_base64 || account.qr_image_path) && (
                                         <div style={{ marginBottom: '10px' }}>
                                             <img
-                                                src={`/${account.qr_image_path}`}
+                                                src={account.qr_image_base64 || `/${account.qr_image_path}`}
                                                 alt="QR"
                                                 style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '10px' }}
                                             />
