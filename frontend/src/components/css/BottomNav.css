@@ -99,6 +99,7 @@
   }
 
   .nav-item-modern {
+    gap: 2px;
     min-width: 50px;
     padding: 8px 6px;
   }

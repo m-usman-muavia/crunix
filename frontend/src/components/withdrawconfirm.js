@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';
 import './css/style.css';
@@ -10,12 +10,14 @@ import ErrorModal from './ErrorModal';
 
 const Withdrawal = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { amount: passedAmount = '', channel: selectedChannel = 'jazzcash' } = location.state || {};
   const [balance, setBalance] = useState(0);
   const [mainBalance, setMainBalance] = useState(0);
   const [referralEarnings, setReferralEarnings] = useState(0);
   const [bonusBalance, setBonusBalance] = useState(0);
   const [formData, setFormData] = useState({
-    amount: '',
+    amount: passedAmount,
     method: 'jazzcash',
     account_number: '',
     mobile_number: ''
@@ -73,23 +75,31 @@ const Withdrawal = () => {
     setMessageType('');
 
     // Validation
-    if (!formData.amount || !formData.account_number || !formData.mobile_number) {
-      setMessage('All fields are required');
+    if (!formData.amount || !formData.account_number) {
+      setMessage('Amount and account number are required');
+      setMessageType('error');
+      setShowErrorModal(true);
+      return;
+    }
+    
+    // For non-USDT, require account name (mobile_number)
+    if (selectedChannel !== 'usdt' && !formData.mobile_number) {
+      setMessage('Account name is required');
       setMessageType('error');
       setShowErrorModal(true);
       return;
     }
 
     const amount = parseFloat(formData.amount);
-    if (isNaN(amount) || amount < 100) {
-      setMessage('Minimum withdrawal amount is Rs 100');
+    if (isNaN(amount) || amount < 1) {
+      setMessage('Minimum withdrawal amount is $ 1');
       setMessageType('error');
       setShowErrorModal(true);
       return;
     }
 
     if (amount > balance) {
-      setMessage(`You need Rs ${(amount - balance).toFixed(2)} more to withdraw this amount.`);
+      setMessage(`You need $ ${(amount - balance).toFixed(2)} more to withdraw this amount.`);
       setMessageType('error');
       setShowErrorModal(true);
       return;
@@ -155,25 +165,7 @@ const Withdrawal = () => {
 
         {/* Top Header Section */}
         <div className="deposit-header">Withdrawal</div>
-        <button 
-          onClick={() => navigate('/withdrawalhistory')}
-          style={{
-            background: 'linear-gradient(135deg, #036, #0055a4)',
-            border: 'none',
-            borderRadius: '6px',
-            boxShadow: '0 8px 18px #2563eb47',
-            color: '#fff',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: '700',
-            letterSpacing: '.7px',
-            padding: '8px 14px',
-            textTransform: 'uppercase',
-            transition: 'all .3s ease'
-          }}
-        >
-          Withdrawal History
-        </button>
+
         <div className="withdrawal-balance-card">
           <div className="withdrawal-main-balance">
             <p className="withdrawal-main-balance-label">Total Balance</p>
@@ -188,65 +180,85 @@ const Withdrawal = () => {
             <form onSubmit={handleSubmit} className="deposit-form">
               {/* Withdrawal Amount */}
               <div className="deposit-amount" style={{marginTop: '10px'}}>
-                <label className="deposit-label">Withdrawal Amount *</label>
+                <label className="deposit-label">Withdrawal Amount ($) *</label>
                 <input
                   type="number"
                   name="amount"
                   value={formData.amount}
-                  onChange={handleInputChange}
-                  placeholder="Minimum Rs 100"
-                  min="100"
-                  step="1"
+                  readOnly
+                  disabled
+                  placeholder="Enter amount to withdraw"
                   className="deposit-input"
+                  style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
                   required
                 />
               </div>
 
-              {/* Withdrawal Method */}
-              <div className="form-group" style={{marginTop: '10px'}}>
-                <label className="deposit-label">Withdrawal Method *</label>
-                <select
-                  name="method"
-                  value={formData.method}
-                  onChange={handleInputChange}
-                  className="deposit-input"
-                  required
-                >
-                  <option value="jazzcash">JazzCash</option>
-                  <option value="easypaisa">EasyPaisa</option>
-                  <option value="hbl">SadaPay</option>
-                </select>
-              </div>
+              {/* Withdrawal Method - Hidden for USDT */}
+              {selectedChannel !== 'usdt' && (
+                <div className="form-group" style={{marginTop: '10px'}}>
+                  <label className="deposit-label">Withdrawal Method</label>
+                  <select
+                    name="method"
+                    value={formData.method}
+                    onChange={handleInputChange}
+                    className="deposit-input"
+                  >
+                    <option value="">Select Method</option>
+                    <option value="jazzcash">JazzCash</option>
+                    <option value="easypaisa">EasyPaisa</option>
+                    <option value="hbl">SadaPay</option>
+                  </select>
+                </div>
+              )}
 
-              {/* Account Name */}
-              <div className="form-group" style={{marginTop: '10px'}} >
-                <label className="deposit-label">Account Name *</label>
-                <input
-                  type="text"
-                  name="mobile_number"
-                  value={formData.mobile_number}
-                  onChange={handleInputChange}
-                  placeholder="Enter your account name"
-                  className="deposit-input"
-                  required
-                />
-              </div>
+              {/* Account Name - Hidden for USDT */}
+              {selectedChannel !== 'usdt' && (
+                <div className="form-group" style={{marginTop: '10px'}} >
+                  <label className="deposit-label">Account Name *</label>
+                  <input
+                    type="text"
+                    name="mobile_number"
+                    value={formData.mobile_number}
+                    onChange={handleInputChange}
+                    placeholder="Enter your account name"
+                    className="deposit-input"
+                    required
+                  />
+                </div>
+              )}
 
-              {/* Account Number */}
-              <div className="form-group" style={{marginTop: '10px'}}>
-                <label className="deposit-label">Account Number *</label>
-                <input
-                  type="text"
-                  name="account_number"
-                  value={formData.account_number}
-                  onChange={handleInputChange}
-                  placeholder="Enter your account number"
-                  className="deposit-input"
-                  required
-                />
-              </div>
+              {/* Account Number - Hidden for USDT */}
+              {selectedChannel !== 'usdt' && (
+                <div className="form-group" style={{marginTop: '10px'}}>
+                  <label className="deposit-label">Account Number *</label>
+                  <input
+                    type="text"
+                    name="account_number"
+                    value={formData.account_number}
+                    onChange={handleInputChange}
+                    placeholder="Enter your account number"
+                    className="deposit-input"
+                    required
+                  />
+                </div>
+              )}
 
-
+              {/* USDT Account Number - Only for USDT */}
+              {selectedChannel === 'usdt' && (
+                <div className="form-group" style={{marginTop: '10px'}}>
+                  <label className="deposit-label">USDT (TRC20) Account Number *</label>
+                  <input
+                    type="text"
+                    name="account_number"
+                    value={formData.account_number}
+                    onChange={handleInputChange}
+                    placeholder="Enter your USDT wallet address (TRC20)"
+                    className="deposit-input"
+                    required
+                  />
+                </div>
+              )}
 
               {/* Submit Button */}
               <button

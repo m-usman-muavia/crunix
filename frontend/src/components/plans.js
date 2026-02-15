@@ -168,7 +168,7 @@ const Plans = () => {
         
         <div className="plan-image">
           <img 
-            src="/planimage.webp" 
+            src="/planimage.jpg" 
             alt="Investment Plans" 
             style={{ 
               width: '100%', 

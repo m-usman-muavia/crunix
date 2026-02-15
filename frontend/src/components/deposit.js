@@ -142,7 +142,7 @@ const Deposit = () => {
           >
             <span className="badge">No fee</span>
             <p className="channel-name">USDT</p>
-            <span1>(BEP20)</span1>
+            <span1>(TRC20)</span1>
           </div>
         </div>
 
@@ -152,7 +152,6 @@ const Deposit = () => {
         {/* Footer Notes */}
         <ul className="notes">
           <li>$1.00 ≈ Rs 300</li>
-          <li>8% handling fee will be charged</li>
           <li>Minimum first deposit $5</li>
           <li>Use only official channels</li>
           <li>Transfer exact amount shown</li>

@@ -17,12 +17,12 @@ exports.createWithdrawal = async (req, res) => {
     }
 
     // Validate minimum withdrawal
-    if (!amount || amount < 100) {
-      return res.status(400).json({ message: 'Minimum withdrawal is Rs 100' });
+    if (!amount || amount < 1) {
+      return res.status(400).json({ message: 'Minimum withdrawal is $1' });
     }
 
-    if (!method || !account_number || !mobile_number) {
-      return res.status(400).json({ message: 'Missing required fields' });
+    if (!account_number) {
+      return res.status(400).json({ message: 'Account number is required' });
     }
 
     // Check if user has sufficient balance (total balance)

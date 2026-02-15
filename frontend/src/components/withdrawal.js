@@ -15,7 +15,7 @@ const Withdrawal = () => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const quickAmounts = [5, 10, 25, 50,100];
+  const quickAmounts = [1, 5, 10, 25, 50];
 
   useEffect(() => {
     fetchWallet();
@@ -147,7 +147,7 @@ const Withdrawal = () => {
           >
             <span className="badge">No fee</span>
             <p className="channel-name">USDT</p>
-            <span1>(BEP20)</span1>
+            <span1>(TRC20)</span1>
           </div>
         </div>
 
@@ -157,8 +157,9 @@ const Withdrawal = () => {
         {/* Footer Notes */}
         <ul className="notes">
           <li>$1.00 ≈ Rs 300</li>
-          <li>8% handling fee will be charged</li>
-          <li>Minimum first withdrawal $5</li>
+          <li>5% handling fee will be charged</li>
+          <li>No withdrawal Fee on USDT</li>
+          <li>Minimum withdrawal $1</li>
           <li>Use only official channels</li>
           <li>Transfer exact amount shown</li>
         </ul>
