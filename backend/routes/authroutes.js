@@ -9,17 +9,8 @@ const verifyToken = require('../middleware/auth');
 // Setup multer for plan image uploads (memory storage for Cloudinary)
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Setup multer for account QR uploads
-const accountStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/accounts/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
-
-const accountUpload = multer({ storage: accountStorage });
+// Setup multer for account QR uploads (memory storage for Cloudinary)
+const accountUpload = multer({ storage: multer.memoryStorage() });
 
 router.post('/register', register);
 router.post('/login', login);

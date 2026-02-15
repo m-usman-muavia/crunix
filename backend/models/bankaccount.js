@@ -26,6 +26,10 @@ const bankAccountSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    qr_image_public_id: {
+        type: String,
+        default: ''
+    },
     status: {
         type: String,
         enum: ['active', 'inactive'],

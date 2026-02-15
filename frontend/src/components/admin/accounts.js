@@ -4,6 +4,7 @@ import { faHouse, faBox,faArrowDown,faArrowUp, faUser,faUsers,faClock } from '@f
 import { Link } from 'react-router-dom';
 import '../css/style.css';
 import '../css/refferrals.css';
+import API_BASE_URL from '../../config/api';
 
 const Accounts = () => {
     const [error, setError] = useState('');
@@ -19,6 +20,19 @@ const Accounts = () => {
         tillId: '',
         qrImage: null
     });
+
+    const resolveImageUrl = (imagePath) => {
+        if (!imagePath) {
+            return '';
+        }
+
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+            return imagePath;
+        }
+
+        const normalized = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+        return `${API_BASE_URL}/${normalized}`;
+    };
 
     const parseJsonSafe = async (res) => {
         const text = await res.text();
@@ -270,7 +284,7 @@ const Accounts = () => {
                                     {(account.qr_image_base64 || account.qr_image_path) && (
                                         <div style={{ marginBottom: '10px' }}>
                                             <img
-                                                src={account.qr_image_base64 || `/${account.qr_image_path}`}
+                                                src={account.qr_image_base64 || resolveImageUrl(account.qr_image_path)}
                                                 alt="QR"
                                                 style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '10px' }}
                                             />

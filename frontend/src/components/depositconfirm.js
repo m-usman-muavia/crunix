@@ -25,6 +25,19 @@ const DepositConfirm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const resolveImageUrl = (imagePath) => {
+    if (!imagePath) {
+      return '';
+    }
+
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+      return imagePath;
+    }
+
+    const normalized = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+    return `${API_BASE_URL}/${normalized}`;
+  };
+
   // USDT BEP20 static details
   const usdtDetails = {
     qrImagePath: 'InternationalQRcode.jpeg',
@@ -205,7 +218,7 @@ const DepositConfirm = () => {
                   <div className="payment-qr">
                     {account.qrImagePath ? (
                       <img
-                        src={`/${account.qrImagePath}`}
+                        src={resolveImageUrl(account.qrImagePath)}
                         alt="QR code"
                         className="payment-qr-image"
                       />
