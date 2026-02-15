@@ -4,6 +4,7 @@ import { faHouse, faBox, faArrowDown,faArrowUp, faUsers, faClock } from '@fortaw
 import { Link } from 'react-router-dom';
 import '../css/style.css';
 import '../css/refferrals.css';
+import API_BASE_URL from '../../config/api';
 
 const AddPlans = () => {
     const [error, setError] = useState('');
@@ -20,6 +21,19 @@ const AddPlans = () => {
         purchaseLimit: '',
         image: null
     });
+
+    const resolveImageUrl = (imagePath) => {
+        if (!imagePath) {
+            return '';
+        }
+
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+            return imagePath;
+        }
+
+        const normalized = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+        return `${API_BASE_URL}/${normalized}`;
+    };
 
     const parseJsonSafe = async (res) => {
         const text = await res.text();
@@ -316,7 +330,7 @@ const AddPlans = () => {
                                     marginBottom: '12px'
                                 }}>
                                     <img 
-                                        src={plan.image_base64 || `/${plan.image_path}`} 
+                                        src={plan.image_base64 || resolveImageUrl(plan.image_path)} 
                                         alt={plan.name}
                                         style={{ 
                                             width: '100%', 

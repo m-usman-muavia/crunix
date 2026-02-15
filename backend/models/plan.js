@@ -34,7 +34,7 @@ const planSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  image_base64: {
+  image_public_id: {
     type: String,
     default: ''
   },

@@ -26,10 +26,6 @@ const bankAccountSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    qr_image_base64: {
-        type: String,
-        default: ''
-    },
     status: {
         type: String,
         enum: ['active', 'inactive'],

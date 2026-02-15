@@ -20,6 +20,19 @@ const Plans = () => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const resolveImageUrl = (imagePath) => {
+    if (!imagePath) {
+      return '';
+    }
+
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+      return imagePath;
+    }
+
+    const normalized = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+    return `${API_BASE_URL}/${normalized}`;
+  };
+
   useEffect(() => {
     fetchPlans();
     fetchBalance();
@@ -202,10 +215,10 @@ const Plans = () => {
                 <div className="plan-card-top">
                   {/* Product Image */}
                   <div className="plan-product-image">
-                    {(plan.image_base64 || plan.image_path) ? (
+                    {plan.image_path ? (
                       <>
                         <img 
-                          src={plan.image_base64 || `/${plan.image_path}`} 
+                          src={resolveImageUrl(plan.image_path)} 
                           alt={plan.name}
                           onError={(e) => { e.target.style.display = 'none'; }}
                         />

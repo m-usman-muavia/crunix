@@ -347,15 +347,6 @@ exports.addAdminAccount = async (req, res) => {
         }
 
         // Create new account
-        let qrImageBase64 = '';
-        if (req.file) {
-            // Read file and convert to base64
-            const imageBuffer = fs.readFileSync(req.file.path);
-            qrImageBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
-            // Delete the temporary file
-            fs.unlinkSync(req.file.path);
-        }
-
         const newAccount = new BankAccount({
             account_name,
             account_number,
@@ -363,8 +354,7 @@ exports.addAdminAccount = async (req, res) => {
             account_type,
             status: status || 'active',
             till_id: till_id || '',
-            qr_image_path: '', // Keep for backward compatibility
-            qr_image_base64: qrImageBase64
+            qr_image_path: req.file ? req.file.path : ''
         });
 
         await newAccount.save();
@@ -403,12 +393,10 @@ exports.updateAdminAccount = async (req, res) => {
         if (till_id !== undefined) account.till_id = till_id;
 
         if (req.file) {
-            // Read file and convert to base64
-            const imageBuffer = fs.readFileSync(req.file.path);
-            account.qr_image_base64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
-            // Delete the temporary file
-            fs.unlinkSync(req.file.path);
-            account.qr_image_path = ''; // Clear old path
+            if (account.qr_image_path && fs.existsSync(account.qr_image_path)) {
+                fs.unlinkSync(account.qr_image_path);
+            }
+            account.qr_image_path = req.file.path;
         }
 
         await account.save();
@@ -431,7 +419,9 @@ exports.deleteAdminAccount = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Account not found' });
         }
 
-        // No need to delete files anymore since we store base64
+        if (deleted.qr_image_path && fs.existsSync(deleted.qr_image_path)) {
+            fs.unlinkSync(deleted.qr_image_path);
+        }
 
         res.status(200).json({ success: true, message: 'Account deleted' });
     } catch (error) {

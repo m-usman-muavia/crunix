@@ -1,6 +1,6 @@
 const Plan = require('../models/plan.js');
 const fs = require('fs');
-const path = require('path');
+const { uploadBuffer, deleteByPublicId } = require('../config/cloudinary');
 
 // 👉 GET ALL PLANS
 exports.getPlans = async (req, res) => {
@@ -35,13 +35,15 @@ exports.createPlan = async (req, res) => {
     const roi_percentage =
       Math.floor((total_profit / investment_amount) * 100 - 100);
 
-    let imageBase64 = '';
+    let imagePath = '';
+    let imagePublicId = '';
+
     if (req.file) {
-      // Read file and convert to base64
-      const imageBuffer = fs.readFileSync(req.file.path);
-      imageBase64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
-      // Delete the temporary file
-      fs.unlinkSync(req.file.path);
+      const uploadResult = await uploadBuffer(req.file.buffer, {
+        folder: 'plans'
+      });
+      imagePath = uploadResult.secure_url || '';
+      imagePublicId = uploadResult.public_id || '';
     }
 
     const planData = {
@@ -52,8 +54,8 @@ exports.createPlan = async (req, res) => {
       total_profit,
       roi_percentage,
       status,
-      image_path: '', // Keep for backward compatibility
-      image_base64: imageBase64,
+      image_path: imagePath,
+      image_public_id: imagePublicId,
       purchase_limit: purchase_limit || 0
     };
 
@@ -105,12 +107,18 @@ exports.updatePlan = async (req, res) => {
     
     // Handle image update
     if (req.file) {
-      // Read file and convert to base64
-      const imageBuffer = fs.readFileSync(req.file.path);
-      plan.image_base64 = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
-      // Delete the temporary file
-      fs.unlinkSync(req.file.path);
-      plan.image_path = ''; // Clear old path
+      if (plan.image_public_id) {
+        await deleteByPublicId(plan.image_public_id);
+      } else if (plan.image_path && fs.existsSync(plan.image_path)) {
+        fs.unlinkSync(plan.image_path);
+      }
+
+      const uploadResult = await uploadBuffer(req.file.buffer, {
+        folder: 'plans'
+      });
+
+      plan.image_path = uploadResult.secure_url || '';
+      plan.image_public_id = uploadResult.public_id || '';
     }
 
     // Recalculate total profit and ROI if amounts or duration changed
@@ -148,7 +156,12 @@ exports.deletePlan = async (req, res) => {
       });
     }
     
-    // No need to delete files anymore since we store base64
+    // Delete image file if exists
+    if (plan.image_public_id) {
+      await deleteByPublicId(plan.image_public_id);
+    } else if (plan.image_path && fs.existsSync(plan.image_path)) {
+      fs.unlinkSync(plan.image_path);
+    }
 
     return res.status(200).json({
       success: true,

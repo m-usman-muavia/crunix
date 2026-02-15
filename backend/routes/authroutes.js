@@ -6,17 +6,8 @@ const { register, login, verifyOTP, getAdminAccounts, addAdminAccount, updateAdm
 const { adminPlans, updateAdminPlan, deleteAdminPlan } = require('../controllers/plancontrollers');
 const verifyToken = require('../middleware/auth');
 
-// Setup multer for plan image uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/plans/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
-
-const upload = multer({ storage });
+// Setup multer for plan image uploads (memory storage for Cloudinary)
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Setup multer for account QR uploads
 const accountStorage = multer.diskStorage({
