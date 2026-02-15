@@ -82,7 +82,25 @@ const Deposit = () => {
           <p>
             Current Balance: <span>${balance.toFixed(2)}</span>
           </p>
-          <h4>CRUNIX  </h4>
+          <button 
+            onClick={() => navigate('/deposithistory')}
+            style={{
+              background: 'linear-gradient(135deg, #036, #0055a4)',
+              border: 'none',
+              borderRadius: '6px',
+              boxShadow: '0 8px 18px #2563eb47',
+              color: '#fff',
+              cursor: 'pointer',
+              fontSize: '11px',
+              fontWeight: '700',
+              letterSpacing: '.7px',
+              padding: '8px 14px',
+              textTransform: 'uppercase',
+              transition: 'all .3s ease'
+            }}
+          >
+            Deposit History
+          </button>
         </div>
 
         {/* Input */}
@@ -140,6 +158,7 @@ const Deposit = () => {
           <li>Transfer exact amount shown</li>
         </ul>
       </div>
+
 
       {/* Bottom Navigation */}
       <BottomNav />

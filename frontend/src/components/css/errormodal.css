@@ -25,8 +25,8 @@
 .error-modal-content {
   background: linear-gradient(145deg, #ffffff, #f8fafc);
   box-shadow: 0 20px 60px rgba(220, 38, 38, 0.3);
-  width: 60%;
-  max-width:250px ;
+  width: 80%;
+  max-width:350px ;
   padding: 0;
   position: relative;
   border-radius: 16px;

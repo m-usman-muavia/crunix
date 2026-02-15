@@ -7,7 +7,10 @@ import Plan from './components/plans';
 import Deposit  from './components/deposit';
 import DepositConfirm from './components/depositconfirm';
 import Withdrawal from './components/withdrawal';
+import WithdrawConfirm from './components/withdrawconfirm';
 import Transactions from './components/transactions';
+import DepositHistory from './components/DepositHistory';
+import WithdrawalHistory from './components/WithdrawalHistory';
 import Refferrals from './components/refferrals';
 import Profile from './components/profile';
 import VerifyEmail from './components/EmailOTP';
@@ -37,7 +40,10 @@ function App() {
         <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
         <Route path="/depositconfirm" element={<ProtectedRoute><DepositConfirm /></ProtectedRoute>} />
         <Route path="/withdrawal" element={<ProtectedRoute><Withdrawal /></ProtectedRoute>} />
+        <Route path="/withdrawconfirm" element={<ProtectedRoute><WithdrawConfirm /></ProtectedRoute>} />
+        <Route path="/withdrawalhistory" element={<ProtectedRoute><WithdrawalHistory /></ProtectedRoute>} />
         <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
+        <Route path="/deposithistory" element={<ProtectedRoute><DepositHistory /></ProtectedRoute>} />
         <Route path="/refferrals" element={<ProtectedRoute><Refferrals /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/admin/addplans" element={<ProtectedRoute><AddPlan /></ProtectedRoute>} />

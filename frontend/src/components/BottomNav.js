@@ -38,11 +38,11 @@ const BottomNav = () => {
       </Link>
 
       <Link 
-        to="/transactions" 
-        className={`nav-item-modern ${isActive('/transactions') ? 'active' : ''}`}
+        to="/withdrawal" 
+        className={`nav-item-modern ${isActive('/withdrawal') ? 'active' : ''}`}
       >
         <FontAwesomeIcon icon={faClock} />
-        <span>History</span>
+        <span>Withdraw</span>
       </Link>
 
       <Link 

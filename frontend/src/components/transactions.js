@@ -125,26 +125,7 @@ const Transactions = () => {
 
 
        
-        <div className="addplans-section">
-          <div className="addplans-card">
-            <div className="profile-buttons">
-              <button 
-                type="button" 
-                className={`profile-btn ${activeTab === 'deposits' ? 'active' : ''}`}
-                onClick={() => setActiveTab('deposits')}
-              >
-                Deposits
-              </button>
-              <button 
-                type="button" 
-                className={`profile-btn ${activeTab === 'withdrawals' ? 'active' : ''}`}
-                onClick={() => setActiveTab('withdrawals')}
-              >
-                Withdrawals
-              </button>
-            </div>
-          </div>
-        </div>
+       
 
         {/* Transactions List Section */}
         <div className="plan-content">
