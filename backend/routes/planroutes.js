@@ -154,9 +154,11 @@ router.get('/user/active', verifyToken, async (req, res) => {
       endDate: userPlan.endDate,
       currentEarnings: userPlan.totalEarned,
       status: userPlan.status,
+      image_path: userPlan.planId?.image_path,
       plan: {
         name: userPlan.planName,
-        duration_days: userPlan.duration_days
+        duration_days: userPlan.duration_days,
+        image_path: userPlan.planId?.image_path
       }
     }));
 

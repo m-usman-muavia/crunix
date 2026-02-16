@@ -139,6 +139,44 @@ const ActivePlans = () => {
         return `${API_BASE_URL}/${normalized}`;
     };
 
+    const canCollect = (plan) => {
+        if (plan.status !== 'active') return false;
+        
+        // Check if there's a daily income available
+        if (!plan.dailyProfit || plan.dailyProfit <= 0) return false;
+
+        // Check last collection time
+        const lastCollectTime = plan.lastCollectTime ? new Date(plan.lastCollectTime) : null;
+        const now = new Date();
+
+        if (!lastCollectTime) {
+            // First time collecting - can collect anytime after investment
+            return true;
+        }
+
+        // Check if 24 hours have passed since last collection
+        const hoursPassed = (now - lastCollectTime) / (1000 * 60 * 60);
+        return hoursPassed >= 24;
+    };
+
+    const getTimeUntilNextCollection = (plan) => {
+        const lastCollectTime = plan.lastCollectTime ? new Date(plan.lastCollectTime) : null;
+        
+        if (!lastCollectTime) {
+            return 'Ready to collect';
+        }
+
+        const now = new Date();
+        const nextCollectTime = new Date(lastCollectTime.getTime() + 24 * 60 * 60 * 1000);
+        
+        if (now >= nextCollectTime) {
+            return 'Ready to collect';
+        }
+
+        const hoursLeft = Math.ceil((nextCollectTime - now) / (1000 * 60 * 60));
+        return `Available in ${hoursLeft}h`;
+    };
+
     const filteredPlans = activePlans.filter(plan => {
         if (plansTab === 'active') {
             return plan.status === 'active' || plan.status === 'paused';
@@ -193,86 +231,68 @@ const ActivePlans = () => {
                             const earned = Number(plan.currentEarnings || 0);
                             const earnedPercent = totalProfit > 0 ? Math.min(100, (earned / totalProfit) * 100) : 0;
                             const remainingPercent = 100 - earnedPercent;
-                            const imagePath = plan.plan?.image_path || plan.image_path;
+                            const imagePath = plan.image_path || plan.plan?.image_path;
+                            const isReadyToCollect = canCollect(plan);
+                            const timeUntilNext = getTimeUntilNextCollection(plan);
 
                             return (
                                 <div className="active-plan-card-new" key={plan._id}>
                                     <div className="active-plan-header-new">
                                         <div className="active-plan-logo">
                                             {imagePath ? (
-                                                <>
-                                                    <img
-                                                        src={resolveImageUrl(imagePath)}
-                                                        alt={plan.planName || plan.plan?.name || 'Investment Plan'}
-                                                        onLoad={(e) => {
-                                                            if (e.target.nextSibling) {
-                                                                e.target.nextSibling.style.display = 'none';
-                                                            }
-                                                        }}
-                                                        onError={(e) => {
-                                                            e.target.style.display = 'none';
-                                                            if (e.target.nextSibling) {
-                                                                e.target.nextSibling.style.display = 'flex';
-                                                            }
-                                                        }}
-                                                    />
-                                                    <div className="active-plan-logo-fallback" style={{ display: 'none' }}>Plan</div>
-                                                </>
-                                            ) : (
-                                                <div className="active-plan-logo-fallback">Plan</div>
-                                            )}
+                                                <img
+                                                    src={resolveImageUrl(imagePath)}
+                                                    alt={plan.planName || plan.plan?.name || 'Investment Plan'}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        const fallback = e.target.parentElement.querySelector('.active-plan-logo-fallback-inline');
+                                                        if (fallback) fallback.style.display = 'flex';
+                                                    }}
+                                                />
+                                            ) : null}
+                                            <div className="active-plan-logo-fallback-inline" style={{ display: imagePath ? 'none' : 'flex', position: imagePath ? 'absolute' : 'relative' }}>Plan</div>
                                         </div>
                                         <div className="active-plan-title-wrap" style={{textAlign: 'left'}}>
                                             <h2 className="active-plan-title-new" style={{ fontSize: '24px', fontWeight: '700', textTransform: 'uppercase' }}>{plan.planName || plan.plan?.name || 'Investment Plan'}</h2>
-                                            <h3 className="active-plan-title-new" style={{ fontSize: '16px', fontWeight: '500' }}>{formatDate(plan.investmentDate)}</h3>
-                                            <div className="active-plan-status" style={{ backgroundColor: getStatusBadge(plan.status).color, borderRadius: '6px', padding: '3px 4px',marginRight: '28px' }}>
+                                            <h3 className="active-plan-title-new" style={{ fontSize: '16px', fontWeight: '500' }}>{formatDate(plan.investmentDate)} - {formatTime(plan.investmentDate)}</h3>
+                                            <div className="active-plan-status" style={{ backgroundColor: getStatusBadge(plan.status).color, borderRadius: '6px', padding: '3px 4px',marginRight: '98px' }}>
                                                 <FontAwesomeIcon icon={getStatusBadge(plan.status).icon} className="status-icon" />
                                                 <span className="status-label">{getStatusBadge(plan.status).label}</span>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div className="active-plan-body">
-                                        <div className="active-plan-col">
-                                            <div className="active-plan-row">
-                                                <span>Active Invested:</span>
-                                                <strong>${formatAmount(plan.investmentAmount || 0)}</strong>
-                                            </div>
-                                            <div className="active-plan-row">
-                                                <span>Daily Income:</span>
-                                                <strong>${formatAmount(plan.dailyProfit || 0)}</strong>
-                                            </div>
-                                            <div className="active-plan-row">
-                                                <span>Total Return:</span>
-                                                <strong>${formatAmount(plan.totalProfit || 0)}</strong>
-                                            </div>
-                                            <div className="active-plan-row">
-                                                <span>Earned</span>
-                                                <strong>${formatAmount(plan.currentEarnings || 0)}</strong>
-                                            </div>
-                                            <div className="active-plan-row">
-                                                <span>Remaining:</span>
-                                                <strong>${formatAmount((plan.totalProfit || 0) - (plan.currentEarnings || 0))}</strong>
-                                            </div>
+                                    <div className="plan-investment">
+                                        <div className="date-item1">
+                                            <span className="date-label">Invested</span>
+                                            <span className="date-value">${formatAmount(plan.investmentAmount || 0)}</span>
                                         </div>
-
-                                        <div className="active-plan-divider"></div>
-
-                                        <div className="active-plan-col">
-                                            <div className="active-plan-row">
-                                                <span>Start Date:</span>
-                                                <strong>{formatDate(plan.investmentDate)}</strong>
-                                            </div>
-                                            <div className="active-plan-row">
-                                                <span>End Date:</span>
-                                                <strong>{formatDate(plan.endDate)}</strong>
-                                            </div>
-                                            <div className="active-plan-row">
-                                                <span>Investment Time:</span>
-                                                <strong>{formatTime(plan.investmentDate)}</strong>
-                                            </div>
+                                        <div className="date-item">
+                                            <span className="date-label">Daily Income</span>
+                                            <span className="date-value">${formatAmount(plan.dailyProfit)}</span>
+                                        </div>
+                                        <div className="date-item">
+                                            <span className="date-label">Return</span>
+                                            <span className="date-value">${formatAmount(plan.totalProfit || 0)}</span>
                                         </div>
                                     </div>
+
+                                    <div className="plan-dates">
+                                        <div className="date-item1">
+                                            <span className="date-label">Total Earned</span>
+                                            <span className="date-value">${formatAmount(plan.totalEarned || 0)}</span>
+                                        </div>
+                                        <div className="date-item">
+                                            <span className="date-label">Remaining</span>
+                                            <span className="date-value">${formatAmount((plan.totalProfit || 0) - (plan.totalEarned || 0))}</span>
+                                        </div>
+                                        <div className="date-item">
+                                            <span className="date-label">Ends ON</span>
+                                            <span className="date-value">${formatDate(plan.endDate)}</span>
+                                              
+                                        </div>
+                                    </div>
+                                
 
                                 </div>
                             );
