@@ -242,15 +242,15 @@ const Dashboard = () => {
             }} 
           />
                       <div className="helpcenter">
-                <button className="helpcenter-button" aria-label="WhatsApp">
+                <a href="https://chat.whatsapp.com/BxU2NKIDvxvJVny2czRVAo?mode=gi_t" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="WhatsApp">
                   <FontAwesomeIcon style={{fontSize:'24px'}} icon={faWhatsapp} />
-                </button>
-                <button className="helpcenter-button" aria-label="Customer care">
-                  <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faHeadset} />
-                </button>
-                <button className="helpcenter-button" aria-label="Facebook">
+                </a>
+                <a href="https://www.facebook.com/share/1ATnDDf9HV/" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="Facebook">
                   <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faFacebook} />
-                </button>
+                </a>
+                <a href="https://chat.whatsapp.com/BxU2NKIDvxvJVny2czRVAo?mode=gi_t" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="Customer care">
+                  <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faHeadset} />
+                </a>
               </div>
             </div>
         
