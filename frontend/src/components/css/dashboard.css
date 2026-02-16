@@ -152,17 +152,15 @@ border: 3px solid #ffffff; /* Outer Blue Border */
   text-decoration: none;
   background: #ffffff;   
   border-radius: 50%;
-  border: 2px solid #002446;
+  border: 2px solid #0055A4;;
   padding: 12px;
-    color: #002446;
+    color: #0055A4;;
   height: 25px;
   width: 25px;
   font-size: 22px;
 }
 .dashboard-grid-icon:hover{
   background: #eaf4ff;
-  border: 2px solid #003366;
-    color: #0055A4;
 }
 
 .dashboard-grid-text {
@@ -180,7 +178,28 @@ border: 3px solid #ffffff; /* Outer Blue Border */
   gap: 10px;
   padding: 10px 20px;
 }
-
+.bonus-card{
+  padding: 6px 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7fb 100%);
+  color: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.0);
+  border-radius: 6px;
+  font-size: 22px;
+  font-weight: 600;
+}
+.bonus-card-header{
+  padding: 6px 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7fb 100%);
+  color: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.0);
+  border-radius: 6px;
+  font-size: 22px;
+  font-weight: 600;
+}
 .dashboard-refferal-container {
   position: relative;
   flex: 1;

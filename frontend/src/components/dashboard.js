@@ -421,7 +421,7 @@ const Dashboard = () => {
 
         <div className="dashboard-refferal-section">
           <Link to="/transactions" className="dashboard-refferal-container">
-            <span className="new-badge">New</span>
+            {/* <span className="-badge">New</span> */}
             <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faClipboardList} />
             <div className="dashboard-refferal-content">
               <h2 className="dashboard-refferal-header">Active Plans</h2>
@@ -429,7 +429,7 @@ const Dashboard = () => {
             </div>
           </Link>
           <Link to="#" className="dashboard-refferal-container">
-            <span className="soon-badge">Soon</span>
+            <span className="new-badge">Soon</span>
 
             <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faUsers} />  
             <div className="dashboard-refferal-content">
@@ -441,7 +441,7 @@ const Dashboard = () => {
 
         <div className="dashboard-plans-section">
           <div style={{ padding: '20px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', textAlign: 'left', margin: '0 0 15px 0', color: '#0f172a' }}>Investment Plan</h2>
+            <h2 style={{ fontSize: '22px', fontWeight: 'bold', textAlign: 'left', margin: '0 0 15px 0', color: '#0f172a' }}>Investment Plan</h2>
             
             {plans.length > 0 ? (
               plans.map((plan, index) => (
@@ -515,6 +515,55 @@ const Dashboard = () => {
             ) : (
               <p style={{ textAlign: 'center', color: '#64748b' }}>No plans available</p>
             )}
+          </div>
+        </div>
+
+        <div className="dashboard-bonus-section" style={{ padding: '20px' }}>
+          <div className="bonus-card" >
+
+              <div className='bonus-card-header'>
+                Get A Free Bonus
+              </div>
+
+            <form onSubmit={handleRedeemBonusCode} style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="text"
+                  value={bonusCode}
+                  onChange={(e) => setBonusCode(e.target.value.toUpperCase())}
+                  placeholder="Enter Bonus Code"
+                  disabled={redeemingBonus}
+                  style={{
+                    flex: 1,
+                    padding: '10px 12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontFamily: 'inherit'
+                  }}
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={redeemingBonus}
+                  style={{
+                    background: redeemingBonus ? '#ccc' : 'linear-gradient(135deg, #003366, #0055A4, #003366)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontWeight: '700',
+                    fontSize: '12px',
+                    cursor: redeemingBonus ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}
+                >
+                  {redeemingBonus ? 'Processing...' : 'Get Now'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
 
