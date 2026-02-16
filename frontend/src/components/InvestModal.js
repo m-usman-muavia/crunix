@@ -1,17 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faChartLine, faDollarSign, faWallet, faCoins } from '@fortawesome/free-solid-svg-icons';
 import './css/modal.css';
 
 const InvestModal = ({ isOpen, onClose, plan, balance, onInvest }) => {
-  if (!isOpen) return null;
-
+  const [isInvesting, setIsInvesting] = useState(false);
   const isInsufficientBalance = balance < (plan?.investment_amount || 0);
+  const showInsufficientBalance = isInsufficientBalance && !isInvesting;
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsInvesting(false);
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const handleInvest = async () => {
     if (isInsufficientBalance) {
       return;
     }
+    setIsInvesting(true);
     if (onInvest) {
       await onInvest(plan._id);
     }
@@ -61,7 +70,7 @@ const InvestModal = ({ isOpen, onClose, plan, balance, onInvest }) => {
           </div>
         </div>
 
-        {isInsufficientBalance && (
+        {showInsufficientBalance && (
           <div className="error-message">
             <div className="error-icon">⚠️</div>
             <div className="error-text">

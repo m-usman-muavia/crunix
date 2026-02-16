@@ -43,6 +43,10 @@ const userPlanSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    lastCollectTime: {
+        type: Date,
+        default: null
+    },
     totalEarned: {
         type: Number,
         default: 0

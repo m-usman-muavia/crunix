@@ -14,10 +14,18 @@ const CollectIncome = () => {
     const [error, setError] = useState('');
     const [collectingId, setCollectingId] = useState(null);
     const [collectMessage, setCollectMessage] = useState('');
+    const [countdowns, setCountdowns] = useState({});
+    const [expandedPlanId, setExpandedPlanId] = useState(null);
 
     useEffect(() => {
         fetchActivePlans();
+        const interval = setInterval(updateCountdowns, 1000);
+        return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+        updateCountdowns();
+    }, [activePlans]);
 
     const fetchActivePlans = async () => {
         setLoading(true);
@@ -51,23 +59,46 @@ const CollectIncome = () => {
         }
     };
 
+    const updateCountdowns = () => {
+        const newCountdowns = {};
+        activePlans.forEach(plan => {
+            const lastCollectTime = plan.lastCollectTime ? new Date(plan.lastCollectTime) : null;
+            const baseCollectTime = lastCollectTime || (plan.investmentDate ? new Date(plan.investmentDate) : null);
+
+            if (baseCollectTime) {
+                const now = new Date();
+                const nextCollectTime = new Date(baseCollectTime.getTime() + 24 * 60 * 60 * 1000);
+                const timeLeft = nextCollectTime - now;
+
+                if (timeLeft > 0) {
+                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    newCountdowns[plan._id] = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                } else {
+                    newCountdowns[plan._id] = 'Ready';
+                }
+            } else {
+                newCountdowns[plan._id] = 'Ready';
+            }
+        });
+        setCountdowns(newCountdowns);
+    };
+
     const canCollect = (plan) => {
         if (plan.status !== 'active') return false;
-        
+
         // Check if there's a daily income available
         if (!plan.dailyProfit || plan.dailyProfit <= 0) return false;
 
-        // Check last collection time
         const lastCollectTime = plan.lastCollectTime ? new Date(plan.lastCollectTime) : null;
+        const baseCollectTime = lastCollectTime || (plan.investmentDate ? new Date(plan.investmentDate) : null);
         const now = new Date();
 
-        if (!lastCollectTime) {
-            // First time collecting - can collect anytime after investment
-            return true;
+        if (!baseCollectTime) {
+            return false;
         }
 
-        // Check if 24 hou$have passed since last collection
-        const hoursPassed = (now - lastCollectTime) / (1000 * 60 * 60);
+        const hoursPassed = (now - baseCollectTime) / (1000 * 60 * 60);
         return hoursPassed >= 24;
     };
 
@@ -111,7 +142,7 @@ const CollectIncome = () => {
                 return;
             }
 
-            setCollectMessage({ type: 'success', text: `Collected $${data.collectedAmount} successfully!` });
+            setCollectMessage({ type: 'success', text: `Collected $${data.collectedAmount || data.amount || 0} successfully!` });
             
             // Refresh plans after collection
             setTimeout(() => {
@@ -133,9 +164,54 @@ const CollectIncome = () => {
         });
     };
 
+    const formatTime = (date) => {
+        return new Date(date).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
     const formatAmount = (value) => {
         const num = Number(value);
         return Number.isFinite(num) ? num.toFixed(2) : '0.00';
+    };
+
+    const resolveImageUrl = (imagePath) => {
+        if (!imagePath) {
+            return '';
+        }
+
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+            return imagePath;
+        }
+
+        const normalized = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+        return `${API_BASE_URL}/${normalized}`;
+    };
+
+    const getStatusBadge = (status) => {
+        switch (status) {
+            case 'active':
+                return { color: '#16a34a', icon: faCheckCircle, label: 'Active' };
+            default:
+                return { color: '#6b7280', icon: faCheckCircle, label: 'Active' };
+        }
+    };
+
+    const getAccrualStatus = (accrualItem) => {
+        if (!accrualItem) return { label: 'N/A', color: '#64748b' };
+        
+        // Assuming status is stored in accrualItem
+        if (accrualItem.status === 'collected') {
+            return { label: 'Collected', color: '#16a34a' };
+        } else if (accrualItem.status === 'expired') {
+            return { label: 'Expired', color: '#ef4444' };
+        } else if (accrualItem.status === 'pending') {
+            return { label: 'Pending', color: '#f59e0b' };
+        }
+        
+        return { label: 'Available', color: '#3b82f6' };
     };
 
     return (
@@ -176,92 +252,127 @@ const CollectIncome = () => {
                         </Link>
                     </div>
                 ) : (
-                    <div style={{ padding: '20px' }}>
+                    <div className="active-plans-grid" style={{ padding: '20px' }}>
                         {activePlans.map((plan) => {
+                            const imagePath = plan.image_path || plan.plan?.image_path;
                             const isReadyToCollect = canCollect(plan);
-                            const timeUntilNext = getTimeUntilNextCollection(plan);
+                            const countdownRaw = countdowns[plan._id] || 'Ready';
+                            const isCountdownReady = countdownRaw === 'Ready';
+                            const countdownDisplay = isCountdownReady ? 'Collect' : countdownRaw;
+                            const lastCollectTime = plan.lastCollectTime ? new Date(plan.lastCollectTime) : null;
+                            const baseCollectTime = lastCollectTime || (plan.investmentDate ? new Date(plan.investmentDate) : null);
+                            const nextCollectTime = baseCollectTime
+                                ? new Date(baseCollectTime.getTime() + 24 * 60 * 60 * 1000)
+                                : null;
 
                             return (
-                                <div 
-                                    className="active-plan-card" 
-                                    key={plan._id}
-                                    style={{ marginBottom: '20px' }}
-                                >
-                                    <div className="active-plan-header">
-                                        <div className="plan-name-section">
-                                            <h3 className="active-plan-title">{plan.planName || plan.plan?.name || 'Investment Plan'}</h3>
+                                <div className="active-plan-card-new" key={plan._id}>
+                                    <div className="active-plan-header-new">
+                                        <div className="active-plan-logo">
+                                            {imagePath ? (
+                                                <img
+                                                    src={resolveImageUrl(imagePath)}
+                                                    alt={plan.planName || plan.plan?.name || 'Investment Plan'}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        const fallback = e.target.parentElement.querySelector('.active-plan-logo-fallback-inline');
+                                                        if (fallback) fallback.style.display = 'flex';
+                                                    }}
+                                                />
+                                            ) : null}
+                                            <div className="active-plan-logo-fallback-inline" style={{ display: imagePath ? 'none' : 'flex', position: imagePath ? 'absolute' : 'relative' }}>Plan</div>
                                         </div>
-                                        <div className="status-badge" style={{ color: '#16a34a' }}>
-                                            <FontAwesomeIcon icon={faCheckCircle} />
-                                            Active
-                                        </div>
-                                    </div>
-
-                                    <div className="plan-investment">
-                                        <div className="date-item1">
-                                            <span className="date-label">Daily Income</span>
-                                            <span className="date-value">${formatAmount(plan.dailyProfit)}</span>
-                                        </div>
-                                        <div className="date-item">
-                                            <span className="date-label">Total Collected</span>
-                                            <span className="date-value">${formatAmount(plan.totalCollected || 0)}</span>
-                                        </div>
-                                        <div className="date-item">
-                                            <span className="date-label">Remaining</span>
-                                            <span className="date-value">${formatAmount((plan.totalProfit || 0) - (plan.totalCollected || 0))}</span>
+                                        <div className="active-plan-title-wrap" style={{textAlign: 'left'}}>
+                                            <h2 className="active-plan-title-new" style={{ fontSize: '24px', fontWeight: '700', textTransform: 'uppercase' }}>{plan.planName || plan.plan?.name || 'Investment Plan'}</h2>
+                                            <h3 className="active-plan-title-new" style={{ fontSize: '14px', fontWeight: '500' }}>
+                                                Next: {nextCollectTime ? `${formatDate(nextCollectTime)} - ${formatTime(nextCollectTime)}` : 'Not available'}
+                                            </h3>
+                                            <h3 className="active-plan-title-new" style={{ fontSize: '14px', fontWeight: '500' }}>
+                                                Last: {lastCollectTime ? `${formatDate(lastCollectTime)} - ${formatTime(lastCollectTime)}` : 'Not collected'}
+                                            </h3>
                                         </div>
                                     </div>
-
-                                    <div className="plan-dates">
-                                        <div className="date-item1">
-                                            <span className="date-label">Start Date</span>
-                                            <span className="date-value">{formatDate(plan.investmentDate)}</span>
-                                        </div>
-                                        <div className="date-item">
-                                            <span className="date-label">End Date</span>
-                                            <span className="date-value">{formatDate(plan.endDate)}</span>
-                                        </div>
-                                        <div className="date-item">
-                                            <span className="date-label">Status</span>
-                                            <span className="date-value" style={{ color: isReadyToCollect ? '#16a34a' : '#f59e0b' }}>
-                                                {timeUntilNext}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Collection Button */}
-                                    <div style={{ marginTop: '16px' }}>
+                                    <div style={{  display: 'flex', gap: '12px' }}>
                                         <button
                                             onClick={() => handleCollectIncome(plan._id)}
+                                            className='primary-btn'
                                             disabled={!isReadyToCollect || collectingId === plan._id}
+                                            >
+                                            {collectingId === plan._id ? '⏳ Collecting...' : isReadyToCollect ? 'Collect Now' : `${countdownDisplay}`}
+                                        </button>
+                                    </div>
+
+                                    {/* <div style={{ borderTop: '1px solid #e2e8f0', marginTop: '15px' }}>
+                                        <button
+                                            onClick={() => setExpandedPlanId(expandedPlanId === plan._id ? null : plan._id)}
                                             style={{
                                                 width: '100%',
-                                                padding: '12px 16px',
-                                                backgroundColor: isReadyToCollect ? 'linear-gradient(135deg, #16a34a, #15803d)' : '#cbd5e1',
-                                                color: 'white',
+                                                padding: '12px 20px',
+                                                backgroundColor: 'transparent',
                                                 border: 'none',
-                                                borderRadius: '8px',
-                                                fontSize: '14px',
-                                                fontWeight: '700',
-                                                textTransform: 'uppercase',
-                                                letterSpacing: '0.5px',
-                                                cursor: isReadyToCollect && collectingId !== plan._id ? 'pointer' : 'not-allowed',
-                                                transition: 'all 0.3s ease',
                                                 display: 'flex',
+                                                justifyContent: 'space-between',
                                                 alignItems: 'center',
-                                                justifyContent: 'center',
-                                                gap: '8px'
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faArrowDown} />
-                                            {collectingId === plan._id ? 'Collecting...' : 'Collect Income'}
+                                                cursor: 'pointer',
+                                                fontSize: '14px',
+                                                fontWeight: '600',
+                                                color: '#334155'
+                                            }}>
+                                            <span>Collection History</span>
+                                            <span style={{ transform: expandedPlanId === plan._id ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}>▼</span>
                                         </button>
-                                        {!isReadyToCollect && (
-                                            <p style={{ fontSize: '12px', color: '#64748b', textAlign: 'center', marginTop: '8px' }}>
-                                                <FontAwesomeIcon icon={faClock} /> {timeUntilNext}
-                                            </p>
+
+                                        {expandedPlanId === plan._id && (
+                                            <div style={{ padding: '0 20px 15px 20px', maxHeight: '300px', overflowY: 'auto' }}>
+                                                {plan.accrualHistory && plan.accrualHistory.length > 0 ? (
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                        {plan.accrualHistory.map((accrual, idx) => {
+                                                            const accrualStatus = getAccrualStatus(accrual);
+                                                            return (
+                                                                <div key={idx} style={{
+                                                                    padding: '12px',
+                                                                    border: '1px solid #e2e8f0',
+                                                                    borderRadius: '6px',
+                                                                    backgroundColor: '#f8fafc'
+                                                                }}>
+                                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                                                        <span style={{ fontSize: '12px', color: '#64748b' }}>
+                                                                            {formatDate(accrual.timestamp || accrual.date)}
+                                                                        </span>
+                                                                        <span style={{
+                                                                            fontSize: '11px',
+                                                                            fontWeight: '600',
+                                                                            padding: '3px 8px',
+                                                                            borderRadius: '4px',
+                                                                            backgroundColor: accrualStatus.color + '20',
+                                                                            color: accrualStatus.color
+                                                                        }}>
+                                                                            {accrualStatus.label}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px' }}>
+                                                                        <div>
+                                                                            <span style={{ color: '#64748b', display: 'block' }}>Days Accrued</span>
+                                                                            <span style={{ fontWeight: '600', color: '#1e293b' }}>{accrual.daysAccrued || 1} days</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span style={{ color: '#64748b', display: 'block' }}>Amount</span>
+                                                                            <span style={{ fontWeight: '600', color: '#16a34a' }}>${formatAmount(accrual.amountAdded || 0)}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                ) : (
+                                                    <div style={{ padding: '20px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>
+                                                        No accrual history yet
+                                                    </div>
+                                                )}
+                                            </div>
                                         )}
-                                    </div>
+                                    </div> */}
                                 </div>
                             );
                         })}

@@ -26,6 +26,13 @@ exports.createDeposit = async (req, res) => {
       return res.status(400).json({ message: 'Screenshot is required' });
     }
 
+    const existingDeposit = await Deposit.findOne({ transaction_id });
+    if (existingDeposit) {
+      return res.status(400).json({
+        message: 'Please have patience, Your deposit is already in process.'
+      });
+    }
+
     const screenshot_path = req.file.path;
 
     const deposit = new Deposit({

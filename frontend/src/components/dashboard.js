@@ -540,7 +540,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* <div className="dashboard-bonus-section" style={{ padding: '20px' }}>
+        <div className="dashboard-bonus-section" style={{ padding: '20px' }}>
           <div className="bonus-card" >
 
               <div className='bonus-card-header'>
@@ -587,7 +587,7 @@ const Dashboard = () => {
               </div>
             </form>
           </div>
-        </div> */}
+        </div>
 
         {/* Error Modal */}
         <ErrorModal

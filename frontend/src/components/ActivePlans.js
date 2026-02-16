@@ -13,7 +13,6 @@ const ActivePlans = () => {
     const [activePlans, setActivePlans] = useState([]);
     const [loadingPlans, setLoadingPlans] = useState(false);
     const [plansError, setPlansError] = useState('');
-    const [plansTab, setPlansTab] = useState('active');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -178,12 +177,7 @@ const ActivePlans = () => {
     };
 
     const filteredPlans = activePlans.filter(plan => {
-        if (plansTab === 'active') {
-            return plan.status === 'active' || plan.status === 'paused';
-        } else if (plansTab === 'completed') {
-            return plan.status === 'completed';
-        }
-        return true;
+        return plan.status === 'active' || plan.status === 'paused' || plan.status === 'completed';
     });
 
     const totalEarnings = filteredPlans.reduce((sum, plan) => {
@@ -225,15 +219,11 @@ const ActivePlans = () => {
                 ) : filteredPlans.length === 0 ? (
                     <div className="empty-state" style={{ padding: '40px 20px' }}>
                         <p className="empty-state-text">
-                            {plansTab === 'active' 
-                                ? "You don't have any active plans yet." 
-                                : "You don't have any completed plans yet."}
+                            You don't have any plans yet.
                         </p>
-                        {plansTab === 'active' && (
-                            <Link to="/plans" className="noactivate-btn">
-                                Browse Plans
-                            </Link>
-                        )}
+                        <Link to="/plans" className="noactivate-btn">
+                            Browse Plans
+                        </Link>
                     </div>
                 ) : (
                     <div className="active-plans-grid" style={{ padding: '20px' }}>
@@ -264,10 +254,10 @@ const ActivePlans = () => {
                                             ) : null}
                                             <div className="active-plan-logo-fallback-inline" style={{ display: imagePath ? 'none' : 'flex', position: imagePath ? 'absolute' : 'relative' }}>Plan</div>
                                         </div>
-                                        <div className="active-plan-title-wrap" style={{textAlign: 'left'}}>
+                                        <div className="active-plan-title-wrap" style={{textAlign: 'left', display: 'block'}}>
                                             <h2 className="active-plan-title-new" style={{ fontSize: '24px', fontWeight: '700', textTransform: 'uppercase' }}>{plan.planName || plan.plan?.name || 'Investment Plan'}</h2>
                                             <h3 className="active-plan-title-new" style={{ fontSize: '14px', fontWeight: '500' }}>{formatDate(plan.investmentDate)} - {formatTime(plan.investmentDate)}</h3>
-                                            <div className="active-plan-status" style={{ backgroundColor: getStatusBadge(plan.status).color, borderRadius: '6px', padding: '3px 4px',marginRight: '75px' }}>
+                                            <div className="active-plan-status" style={{ backgroundColor: getStatusBadge(plan.status).color, borderRadius: '6px', padding: '3px 8px', display: 'inline-flex', alignItems: 'center', gap: '1px' }}>
                                                 <FontAwesomeIcon icon={getStatusBadge(plan.status).icon} className="status-icon" />
                                                 <span className="status-label">{getStatusBadge(plan.status).label}</span>
                                             </div>

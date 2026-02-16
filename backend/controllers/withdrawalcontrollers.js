@@ -16,6 +16,20 @@ exports.createWithdrawal = async (req, res) => {
       return res.status(400).json({ message: 'User ID not found in token' });
     }
 
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const existingToday = await Withdrawal.findOne({
+      userId,
+      created_at: { $gte: startOfDay }
+    });
+
+    if (existingToday) {
+      return res.status(400).json({
+        message: 'Please have patience, admin is processing and will first appoved Old Withdrawals.'
+      });
+    }
+
     // Validate minimum withdrawal
     if (!amount || amount < 1) {
       return res.status(400).json({ message: 'Minimum withdrawal is $1' });

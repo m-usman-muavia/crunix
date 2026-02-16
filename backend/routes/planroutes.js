@@ -155,6 +155,8 @@ router.get('/user/active', verifyToken, async (req, res) => {
       currentEarnings: userPlan.totalEarned,
       status: userPlan.status,
       image_path: userPlan.planId?.image_path,
+      lastCollectTime: userPlan.lastCollectTime,
+      accrualHistory: userPlan.accrualHistory || [],
       plan: {
         name: userPlan.planName,
         duration_days: userPlan.duration_days,
@@ -236,7 +238,88 @@ router.put('/:planId/resume', verifyToken, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// POST collect daily income
+router.post('/:planId/collect-income', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId || req.user.id;
+    const { planId } = req.params;
 
+    const userPlan = await UserPlan.findOne({ _id: planId, userId: userId });
+    if (!userPlan) {
+      return res.status(404).json({ message: 'Plan not found' });
+    }
+
+    if (userPlan.status !== 'active') {
+      return res.status(400).json({ message: 'Plan is not active' });
+    }
+
+    // Check if 24 hours have passed since last collection
+    const now = new Date();
+    const lastCollectTime = userPlan.lastCollectTime ? new Date(userPlan.lastCollectTime) : null;
+    
+    if (lastCollectTime) {
+      const hoursPassed = (now - lastCollectTime) / (1000 * 60 * 60);
+      if (hoursPassed < 24) {
+        return res.status(400).json({ 
+          message: `Please wait ${Math.ceil(24 - hoursPassed)} hours before collecting again`,
+          hoursRemaining: Math.ceil(24 - hoursPassed)
+        });
+      }
+    }
+
+    // Collect daily profit
+    const collectedAmount = userPlan.daily_profit || 0;
+    
+    // Update totalEarned
+    userPlan.totalEarned = (userPlan.totalEarned || 0) + collectedAmount;
+    
+    // Update lastCollectTime
+    userPlan.lastCollectTime = now;
+    
+    // Add to accrual history (if not already tracked)
+    if (userPlan.accrualHistory) {
+      userPlan.accrualHistory.push({
+        timestamp: now,
+        daysAccrued: 1,
+        amountAdded: collectedAmount
+      });
+    }
+
+    // Check if plan is completed
+    if (userPlan.totalEarned >= userPlan.total_profit) {
+      userPlan.status = 'completed';
+    }
+
+    await userPlan.save();
+
+    // Credit wallet
+    const Wallet = require('../models/wallet');
+    await Wallet.updateOne(
+      { userId: userId },
+      { $inc: { main_balance: collectedAmount } },
+      { upsert: true }
+    );
+
+    // Create notification
+    await createNotification(
+      userId,
+      'income_collected',
+      `You collected $${collectedAmount.toFixed(2)} from ${userPlan.planName} plan.`,
+      collectedAmount,
+      { planId: userPlan._id }
+    );
+
+    res.json({ 
+      message: 'Income collected successfully',
+      collectedAmount: collectedAmount,
+      totalEarned: userPlan.totalEarned,
+      plan: userPlan
+    });
+  } catch (error) {
+    console.error('Error collecting income:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
 // Manual force-accrue endpoint (for testing/development)
 router.post('/force-accrue', verifyToken, async (req, res) => {
   try {
