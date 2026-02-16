@@ -284,15 +284,42 @@ const Dashboard = () => {
         <div className="dashboard-grid">
           <Link to="/dashboard" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faHouse} />
+            <h2 className='dashboard-grid-text'>Home</h2>
           </Link>
           <Link to="/plans" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faChartLine} />
+                        <h2 className='dashboard-grid-text'>Plans</h2>
+
           </Link>
           <Link to="/deposit" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faArrowDown} />
+                        <h2 className='dashboard-grid-text'>Deposit</h2>
+
           </Link>
           <Link to="/profile" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faUser} />
+                        <h2 className='dashboard-grid-text'>Profile</h2>
+
+          </Link>
+        </div>
+
+        <div className="dashboard-refferal-section">
+          <Link to="/transactions" className="dashboard-refferal-container">
+            <span className="new-badge">New</span>
+            <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faClipboardList} />
+            <div className="dashboard-refferal-content">
+              <h2 className="dashboard-refferal-header">Active Plans</h2>
+              <p className="dashboard-refferal-text">Track earnings</p>
+            </div>
+          </Link>
+          <Link to="#" className="dashboard-refferal-container">
+            <span className="soon-badge">Soon</span>
+
+            <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faUsers} />  
+            <div className="dashboard-refferal-content">
+              <h2 className="dashboard-refferal-header">Referrals</h2>
+              <p className="dashboard-refferal-text">Earn Money</p>
+            </div>
           </Link>
         </div>
 

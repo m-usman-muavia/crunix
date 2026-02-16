@@ -38,7 +38,7 @@ const DepositConfirm = () => {
     return `${API_BASE_URL}/${normalized}`;
   };
 
-  // USDT BEP20 static details
+  // USDT TRC20 static details
   const usdtDetails = {
     qrImagePath: 'InternationalQRcode.jpeg',
     tillId: 'TAbBYea4sh7f9RZRKE26JgtcxpoMfbyYR3'
@@ -174,7 +174,7 @@ const DepositConfirm = () => {
           <div className="payment-details-header">
             <h3 className="payment-details-title">Send Payment To</h3>
             <p className="payment-details-subtitle">
-              {channel === 'usdt' ? 'Scan the QR or use the USDT BEP20 address' : 'Scan the QR or use the Till ID'}
+              {channel === 'usdt' ? 'Scan the QR or use the USDT TRC20 address' : 'Scan the QR or use the Till ID'}
             </p>
           </div>
 
@@ -185,12 +185,12 @@ const DepositConfirm = () => {
                 <div className="payment-qr">
                   <img
                     src={`/${usdtDetails.qrImagePath}`}
-                    alt="USDT BEP20 QR code"
+                    alt="USDT TRC20 QR code"
                     className="payment-qr-image"
                   />
                 </div>
                 <div className="payment-till">
-                  <span className="payment-label">USDT BEP20 Address</span>
+                  <span className="payment-label">USDT TRC20 Address</span>
                   <span className="payment-value" style={{ fontSize: '12px', wordBreak: 'break-all' }}>
                     {usdtDetails.tillId}
                   </span>
