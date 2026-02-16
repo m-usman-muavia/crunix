@@ -14,91 +14,43 @@
 }
 
 .dashboard-balance-card {
+  display: flex;
+  justify-content: space-between;
   margin: -40px 15px 10px 15px;
   padding: 10px 25px;
   border-radius: 10px;
-      background: linear-gradient(135deg, #003366, #0055A4, #003366);   
-  backdrop-filter: blur(10px);
-  border: 2px solid #0055A4;
-  text-align: left;
+  background: linear-gradient(135deg, #003366, #0055A4, #003366);   
+    backdrop-filter: blur(10px);
+border: 3px solid #0055A4; /* Outer Blue Border */
+  box-shadow: 0 0 0 2px #ffffff; /* Inner White Border */
+
+
 }
 
 .dashboard-balance-card:hover {
-  background: #eaf4ff;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(0, 0, 0, 0.8);
+border: 3px solid #ffffff; /* Outer Blue Border */
+  box-shadow: 0 0 0 2px #0055A4; /* Inner White Border */
 }
-
-.dashboard-main-balance {
-  text-align: left;
-  display: flex;
-  justify-content: space-between;
-}
-
-.dashboard-sub-balance {
-  margin-top: -10px;
-  padding: 0px 10px;
-  text-align: left;
-  display: flex;
-  justify-content: space-between;
-}
-
-.dashboard-plans-header {
-  display: flex;
-  justify-content: space-between;
+.dashboard-main-balance{
   align-items: center;
-  margin: 0 15px;
 }
-
-.dashboard-buttons {
-  text-align: center;
-  align-content: center;
-}
-
-.dashboard-shortcut-buttons {
-  margin-left: auto;
-  font-size: 12px;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  margin: 0px 5px;
-  padding: 2px 10px;
-  text-decoration: none;
-  border-radius: 5px;
-  gap: 0px;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .dashboard-main-balance-label {
-  font-size: 20px;
-  font-weight: bold;
-  color: #0f172a;
-}
 
-.dashboard-sub-balance-amount {
-  font-size: 10px;
-  font-weight: bold;
-  padding: 4px 6px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  text-decoration: none;
-  border-radius: 5px;
   gap: 0px;
-  color: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+  padding: 0px 0px 2px 0px;
+  margin: 0px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
 }
 
 .dashboard-main-balance-amount {
-  font-size: 20px;
+  text-align: center;
+  font-size: 24px;
   font-weight: bold;
-  color: #0f172a;
-}
-
-.dashboard-greeting {
+  color: #ffffff;
   margin: 0px;
-  font-size: 14px;
-  opacity: 0.9;
 }
 
 .dashboard-name {
@@ -198,7 +150,7 @@
   background: linear-gradient(180deg, #003366, #0055A4, #003366);   
   border-radius: 50%;
   border: 3px solid #002446;
-  padding: 15px;
+  padding: 12px;
     color: white;
 }
 .dashboard-grid-button:hover {
@@ -207,8 +159,8 @@
     color: #0055A4;
 }
 .dashboard-grid-icon {
-  height: 22px;
-  width: 22px;
+  height: 25px;
+  width: 25px;
 
   font-size: 22px;
 }

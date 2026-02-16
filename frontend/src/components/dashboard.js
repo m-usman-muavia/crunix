@@ -271,7 +271,11 @@ const Dashboard = () => {
 
           <div className="dashboard-balance-card">
             <div className="dashboard-main-balance">
-              <p className="dashboard-main-balance-label">Total Balance</p>
+              <p className="dashboard-main-balance-label">Total  Assets</p>
+              <h2 className="dashboard-main-balance-amount">$ {balance.toFixed(2)}</h2>
+            </div>
+            <div className="dashboard-main-balance">
+              <p className="dashboard-main-balance-label">Total  Withdrawal</p>
               <h2 className="dashboard-main-balance-amount">$ {balance.toFixed(2)}</h2>
             </div>
           </div>
