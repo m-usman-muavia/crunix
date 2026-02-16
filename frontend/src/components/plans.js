@@ -225,7 +225,7 @@ const Plans = () => {
                         {/* Purchase count badge on image */}
                         {plan.purchase_limit > 0 && (
                           <div className="image-badge">
-                            {plan.purchase_limit} Days
+                             {plan.duration_days || plan.duration} Days
                           </div>
                         )}
                       </>

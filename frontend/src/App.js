@@ -24,6 +24,8 @@ import CheckWithdrawals from './components/admin/checkwithdrawals';
 import CheckUser from './components/admin/checkusers';
 import AccrualHistory from './components/admin/accrualhistory';
 import BonusGenerator from './components/admin/bonus';
+import ActivePlans from './components/ActivePlans';
+import CollectIncome from './components/CollectIncome';
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
         {/* Protected Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/plans" element={<ProtectedRoute><Plan /></ProtectedRoute>} />
+        <Route path="/active-plans" element={<ProtectedRoute><ActivePlans /></ProtectedRoute>} />
+        <Route path="/collect-income" element={<ProtectedRoute><CollectIncome /></ProtectedRoute>} />
         <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
         <Route path="/depositconfirm" element={<ProtectedRoute><DepositConfirm /></ProtectedRoute>} />
         <Route path="/withdrawal" element={<ProtectedRoute><Withdrawal /></ProtectedRoute>} />

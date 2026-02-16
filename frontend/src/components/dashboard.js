@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faArrowUp, faChartLine, faCheck, faClock, faCopy, faHeadset, faHouse, faClipboardList, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faChartLine, faCheck, faClock, faCopy, faHeadset, faHouse, faClipboardList, faUser, faUsers, faCoins, faGift } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp, faFacebook, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import './css/dashboard.css';
 import './css/plans.css';
@@ -101,7 +101,7 @@ const Dashboard = () => {
 
   const fetchTotalWithdrawn = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/withdrawal/total`, {
+      const response = await fetch(`${API_BASE_URL}/api/withdrawals/my-withdrawals`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
@@ -109,7 +109,14 @@ const Dashboard = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setTotalWithdrawn(data.totalWithdrawn || 0);
+        const withdrawals = Array.isArray(data) ? data : (data.data || []);
+        
+        // Calculate total for approved withdrawals only
+        const total = withdrawals
+          .filter(w => w.status === 'approved' || w.status === 'accept')
+          .reduce((sum, w) => sum + (Number(w.withdrawal_amount || w.amount || 0)), 0);
+        
+        setTotalWithdrawn(total);
       }
     } catch (err) {
       console.error('Error fetching total withdrawn:', err);
@@ -391,17 +398,13 @@ const Dashboard = () => {
               <h2 className="dashboard-main-balance-amount">$ {balance.toFixed(2)}</h2>
             </div>
             <div className="dashboard-main-balance">
-              <p className="dashboard-main-balance-label">Total  Withdrawal</p>
+              <p className="dashboard-main-balance-label">Total Withdrawal</p>
               <h2 className="dashboard-main-balance-amount">$ {totalWithdrawn.toFixed(2)}</h2>
             </div>
           </div>
         </header> 
 
         <div className="dashboard-grid">
-          <Link to="/dashboard" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faHouse} />
-            <h2 className='dashboard-grid-text'>Home</h2>
-          </Link>
           <Link to="/plans" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faChartLine} />
                         <h2 className='dashboard-grid-text'>Plans</h2>
@@ -410,7 +413,10 @@ const Dashboard = () => {
           <Link to="/deposit" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faArrowDown} />
                         <h2 className='dashboard-grid-text'>Deposit</h2>
-
+          </Link>
+                    <Link to="/withdrawal" className="dashboard-grid-button">
+            <FontAwesomeIcon className="dashboard-grid-icon" icon={faArrowUp} />
+            <h2 className='dashboard-grid-text'>Withdrawal</h2>
           </Link>
           <Link to="/profile" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faUser} />
@@ -420,8 +426,7 @@ const Dashboard = () => {
         </div>
 
         <div className="dashboard-refferal-section">
-          <Link to="/transactions" className="dashboard-refferal-container">
-            {/* <span className="-badge">New</span> */}
+          <Link to="/active-plans" className="dashboard-refferal-container">
             <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faClipboardList} />
             <div className="dashboard-refferal-content">
               <h2 className="dashboard-refferal-header">Active Plans</h2>
@@ -434,7 +439,24 @@ const Dashboard = () => {
             <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faUsers} />  
             <div className="dashboard-refferal-content">
               <h2 className="dashboard-refferal-header">Referrals</h2>
-              <p className="dashboard-refferal-text">Earn Money</p>
+              <p className="dashboard-refferal-text">Refer & Earn</p>
+            </div>
+          </Link>
+        </div>
+        <div className="dashboard-refferal-section">
+          <Link to="/collect-income" className="dashboard-refferal-container">
+            <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faCoins} />
+            <div className="dashboard-refferal-content">
+              <h2 className="dashboard-refferal-header">Collect</h2>
+              <p className="dashboard-refferal-text">Daily Earnings</p>
+            </div>
+          </Link>
+          <Link to="#" className="dashboard-refferal-container">
+            <span className="new-badge">Soon</span>
+            <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faGift} />  
+            <div className="dashboard-refferal-content">
+              <h2 className="dashboard-refferal-header">Bonus</h2>
+              <p className="dashboard-refferal-text">Earn More</p>
             </div>
           </Link>
         </div>
@@ -467,7 +489,7 @@ const Dashboard = () => {
                           {/* Purchase count badge on image */}
                           {plan.purchase_limit > 0 && (
                             <div className="image-badge">
-                              {plan.purchase_limit} Days
+                              {plan.duration_days} Days
                             </div>
                           )}
                         </>
@@ -518,7 +540,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="dashboard-bonus-section" style={{ padding: '20px' }}>
+        {/* <div className="dashboard-bonus-section" style={{ padding: '20px' }}>
           <div className="bonus-card" >
 
               <div className='bonus-card-header'>
@@ -565,7 +587,7 @@ const Dashboard = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div> */}
 
         {/* Error Modal */}
         <ErrorModal

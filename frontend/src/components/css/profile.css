@@ -81,6 +81,180 @@
     margin-bottom: 0px;
 }
 
+/* Active Plans New Card */
+.active-plan-card-new {
+    background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7fb 100%);
+    border-radius: 14px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    padding: 22px 22px 18px;
+    box-shadow: 0 18px 32px rgba(15, 23, 42, 0.12);
+    border: 1px solid #e2e8f0;
+}
+
+.active-plan-header-new {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.active-plan-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
+}
+
+.active-plan-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.active-plan-logo-fallback {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.active-plan-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.active-plan-label {
+    margin: 0;
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.active-plan-title-new {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.active-plan-body {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 16px;
+    align-items: start;
+    padding: 12px 0 8px;
+}
+
+.active-plan-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.active-plan-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.active-plan-row span {
+    color: #374151;
+}
+
+.active-plan-row strong {
+    color: #111827;
+    font-weight: 700;
+}
+
+.active-plan-divider {
+    width: 1px;
+    background: #e2e8f0;
+}
+
+.active-plan-progress {
+    margin-top: 10px;
+}
+
+.active-plan-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+
+.active-plan-progress-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #e2e8f0;
+}
+
+.active-plan-progress-earned {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    height: 100%;
+}
+
+.active-plan-progress-remaining {
+    background: linear-gradient(90deg, #60a5fa, #2563eb);
+    height: 100%;
+}
+
+.active-plan-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.active-plan-btn {
+    text-decoration: none;
+    padding: 10px 26px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.active-plan-btn-withdraw {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ffffff;
+    box-shadow: 0 10px 20px rgba(34, 197, 94, 0.35);
+}
+
+.active-plan-btn-details {
+    background: linear-gradient(135deg, #60a5fa, #2563eb);
+    color: #ffffff;
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+}
+
+.active-plan-btn:hover {
+    transform: translateY(-1px);
+}
+
+@media (max-width: 700px) {
+    .active-plan-body {
+        grid-template-columns: 1fr;
+    }
+
+    .active-plan-divider {
+        display: none;
+    }
+
+    .active-plan-actions {
+        flex-direction: column;
+    }
+}
+
 /* Active Plans Styles */
 .active-plans-grid {
     display: grid;
