@@ -150,18 +150,18 @@ border: 3px solid #ffffff; /* Outer Blue Border */
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  background: linear-gradient(180deg, #003366, #0055A4, #003366);   
+  background: #ffffff;   
   border-radius: 50%;
-  border: 3px solid #002446;
+  border: 2px solid #002446;
   padding: 12px;
-    color: white;
+    color: #002446;
   height: 25px;
   width: 25px;
   font-size: 22px;
 }
 .dashboard-grid-icon:hover{
   background: #eaf4ff;
-  border: 3px solid #003366;
+  border: 2px solid #003366;
     color: #0055A4;
 }
 
@@ -503,4 +503,14 @@ background: #f97316;
 
 .section-content p {
   margin: 5px 0;
+}
+
+@media (max-width: 500px) {
+  .dashboard-refferal-header {
+    font-size: 12px;
+  }
+  
+  .dashboard-refferal-text {
+    font-size: 12px;
+  }
 }

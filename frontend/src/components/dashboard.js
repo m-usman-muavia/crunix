@@ -3,11 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faArrowUp, faChartLine, faCheck, faClock, faCopy, faHeadset, faHouse, faClipboardList, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp, faFacebook, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import './css/dashboard.css';
+import './css/plans.css';
 import { Link } from 'react-router-dom';
 import './css/style.css';
 import './css/profile.css';
 import API_BASE_URL from '../config/api';
 import BottomNav from './BottomNav';
+import InvestModal from './InvestModal';
+import ErrorModal from './ErrorModal';
 
 const Dashboard = () => {
   const [balance, setBalance] = useState(0);
@@ -26,6 +29,12 @@ const Dashboard = () => {
   const [bonusCode, setBonusCode] = useState('');
   const [redeemingBonus, setRedeemingBonus] = useState(false);
   const [bonusMessage, setBonusMessage] = useState('');
+  const [totalWithdrawn, setTotalWithdrawn] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [loadingInvest, setLoadingInvest] = useState(false);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     fetchBalance();
@@ -34,6 +43,7 @@ const Dashboard = () => {
     fetchReferralCode();
     fetchUser();
     fetchReferralStats();
+    fetchTotalWithdrawn();
   }, []);
 
   const fetchBalance = async () => {
@@ -86,6 +96,24 @@ const Dashboard = () => {
       console.error('Error fetching referral stats:', err);
       setTotalReferrals(0);
       setActiveReferrals(0);
+    }
+  };
+
+  const fetchTotalWithdrawn = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/withdrawal/total`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setTotalWithdrawn(data.totalWithdrawn || 0);
+      }
+    } catch (err) {
+      console.error('Error fetching total withdrawn:', err);
+      setTotalWithdrawn(0);
     }
   };
 
@@ -152,6 +180,94 @@ const Dashboard = () => {
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
+    }
+  };
+
+  const resolveImageUrl = (imagePath) => {
+    if (!imagePath) {
+      return '';
+    }
+
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+      return imagePath;
+    }
+
+    const normalized = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+    return `${API_BASE_URL}/${normalized}`;
+  };
+
+  const handleInvestClick = async (plan) => {
+    if (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) {
+      setErrorMessage(`You have reached the maximum purchase limit for "${plan.name}" plan.`);
+      setErrorModalOpen(true);
+      return;
+    }
+
+    setLoadingInvest(true);
+    setSelectedPlan(plan);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/investments/invest-now`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ planId: plan._id })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        setErrorMessage(data.message);
+        setErrorModalOpen(true);
+        setLoadingInvest(false);
+        return;
+      }
+
+      setSelectedPlan({
+        ...plan,
+        ...data.plan
+      });
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error('Error validating investment:', err);
+      setErrorMessage('Error validating investment. Please try again.');
+      setErrorModalOpen(true);
+    } finally {
+      setLoadingInvest(false);
+    }
+  };
+
+  const handleInvestmentConfirmed = async () => {
+    await fetchBalance();
+    await fetchPlans();
+  };
+
+  const handleConfirmInvestment = async (planId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/investments/invest-now`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ planId, confirm: true })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        setErrorMessage(data.message);
+        setErrorModalOpen(true);
+        return;
+      }
+
+      await handleInvestmentConfirmed();
+    } catch (err) {
+      console.error('Error confirming investment:', err);
+      setErrorMessage('Error processing investment. Please try again.');
+      setErrorModalOpen(true);
     }
   };
 
@@ -276,7 +392,7 @@ const Dashboard = () => {
             </div>
             <div className="dashboard-main-balance">
               <p className="dashboard-main-balance-label">Total  Withdrawal</p>
-              <h2 className="dashboard-main-balance-amount">$ {balance.toFixed(2)}</h2>
+              <h2 className="dashboard-main-balance-amount">$ {totalWithdrawn.toFixed(2)}</h2>
             </div>
           </div>
         </header> 
@@ -309,7 +425,7 @@ const Dashboard = () => {
             <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faClipboardList} />
             <div className="dashboard-refferal-content">
               <h2 className="dashboard-refferal-header">Active Plans</h2>
-              <p className="dashboard-refferal-text">Track earnings</p>
+              <p className="dashboard-refferal-text">Check Plans</p>
             </div>
           </Link>
           <Link to="#" className="dashboard-refferal-container">
@@ -322,6 +438,95 @@ const Dashboard = () => {
             </div>
           </Link>
         </div>
+
+        <div className="dashboard-plans-section">
+          <div style={{ padding: '20px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', textAlign: 'left', margin: '0 0 15px 0', color: '#0f172a' }}>Investment Plan</h2>
+            
+            {plans.length > 0 ? (
+              plans.map((plan, index) => (
+                <div className="plan-card-new" key={plan._id || index}>
+                  {/* Limited Badge */}
+                  {plan.purchase_limit > 0 && (
+                    <div className="limited-badge">
+                      Limited {(plan.user_purchase_count || 0)}/{plan.purchase_limit}
+                    </div>
+                  )}
+                  
+                  {/* Top Section with Image and Details */}
+                  <div className="plan-card-top">
+                    {/* Product Image */}
+                    <div className="plan-product-image">
+                      {plan.image_path ? (
+                        <>
+                          <img 
+                            src={resolveImageUrl(plan.image_path)} 
+                            alt={plan.name}
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                          {/* Purchase count badge on image */}
+                          {plan.purchase_limit > 0 && (
+                            <div className="image-badge">
+                              {plan.purchase_limit} Days
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="no-image">No Image</div>
+                      )}
+                    </div>
+                    
+                    {/* Product Info */}
+                    <div className="plan-product-info">
+                      <h3 className="product-title">{plan.name}</h3>
+                      
+                      <div className="product-details">
+                        <div className="detail-item">
+                          <span className="detail-label-new">Price:</span>
+                          <span className="detail-value-new">${plan.investment_amount}</span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label-new">Daily income:</span>
+                          <span className="detail-value-new">${plan.daily_profit}</span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label-new">Total income:</span>
+                          <span className="detail-value-new">${plan.total_profit}</span>
+                        </div>
+                      </div>
+
+                      <button 
+                        className="buy-now-btn"
+                        onClick={() => handleInvestClick(plan)}
+                        disabled={loadingInvest || (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit)}
+                        style={{
+                          opacity: (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 0.5 : 1,
+                          cursor: (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        {loadingInvest ? 'Loading...' : 
+                         (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'LIMIT REACHED' : 
+                         'BUY NOW'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p style={{ textAlign: 'center', color: '#64748b' }}>No plans available</p>
+            )}
+          </div>
+        </div>
+
+        {/* Error Modal */}
+        <ErrorModal
+          isOpen={errorModalOpen}
+          message={errorMessage}
+          onClose={() => setErrorModalOpen(false)}
+          autoClose={true}
+          closeDuration={3000}
+        />
+
 
             
 
@@ -525,6 +730,15 @@ const Dashboard = () => {
         <BottomNav />
 
       </div>
+
+      <InvestModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        plan={selectedPlan}
+        balance={balance}
+        onInvest={handleConfirmInvestment}
+        onInvestmentConfirmed={handleInvestmentConfirmed}
+      />
     </div>
   );
 };

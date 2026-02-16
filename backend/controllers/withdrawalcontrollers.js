@@ -200,3 +200,21 @@ exports.rejectWithdrawal = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Get total withdrawn amount for user
+exports.getTotalWithdrawn = async (req, res) => {
+  try {
+    const userId = req.user.userId || req.user.id || req.user._id;
+    const mongoose = require('mongoose');
+    const result = await Withdrawal.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId), status: 'approved' } },
+      { $group: { _id: null, totalWithdrawn: { $sum: '$amount' } } }
+    ]);
+
+    const totalWithdrawn = result.length > 0 ? result[0].totalWithdrawn : 0;
+    res.status(200).json({ totalWithdrawn });
+  } catch (err) {
+    console.error('Get total withdrawn error:', err);
+    res.status(500).json({ message: err.message });
+  }
+};

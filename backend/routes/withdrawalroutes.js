@@ -7,6 +7,7 @@ const verifyToken = require('../middleware/auth');
 router.post('/create', verifyToken, withdrawalControllers.createWithdrawal);
 router.get('/all', verifyToken, withdrawalControllers.getAllWithdrawals);
 router.get('/my-withdrawals', verifyToken, withdrawalControllers.getUserWithdrawals);
+router.get('/total', verifyToken, withdrawalControllers.getTotalWithdrawn);
 router.put('/approve/:withdrawalId', verifyToken, withdrawalControllers.approveWithdrawal);
 router.put('/reject/:withdrawalId', verifyToken, withdrawalControllers.rejectWithdrawal);
 
