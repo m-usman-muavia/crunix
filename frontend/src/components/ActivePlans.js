@@ -186,6 +186,10 @@ const ActivePlans = () => {
         return true;
     });
 
+    const totalEarnings = filteredPlans.reduce((sum, plan) => {
+        return sum + (Number(plan.currentEarnings || plan.totalEarned || 0));
+    }, 0);
+
     return (
         <div className="main-wrapper">
             <div className="main-container">
@@ -204,6 +208,13 @@ const ActivePlans = () => {
             }} 
           />
         </div>
+
+        <div className="withdrawal-balance-card">
+          <div className="withdrawal-main-balance">
+            <p className="withdrawal-main-balance-label">Total Earned <br /> <span style={{fontSize: '12px'}}>Total Earning from plans</span></p>
+            <h2 className="withdrawal-main-balance-amount">${formatAmount(totalEarnings)}</h2>
+          </div>
+        </div>  
               
                 {plansError && <div className="error-message" style={{ margin: '20px' }}>{plansError}</div>}
 
@@ -256,7 +267,7 @@ const ActivePlans = () => {
                                         <div className="active-plan-title-wrap" style={{textAlign: 'left'}}>
                                             <h2 className="active-plan-title-new" style={{ fontSize: '24px', fontWeight: '700', textTransform: 'uppercase' }}>{plan.planName || plan.plan?.name || 'Investment Plan'}</h2>
                                             <h3 className="active-plan-title-new" style={{ fontSize: '14px', fontWeight: '500' }}>{formatDate(plan.investmentDate)} - {formatTime(plan.investmentDate)}</h3>
-                                            <div className="active-plan-status" style={{ backgroundColor: getStatusBadge(plan.status).color, borderRadius: '6px', padding: '3px 4px',marginRight: '95px' }}>
+                                            <div className="active-plan-status" style={{ backgroundColor: getStatusBadge(plan.status).color, borderRadius: '6px', padding: '3px 4px',marginRight: '75px' }}>
                                                 <FontAwesomeIcon icon={getStatusBadge(plan.status).icon} className="status-icon" />
                                                 <span className="status-label">{getStatusBadge(plan.status).label}</span>
                                             </div>
@@ -280,11 +291,11 @@ const ActivePlans = () => {
                                     <div className="plan-dates">
                                         <div className="date-item1">
                                             <span className="date-label">Total Earned</span>
-                                            <span className="date-value">${formatAmount(plan.totalEarned || 0)}</span>
+                                            <span className="date-value">${formatAmount(plan.currentEarnings || 0)}</span>
                                         </div>
                                         <div className="date-item">
                                             <span className="date-label">Remaining</span>
-                                            <span className="date-value">${formatAmount((plan.totalProfit || 0) - (plan.totalEarned || 0))}</span>
+                                            <span className="date-value">${formatAmount((plan.totalProfit || 0) - (plan.currentEarnings || 0))}</span>
                                         </div>
                                         <div className="date-item">
                                             <span className="date-label">Ends ON</span>
