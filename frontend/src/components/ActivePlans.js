@@ -255,8 +255,8 @@ const ActivePlans = () => {
                                         </div>
                                         <div className="active-plan-title-wrap" style={{textAlign: 'left'}}>
                                             <h2 className="active-plan-title-new" style={{ fontSize: '24px', fontWeight: '700', textTransform: 'uppercase' }}>{plan.planName || plan.plan?.name || 'Investment Plan'}</h2>
-                                            <h3 className="active-plan-title-new" style={{ fontSize: '16px', fontWeight: '500' }}>{formatDate(plan.investmentDate)} - {formatTime(plan.investmentDate)}</h3>
-                                            <div className="active-plan-status" style={{ backgroundColor: getStatusBadge(plan.status).color, borderRadius: '6px', padding: '3px 4px',marginRight: '98px' }}>
+                                            <h3 className="active-plan-title-new" style={{ fontSize: '14px', fontWeight: '500' }}>{formatDate(plan.investmentDate)} - {formatTime(plan.investmentDate)}</h3>
+                                            <div className="active-plan-status" style={{ backgroundColor: getStatusBadge(plan.status).color, borderRadius: '6px', padding: '3px 4px',marginRight: '95px' }}>
                                                 <FontAwesomeIcon icon={getStatusBadge(plan.status).icon} className="status-icon" />
                                                 <span className="status-label">{getStatusBadge(plan.status).label}</span>
                                             </div>
@@ -288,7 +288,7 @@ const ActivePlans = () => {
                                         </div>
                                         <div className="date-item">
                                             <span className="date-label">Ends ON</span>
-                                            <span className="date-value">${formatDate(plan.endDate)}</span>
+                                            <span className="date-value">{formatDate(plan.endDate)}</span>
                                               
                                         </div>
                                     </div>
