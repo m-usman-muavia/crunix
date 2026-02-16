@@ -232,8 +232,15 @@ const Dashboard = () => {
     <div className="main-wrapper">
       <div className="main-container">
             {/* Top Header Section */}
-            <div className="deposit-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',padding: '14px 20px' }}>
-              <h4 style={{ margin: 0 }}>Home</h4>
+            <div className="deposit-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',padding: '8px 20px' }}>
+              <img 
+            src="/homelogo3.svg" 
+            alt="Investment Plans" 
+            style={{ 
+              width: 'auto', 
+              height: '40px'
+            }} 
+          />
                       <div className="helpcenter">
                 <button className="helpcenter-button" aria-label="WhatsApp">
                   <FontAwesomeIcon style={{fontSize:'24px'}} icon={faWhatsapp} />
@@ -273,39 +280,15 @@ const Dashboard = () => {
         <div className="dashboard-grid">
           <Link to="/dashboard" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faHouse} />
-            <span className="dashboard-grid-text">Home</span>
           </Link>
           <Link to="/plans" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faChartLine} />
-            <span className="dashboard-grid-text">Plans</span>
           </Link>
           <Link to="/deposit" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faArrowDown} />
-            <span className="dashboard-grid-text">Deposit</span>
-          </Link>
-          <Link to="/withdrawal" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faArrowUp} />
-            <span className="dashboard-grid-text">Withdraw</span>
-          </Link>
-          <Link to="/transactions" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faClipboardList} />
-            <span className="dashboard-grid-text">Transactions</span>
-          </Link>
-          <Link to="/deposithistory" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faClock} />
-            <span className="dashboard-grid-text">Deposit History</span>
-          </Link>
-          <Link to="/withdrawalhistory" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faClock} />
-            <span className="dashboard-grid-text">Withdraw History</span>
-          </Link>
-          <Link to="/refferrals" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faUsers} />
-            <span className="dashboard-grid-text">Referrals</span>
           </Link>
           <Link to="/profile" className="dashboard-grid-button">
             <FontAwesomeIcon className="dashboard-grid-icon" icon={faUser} />
-            <span className="dashboard-grid-text">Profile</span>
           </Link>
         </div>
 

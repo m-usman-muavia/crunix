@@ -183,26 +183,37 @@
 }
 
 .dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  padding: 16px 20px 6px 20px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 40px;
 }
 
 .dashboard-grid-button {
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: #0f172a;
-  background: none;
-  border: none;
-  padding: 10px 6px;
+  background: linear-gradient(180deg, #003366, #0055A4, #003366);   
+  border-radius: 50%;
+  border: 3px solid #002446;
+  padding: 15px;
+    color: white;
 }
-
+.dashboard-grid-button:hover {
+  background: #eaf4ff;
+  border: 3px solid #003366;
+    color: #0055A4;
+}
 .dashboard-grid-icon {
+  height: 22px;
+  width: 22px;
+
   font-size: 22px;
+}
+.dashboard-grid-icon:hover{
+
 }
 
 .dashboard-grid-text {
