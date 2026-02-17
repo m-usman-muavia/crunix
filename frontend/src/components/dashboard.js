@@ -434,9 +434,7 @@ const Dashboard = () => {
             </div>
           </Link>
           <Link to="/refferrals" className="dashboard-refferal-container">
-            
-
-            <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faUsers} />  
+          <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faUsers} />  
             <div className="dashboard-refferal-content">
               <h2 className="dashboard-refferal-header">Referrals</h2>
               <p className="dashboard-refferal-text">Refer & Earn</p>

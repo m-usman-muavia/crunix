@@ -210,7 +210,7 @@ const Refferrals = () => {
 
             <div className="referral-link-card">
               <div className="referral-link-header">
-                <h4>Your Referral Link</h4>
+                <h4>Referral Code</h4>
                 <span className="referral-code-pill">{referralCode || 'N/A'}</span>
               </div>
               <div className="referral-link-row">
@@ -229,7 +229,7 @@ const Refferrals = () => {
                 </button>
               </div>
               <div className="referral-info-banner">
-                <strong>Level 1 Bonus:</strong> You will receive a 10% commission instantly whenever your direct referrals make a deposit or claim a bonus.
+                <strong>Level 1 Bonus:</strong> You will receive a 10% commission instantly on your active referrals.
               </div>
             </div>
           </div>
