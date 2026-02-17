@@ -404,7 +404,14 @@ const Profile = () => {
     return (
         <div className="main-wrapper">
             <div className="main-container">
-                <div className="deposit-header">Profile</div>
+                {/* <div className="deposit-header">Profile</div> */}
+                <div className="deposit-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',padding: '10px 20px' }}>
+                              Profile
+                                      <div className="helpcenter">  
+                                                  <button className="primary-btn" style={{padding: '6px 16px', fontSize: '14px', background: 'red'}} onClick={handleLogout}>Logout</button>
+
+                              </div>
+                            </div>
                 <div className="plan-image">
                     <img
                         src="/planimage.webp"
@@ -431,26 +438,24 @@ const Profile = () => {
 
                         <div className="card-container">
                             <div className="content-card password-card">
+                                <div className="profile-card-title" style={{fontSize: '24px', fontWeight:'bold', padding:'8px 0px 10px 0px'}}>Profile Information</div>
                                 <form onSubmit={handleChangePassword} className="password-form">
                                     <div className="form-group">
-                                        {/* <label className="form-label">Name</label>
                                         <input
                                             className="form-input"
                                             placeholder={user?.name || 'N/A'}
                                             value={user?.name || 'N/A'}
                                             disabled
                                         />
-                                        <label className="form-label">Email</label>
                                         <input
                                             className="form-input"
                                             value={user?.email || 'N/A'}
                                             disabled
                                         />
-                                        <label className="form-label">Referral Code</label>
+                                        {/* <label className="form-label">Mobile Number</label>
                                         <input
                                             className="form-input"
-                                            value={referralCode || user?.referralCode || 'N/A'}
-                                            disabled
+                                            value=
                                         /> */}
                                         <label className="form-label">Old Password:</label>
                                         <input
@@ -504,7 +509,7 @@ const Profile = () => {
 
                 <div className="logout-section">
 
-                    <button className="primary-btn" style={{margin: '0 50px'}} onClick={handleLogout}>Logout</button>
+                    {/* <button className="primary-btn" style={{margin: '0 50px'}} onClick={handleLogout}>Logout</button> */}
                 </div>
 
                 {/* Bottom Navigation */}

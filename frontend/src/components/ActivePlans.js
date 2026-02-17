@@ -217,13 +217,10 @@ const ActivePlans = () => {
                         <p>Loading your plans...</p>
                     </div>
                 ) : filteredPlans.length === 0 ? (
-                    <div className="empty-state" style={{ padding: '40px 20px' }}>
+                    <div className="empty-stte" style={{ padding: '5px 10px' }}>
                         <p className="empty-state-text">
                             You don't have any plans yet.
                         </p>
-                        <Link to="/plans" className="noactivate-btn">
-                            Browse Plans
-                        </Link>
                     </div>
                 ) : (
                     <div className="active-plans-grid" style={{ padding: '20px' }}>

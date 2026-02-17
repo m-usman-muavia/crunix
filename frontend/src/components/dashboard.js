@@ -335,7 +335,7 @@ const Dashboard = () => {
       setBalance(balance + data.bonusAmount);
       setBonusMessage({
         type: 'success',
-        text: `Bonus of Rs ${data.bonusAmount} added successfully!`
+        text: `Bonus of $${data.bonusAmount} added successfully!`
       });
       setBonusCode('');
 
@@ -433,8 +433,8 @@ const Dashboard = () => {
               <p className="dashboard-refferal-text">Check Plans</p>
             </div>
           </Link>
-          <Link to="#" className="dashboard-refferal-container">
-            <span className="new-badge">Soon</span>
+          <Link to="/refferrals" className="dashboard-refferal-container">
+            
 
             <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faUsers} />  
             <div className="dashboard-refferal-content">
@@ -455,11 +455,50 @@ const Dashboard = () => {
             <span className="new-badge">Soon</span>
             <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faGift} />  
             <div className="dashboard-refferal-content">
-              <h2 className="dashboard-refferal-header">Bonus</h2>
-              <p className="dashboard-refferal-text">Earn More</p>
+              <h2 className="dashboard-refferal-header">CRX</h2>
+              <p className="dashboard-refferal-text">Digital Currency</p>
             </div>
           </Link>
         </div>
+
+ <div className="dashboard-bonus-section" style={{ padding: '20px' }}>
+          <div className="bonus-card" >
+
+              <div className='bonus-card-header'>
+                Get A Free Bonus
+              </div>
+
+            <form onSubmit={handleRedeemBonusCode} style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="text"
+                  value={bonusCode}
+                  onChange={(e) => setBonusCode(e.target.value.toUpperCase())}
+                  placeholder="Enter Bonus Code"
+                  disabled={redeemingBonus}
+                  style={{
+                    flex: 1,
+                    padding: '10px 12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontFamily: 'inherit'
+                  }}
+                  required
+                />
+                <button
+                  type="submit"
+                  className='Bonus-btn'
+                  disabled={redeemingBonus}
+                
+                >
+                  {redeemingBonus ? 'Processing...' : 'Get Now'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
 
         <div className="dashboard-plans-section">
           <div style={{ padding: '20px' }}>
@@ -540,55 +579,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="dashboard-bonus-section" style={{ padding: '20px' }}>
-          <div className="bonus-card" >
-
-              <div className='bonus-card-header'>
-                Get A Free Bonus
-              </div>
-
-            <form onSubmit={handleRedeemBonusCode} style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <input
-                  type="text"
-                  value={bonusCode}
-                  onChange={(e) => setBonusCode(e.target.value.toUpperCase())}
-                  placeholder="Enter Bonus Code"
-                  disabled={redeemingBonus}
-                  style={{
-                    flex: 1,
-                    padding: '10px 12px',
-                    border: '1px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontFamily: 'inherit'
-                  }}
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={redeemingBonus}
-                  style={{
-                    background: redeemingBonus ? '#ccc' : 'linear-gradient(135deg, #003366, #0055A4, #003366)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '10px 20px',
-                    borderRadius: '8px',
-                    fontWeight: '700',
-                    fontSize: '12px',
-                    cursor: redeemingBonus ? 'not-allowed' : 'pointer',
-                    transition: 'all 0.3s ease',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}
-                >
-                  {redeemingBonus ? 'Processing...' : 'Get Now'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
+       
         {/* Error Modal */}
         <ErrorModal
           isOpen={errorModalOpen}
@@ -672,15 +663,15 @@ const Dashboard = () => {
                 <div className="plan-details-grid">
                   <div className="detail-row">
                     <span className="detail-label">Investment</span>
-                    <span className="detail-value text-bold">Rs {plan.investment_amount}</span>
+                    <span className="detail-value text-bold">${plan.investment_amount}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Daily Income</span>
-                    <span className="detail-value text-purple">Rs {plan.daily_profit}</span>
+                    <span className="detail-value text-purple">${plan.daily_profit}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Total Return</span>
-                    <span className="detail-value text-green">Rs {plan.total_profit}</span>
+                    <span className="detail-value text-green">${plan.total_profit}</span>
                   </div>
                 </div>
 
@@ -780,7 +771,7 @@ const Dashboard = () => {
                 </div>
                 <div className="refferrals-info-stats">
                   <h4>🤑 Earnings</h4>
-                  <p>Rs {referralEarnings}</p>
+                  <p>${referralEarnings}</p>
                 </div>
                 <div className="refferrals-info-stats">
                   <h4>💸 Commission Rate</h4>

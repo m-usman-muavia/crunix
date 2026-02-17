@@ -161,14 +161,28 @@ const Refferrals = () => {
     <div className="main-wrapper">
       <div className="main-container">
         {/* Top Header Section */}
-        <header className="plan-header">
-          <div className="plan-avatar"><FontAwesomeIcon icon={faBox} /></div>
-          <div className="plan-user-info">
-            <h4 className="plan-username">Referrals</h4>
-            <p className="plan-email">دوستوں کو مدعو کریں  </p>
+                        <div className="deposit-header">Referrals</div>
+          <div className="plan-image">
+          <img 
+            src="/image2.webp" 
+            alt="Investment Plans" 
+            style={{ 
+              width: '100%', 
+              height: '200px', 
+              objectFit: 'cover',
+              borderRadius: '0px 0px 15px 15px',
+              borderBottom: '2px solid #000000',
+            }} 
+          />
+        </div>
+
+        <div className="withdrawal-balance-card">
+          <div className="withdrawal-main-balance">
+            <p className="withdrawal-main-balance-label">Total Earned <br /> <span style={{fontSize: '12px'}}>Total Earning from Refferals</span></p>
+            <h2 className="withdrawal-main-balance-amount">${referralEarnings}</h2>
           </div>
-          <div className="plan-balance">Balance: <span>Rs {balance}</span></div>
-        </header>
+        </div>
+       
 
         <div className="refferrals-section">
           <div className="refferrals-card">
@@ -195,7 +209,7 @@ const Refferrals = () => {
               </div>
               <div className="refferrals-info-stats">
                 <h4>🤑 Earnings</h4>
-                <p>Rs {referralEarnings}</p>
+                <p>$ {referralEarnings}</p>
               </div>
               <div className="refferrals-info-stats">
                 <h4 >💸 Commission Rate</h4>
@@ -271,7 +285,7 @@ const Refferrals = () => {
             <div className="milestone-details">
               <h4 className="milestone-title">{item.target} Active Investors</h4>
               <div className="milestone-salary-row">
-                <span className="milestone-amount">Rs {item.salary}</span>
+                <span className="milestone-amount">${item.salary}</span>
               </div>
             </div>
 
@@ -314,30 +328,7 @@ const Refferrals = () => {
     })}
   </div>
 </div>
-          {/* Add faLightbulb or faMoneyBill to your FontAwesome imports if you prefer icons over emojis */}
-<div className="how-it-works-section">
-  <div className="how-it-works-card">
-    <div className="how-it-works-header">
-      <span className="how-icon">💰</span>
-      <h3>How it Works</h3>
-    </div>
-    <ul className="how-it-works-list">
-      <li>Share your referral code with friends</li>
-      <li>
-        Get 10% commission when they buy a plan
-      </li>
-      <li>
-        Unlock weekly salary bonuses at milestones
-      </li>
-      <li>
-        Weekly salary continues as long as active investors are maintained
-      </li>
-      {/* <li className="urdu-text">
-        دوستوں کو مدعو کریں، 10% کمائیں اور ہفتہ وار تنخواہ حاصل کریں
-      </li> */}
-    </ul>
-  </div>
-</div>
+
           
 
         {/* Updated Plan Content Section */}

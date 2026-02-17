@@ -523,12 +523,27 @@ background: #f97316;
 .section-content p {
   margin: 5px 0;
 }
-
+  .Bonus-btn{
+    background: linear-gradient(135deg, #003366, #0055A4, #003366);
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    font-Weight: 700;
+                    font-Size: 12px;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    text-Transform: uppercase;
+                    letter-Spacing: 0.5px;
+  }
 @media (max-width: 500px) {
   .dashboard-refferal-header {
     font-size: 12px;
   }
-  
+  .Bonus-btn{
+    padding: 4px 6px;
+    font-size: 12px;
+  }
   .dashboard-refferal-text {
     font-size: 12px;
   }

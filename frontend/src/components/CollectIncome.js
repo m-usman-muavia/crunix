@@ -242,14 +242,12 @@ const CollectIncome = () => {
                 ) : error ? (
                     <div className="error-message" style={{ margin: '20px' }}>{error}</div>
                 ) : activePlans.length === 0 ? (
-                    <div className="empty-state" style={{ padding: '40px 20px', textAlign: 'center' }}>
+                    <div className="empty-" style={{ padding: '20px 20px', textAlign: 'center' }}>
                         <p className="empty-state-text">No active plans available.</p>
                         <p style={{ color: '#64748b', fontSize: '14px', marginTop: '10px' }}>
                             Invest in a plan to start earning daily income.
                         </p>
-                        <Link to="/plans" className="noactivate-btn" style={{ marginTop: '20px', display: 'inline-block' }}>
-                            View Plans
-                        </Link>
+                        
                     </div>
                 ) : (
                     <div className="active-plans-grid" style={{ padding: '20px' }}>

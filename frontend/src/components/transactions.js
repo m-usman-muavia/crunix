@@ -166,7 +166,7 @@ const Transactions = () => {
 
                   <div className="tx-amount">
                     <div className={tx.type === 'deposit' ? 'tx-amount-deposit' : 'tx-amount-withdrawal'}>
-                      {tx.type === 'deposit' ? '+' : '-'}Rs {formatAmount(tx.amount)}
+                      {tx.type === 'deposit' ? '+' : '-'}$ {formatAmount(tx.amount)}
                     </div>
                   </div>
                 </div>
