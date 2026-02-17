@@ -3,6 +3,186 @@
     padding: 0px;
 }
 
+.refferrals-section-new {
+  margin-top: 10px;
+  font-family: "Poppins", "DM Sans", sans-serif;
+}
+
+.referral-panel {
+  background: radial-gradient(circle at top, #eef2ff 0%, #f8fafc 55%, #ffffff 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(30, 41, 59, 0.08);
+}
+
+.referral-hero {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #a78bfa 100%);
+  color: #f8fafc;
+  border-radius: 16px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.referral-hero-text h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.referral-hero-text p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #e0e7ff;
+}
+
+.referral-hero-chip {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.referral-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.referral-stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.referral-stat-accent {
+  background: linear-gradient(135deg, #e0f2fe 0%, #eff6ff 100%);
+  border-color: #bfdbfe;
+}
+
+.referral-stat-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.referral-stat-value {
+  font-size: 20px;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.referral-link-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+}
+
+.referral-link-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.referral-link-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.referral-code-pill {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px dashed #cbd5f5;
+}
+
+.referral-link-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.referral-link-input {
+  flex: 1;
+  background: #f8fafc;
+  border: 1px dashed #c7d2fe;
+  color: #334155;
+  font-size: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.referral-copy-btn {
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 6px 14px rgba(99, 102, 241, 0.25);
+}
+
+.referral-copy-btn:disabled {
+  background: #cbd5f5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.referral-info-banner {
+  margin-top: 12px;
+  background: #e0f2fe;
+  border-left: 4px solid #38bdf8;
+  color: #0f172a;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .referral-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .referral-link-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 .withdrawal-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid #e2e8f0;
@@ -110,121 +290,66 @@
 }
 
 .milestone-card {
-    text-align: left;
-  background: white;
+  text-align: left;
   border-radius: 16px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid #dbe0e4;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
 }
 
-.milestone-top {
+.milestone-card-dark {
+  background: #1f2937;
+  border: 1px solid #2f3b4d;
+}
+
+.milestone-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  position: relative;
-  margin-bottom: 15px;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
-.milestone-icon-box {
-  width: 45px;
-  height: 45px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fbbf24; /* Gold/Yellow lock color */
-}
-
-.milestone-details {
-  flex: 1;
-}
-
-.milestone-title {
-    align-items: left;
-  font-size: 15px;
-  color: #1e293b;
-  margin: 0 0 4px 0;
-  font-weight: 700;
-}
-
-.milestone-salary-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.milestone-amount {
-  font-size: 18px;
-  font-weight: 800;
-  color: #334155;
-}
-
-.milestone-badge {
-  background-color: #e2e8f0;
-  color: #475569;
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 12px;
+.milestone-target {
+  color: #e2e8f0;
+  font-size: 14px;
   font-weight: 600;
 }
 
-.milestone-status {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-.status-locked {
-  background-color: #f1f5f9;
-  color: #64748b;
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-/* Progress Bar Styles */
-.milestone-progress-container {
-  margin-top: 10px;
-}
-
-.progress-labels {
-  display: flex;
-  justify-content: space-between;
+.milestone-bonus {
+  background: #059669;
+  color: #ffffff;
   font-size: 12px;
-  margin-bottom: 6px;
-  font-weight: 500;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-.progress-current {
-  color: #94a3b8;
-}
-
-.progress-needed {
-  color: #ef4444; /* Red color for 'needed' text */
-}
-
-.progress-bar-bg {
+.milestone-progress-bar {
   width: 100%;
   height: 8px;
-  background-color: #f1f5f9;
-  border-radius: 10px;
+  background: #2a3647;
+  border-radius: 999px;
   overflow: hidden;
 }
 
-.progress-bar-fill {
+.milestone-progress-fill {
   height: 100%;
-  background-color: #108a50; /* Green fill */
-  border-radius: 10px;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, #22d3ee, #38bdf8 60%, #60a5fa 100%);
+  border-radius: 999px;
+  transition: width 0.5s ease;
 }
+
+.milestone-progress-meta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 
 .how-it-works-section {
     text-align: left;

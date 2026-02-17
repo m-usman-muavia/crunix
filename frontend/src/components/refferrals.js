@@ -150,12 +150,11 @@ const Refferrals = () => {
   };
 
   const milestones = [
-    { target: 15, salary: "1,000", current: activeReferrals, status: getMilestoneStatus(15) },
-    { target: 25, salary: "3,000", current: activeReferrals, status: getMilestoneStatus(25) },
-    { target: 50, salary: "7,000", current: activeReferrals, status: getMilestoneStatus(50) },
-    { target: 100, salary: "15,000", current: activeReferrals, status: getMilestoneStatus(100) },
-    { target: 250, salary: "40,000", current: activeReferrals, status: getMilestoneStatus(250) },
-    { target: 500, salary: "90,000", current: activeReferrals, status: getMilestoneStatus(500) },
+    { target: 10, bonus: 3, current: activeReferrals, status: getMilestoneStatus(10) },
+    { target: 25, bonus: 8, current: activeReferrals, status: getMilestoneStatus(25) },
+    { target: 50, bonus: 20, current: activeReferrals, status: getMilestoneStatus(50) },
+    { target: 100, bonus: 50, current: activeReferrals, status: getMilestoneStatus(100) },
+    { target: 200, bonus: 110, current: activeReferrals, status: getMilestoneStatus(200) }
   ];
   return (
     <div className="main-wrapper">
@@ -184,41 +183,56 @@ const Refferrals = () => {
         </div>
        
 
-        <div className="refferrals-section">
-          <div className="refferrals-card">
-            <h3 className="refferrals-header">Your Referral Code</h3>
-            <div className="refferrals-links">
-              <p className="refferrals-code">{referralCode || 'N/A'}</p>
-              <button 
-                className="refferrals-link-btn" 
-                onClick={handleCopyReferralCode}
-                disabled={loading || referralCode === 'N/A'}
-              >
-                <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                {copied ? ' Copied!' : ' Copy Link'}
-              </button>
+        <div className="refferrals-section refferrals-section-new">
+          <div className="referral-panel">
+            <div className="referral-hero">
+              <div className="referral-hero-text">
+                <h3>Invite & Earn</h3>
+                <p>Build your team and earn passive income.</p>
+              </div>
+              <div className="referral-hero-chip">10% Commission</div>
             </div>
-            <div className="refferrals-info">
-              <div className="refferrals-info-stats">
-                <h4>👨‍👦‍👦 Total Referrals</h4>
-                <p>{totalReferrals}</p>
+
+            <div className="referral-stats-grid">
+              <div className="referral-stat-card">
+                <span className="referral-stat-label">Total Referrals</span>
+                <span className="referral-stat-value">{totalReferrals}</span>
               </div>
-              <div className="refferrals-info-stats">
-                <h4>🙋🏻‍♂️ Active Referrals</h4>
-                <p>{activeReferrals}</p>
+              <div className="referral-stat-card">
+                <span className="referral-stat-label">Active Referrals</span>
+                <span className="referral-stat-value">{activeReferrals}</span>
               </div>
-              <div className="refferrals-info-stats">
-                <h4>🤑 Earnings</h4>
-                <p>$ {referralEarnings}</p>
-              </div>
-              <div className="refferrals-info-stats">
-                <h4 >💸 Commission Rate</h4>
-                <p >10%</p>
+              <div className="referral-stat-card referral-stat-accent">
+                <span className="referral-stat-label">Commission Earned</span>
+                <span className="referral-stat-value">$ {referralEarnings}</span>
               </div>
             </div>
 
+            <div className="referral-link-card">
+              <div className="referral-link-header">
+                <h4>Your Referral Link</h4>
+                <span className="referral-code-pill">{referralCode || 'N/A'}</span>
+              </div>
+              <div className="referral-link-row">
+                <div className="referral-link-input">
+                  {referralCode && referralCode !== 'N/A'
+                    ? `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/registration?code=${encodeURIComponent(referralCode)}`
+                    : 'Referral code not available'}
+                </div>
+                <button
+                  className="referral-copy-btn"
+                  onClick={handleCopyReferralCode}
+                  disabled={loading || referralCode === 'N/A'}
+                >
+                  <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
+                  {copied ? ' Copied' : ' Copy Link'}
+                </button>
+              </div>
+              <div className="referral-info-banner">
+                <strong>Level 1 Bonus:</strong> You will receive a 10% commission instantly whenever your direct referrals make a deposit or claim a bonus.
+              </div>
+            </div>
           </div>
-
         </div>
 
         {/* Referral List Section */}
@@ -264,70 +278,30 @@ const Refferrals = () => {
         )} */}
 
         <div className="refferrals-milestones-section">
-  <h3 className="milestone-main-title">Weekly Salary Milestones</h3>
-  <div className="refferrals-milestones-cards">
-    {milestones.map((item, index) => {
-      const progressPercentage = Math.min((item.current / item.target) * 100, 100);
-      const isUnlocked = item.status === "Unlocked";
-      
-      return (
-        <div className="milestone-card" key={index} style={{ 
-          opacity: isUnlocked ? 1 : 0.85,
-          border: isUnlocked ? '2px solid #4CAF50' : '1px solid #ddd'
-        }}>
-          <div className="milestone-top">
-            <div className="milestone-icon-box" style={{
-              backgroundColor: isUnlocked ? '#4CAF50' : '#ccc'
-            }}>
-               <FontAwesomeIcon icon={isUnlocked ? faCheck : faLock} />
-            </div>
-            
-            <div className="milestone-details">
-              <h4 className="milestone-title">{item.target} Active Investors</h4>
-              <div className="milestone-salary-row">
-                <span className="milestone-amount">${item.salary}</span>
-              </div>
-            </div>
-
-            <div className="milestone-status">
-              <span className={isUnlocked ? "status-unlocked" : "status-locked"} style={{
-                backgroundColor: isUnlocked ? '#d4edda' : '#f8d7da',
-                color: isUnlocked ? '#155724' : '#721c24',
-                border: `1px solid ${isUnlocked ? '#c3e6cb' : '#f5c6cb'}`,
-                padding: '4px 8px',
-                borderRadius: '12px',
-                fontSize: '11px'
-              }}>
-                 <FontAwesomeIcon icon={isUnlocked ? faCheck : faLock} style={{fontSize: '10px'}} /> {item.status}
-              </span>
-            </div>
-          </div>
-
-          <div className="milestone-progress-container">
-            <div className="progress-labels">
-              <span className="progress-current">{item.current} / {item.target} Active</span>
-              <span className="progress-needed">
-                {item.current >= item.target 
-                  ? '✅ Achieved!' 
-                  : `${item.target - item.current} needed`}
-              </span>
-            </div>
-            <div className="progress-bar-bg">
-              <div 
-                className="progress-bar-fill" 
-                style={{ 
-                  width: `${progressPercentage}%`,
-                  backgroundColor: isUnlocked ? '#4CAF50' : '#6366f1',
-                  transition: 'width 0.5s ease-in-out'
-                }}
-              ></div>
-            </div>
+          <h3 className="milestone-main-title">Bonus Milestones</h3>
+          <div className="refferrals-milestones-cards">
+            {milestones.map((item, index) => {
+              const progressPercentage = Math.min((item.current / item.target) * 100, 100);
+              return (
+                <div className="milestone-card milestone-card-dark" key={index}>
+                  <div className="milestone-row">
+                    <span className="milestone-target">Target: {item.target} Members</span>
+                    <span className="milestone-bonus">${item.bonus} Bonus</span>
+                  </div>
+                  <div className="milestone-progress-bar">
+                    <div
+                      className="milestone-progress-fill"
+                      style={{ width: `${progressPercentage}%` }}
+                    ></div>
+                  </div>
+                  <div className="milestone-progress-meta">
+                    <span>{item.current} / {item.target}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
-      );
-    })}
-  </div>
-</div>
 
           
 
