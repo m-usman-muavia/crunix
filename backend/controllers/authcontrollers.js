@@ -12,8 +12,8 @@ const { uploadBuffer, deleteByPublicId } = require('../config/cloudinary');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER || 'payzo4810@gmail.com',
-        pass: process.env.EMAIL_PASS || 'iqbj kuly jrce mwcp' // You get this from Google Security
+        user: process.env.EMAIL_USER || 'crunixcrx@gmail.com',
+        pass: process.env.EMAIL_PASS || 'qeyq qnvg oqns budc' // You get this from Google Security
     }
 });
 
@@ -157,7 +157,7 @@ exports.register = async (req, res) => {
 
             // Send OTP via email (with error handling)
             const mailOptions = {
-                from: process.env.EMAIL_USER || 'payzo4810@gmail.com',
+                from: process.env.EMAIL_USER || 'crunixcrx@gmail.com',
                 to: email,
                 subject: 'Email Verification OTP',
                 html: `
@@ -213,7 +213,7 @@ exports.register = async (req, res) => {
 
         // Send OTP via email (with error handling)
         const mailOptions = {
-            from: process.env.EMAIL_USER || 'payzo4810@gmail.com',
+            from: process.env.EMAIL_USER || 'crunixcrx@gmail.com',
             to: email,
             subject: 'Email Verification OTP',
             html: `
@@ -522,7 +522,7 @@ exports.forgotPassword = async (req, res) => {
 
         // Send OTP via email
         const mailOptions = {
-            from: process.env.EMAIL_USER || 'payzo4810@gmail.com',
+            from: process.env.EMAIL_USER || 'crunixcrx@gmail.com',
             to: email,
             subject: 'Password Reset OTP',
             html: `
