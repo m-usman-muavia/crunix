@@ -42,6 +42,19 @@ const planSchema = new mongoose.Schema({
     type: Number,
     default: 0,
     min: 0
+  },
+  countdown_hours: {
+    type: Number,
+    default: null,
+    min: 0
+  },
+  countdown_start_time: {
+    type: Date,
+    default: null
+  },
+  countdown_end_time: {
+    type: Date,
+    default: null
   }
 }, { timestamps: true });
 

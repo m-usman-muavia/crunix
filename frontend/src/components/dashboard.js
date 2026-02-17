@@ -35,6 +35,7 @@ const Dashboard = () => {
   const [loadingInvest, setLoadingInvest] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [countdowns, setCountdowns] = useState({});
 
   useEffect(() => {
     fetchBalance();
@@ -45,6 +46,39 @@ const Dashboard = () => {
     fetchReferralStats();
     fetchTotalWithdrawn();
   }, []);
+
+  // Countdown timer effect
+  useEffect(() => {
+    const updateCountdowns = () => {
+      const updatedCountdowns = {};
+      plans.forEach(plan => {
+        if (plan.countdown_end_time) {
+          try {
+            const endTime = new Date(plan.countdown_end_time).getTime();
+            const now = Date.now();
+            const timeLeft = endTime - now;
+
+            if (timeLeft > 0) {
+              const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+              updatedCountdowns[plan._id] = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            } else {
+              updatedCountdowns[plan._id] = 'EXPIRED';
+            }
+          } catch (error) {
+            console.error(`Error calculating countdown for ${plan.name}:`, error);
+          }
+        }
+      });
+      setCountdowns(updatedCountdowns);
+    };
+
+    updateCountdowns();
+    const interval = setInterval(updateCountdowns, 1000);
+
+    return () => clearInterval(interval);
+  }, [plans]);
 
   const fetchBalance = async () => {
     try {
@@ -505,10 +539,10 @@ const Dashboard = () => {
             {plans.length > 0 ? (
               plans.map((plan, index) => (
                 <div className="plan-card-new" key={plan._id || index}>
-                  {/* Limited Badge */}
-                  {plan.purchase_limit > 0 && (
+                  {/* Limited Badge - Show Countdown if Available */}
+                  {plan.countdown_end_time && countdowns[plan._id] && (
                     <div className="limited-badge">
-                      Limited {(plan.user_purchase_count || 0)}/{plan.purchase_limit}
+                      ⏱️ {countdowns[plan._id]}
                     </div>
                   )}
                   
@@ -526,7 +560,7 @@ const Dashboard = () => {
                           {/* Purchase count badge on image */}
                           {plan.purchase_limit > 0 && (
                             <div className="image-badge">
-                              {plan.duration_days} Days
+                              limit {plan.user_purchase_count || 0}/{plan.purchase_limit}
                             </div>
                           )}
                         </>
@@ -551,6 +585,10 @@ const Dashboard = () => {
                         <div className="detail-item">
                           <span className="detail-label-new">Total income:</span>
                           <span className="detail-value-new">${plan.total_profit}</span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label-new">Duration:</span>
+                          <span className="detail-value-new">{plan.duration_days} Days</span>
                         </div>
                       </div>
 

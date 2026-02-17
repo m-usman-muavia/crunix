@@ -236,7 +236,7 @@
 .plan-product-image {
   position: relative;
   width: 120px;
-  height: 140px;
+  height: 145px;
   min-width: 118px;
   border-radius: 14px;
   overflow: hidden;
@@ -280,7 +280,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
 }
 
 .product-title {

@@ -34,7 +34,10 @@ router.get('/active', verifyToken, async (req, res) => {
         status: plan.status,
         image_path: plan.image_path,
         purchase_limit: plan.purchase_limit,
-        user_purchase_count: purchaseCount
+        user_purchase_count: purchaseCount,
+        countdown_hours: plan.countdown_hours,
+        countdown_start_time: plan.countdown_start_time,
+        countdown_end_time: plan.countdown_end_time
       };
     }));
     

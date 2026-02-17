@@ -19,6 +19,7 @@ const Plans = () => {
   const [loadingInvest, setLoadingInvest] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [countdowns, setCountdowns] = useState({});
 
   const resolveImageUrl = (imagePath) => {
     if (!imagePath) {
@@ -37,6 +38,43 @@ const Plans = () => {
     fetchPlans();
     fetchBalance();
   }, []);
+
+  // Countdown timer effect
+  useEffect(() => {
+    // Function to calculate and update all countdowns
+    const updateCountdowns = () => {
+      const updatedCountdowns = {};
+      plans.forEach(plan => {
+        if (plan.countdown_end_time) {
+          try {
+            const endTime = new Date(plan.countdown_end_time).getTime();
+            const now = Date.now();
+            const timeLeft = endTime - now;
+
+            if (timeLeft > 0) {
+              const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+              updatedCountdowns[plan._id] = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            } else {
+              updatedCountdowns[plan._id] = 'EXPIRED';
+            }
+          } catch (error) {
+            console.error(`Error calculating countdown for ${plan.name}:`, error);
+          }
+        }
+      });
+      setCountdowns(updatedCountdowns);
+    };
+
+    // Calculate immediately on mount/plans change
+    updateCountdowns();
+
+    // Then update every second
+    const interval = setInterval(updateCountdowns, 1000);
+
+    return () => clearInterval(interval);
+  }, [plans]);
 
   const fetchPlans = async () => {
     try {
@@ -204,10 +242,10 @@ const Plans = () => {
           ) : (
             plans.map((plan, index) => (
               <div className="plan-card-new" key={plan._id || index}>
-                {/* Limited Badge */}
-                {plan.purchase_limit > 0 && (
+                {/* Limited Badge - Show Countdown if Available */}
+                {plan.countdown_end_time && countdowns[plan._id] && (
                   <div className="limited-badge">
-                    Limited {(plan.user_purchase_count || 0)}/{plan.purchase_limit}
+                    ⏱️ {countdowns[plan._id]}
                   </div>
                 )}
                 
@@ -225,7 +263,7 @@ const Plans = () => {
                         {/* Purchase count badge on image */}
                         {plan.purchase_limit > 0 && (
                           <div className="image-badge">
-                             {plan.duration_days || plan.duration} Days
+                             Limit {(plan.user_purchase_count || 0)}/{plan.purchase_limit}
                           </div>
                         )}
                       </>
@@ -241,15 +279,19 @@ const Plans = () => {
                     <div className="product-details">
                       <div className="detail-item">
                         <span className="detail-label-new">Price:</span>
-                        <span className="detail-value-new">${plan.investment_amount}</span>
+                        <span className="detail-value-new">$ {plan.investment_amount}</span>
                       </div>
                       <div className="detail-item">
                         <span className="detail-label-new">Daily income:</span>
-                        <span className="detail-value-new">${plan.daily_profit}</span>
+                        <span className="detail-value-new">$ {plan.daily_profit}</span>
                       </div>
                       <div className="detail-item">
                         <span className="detail-label-new">Total income:</span>
-                        <span className="detail-value-new">${plan.total_profit}</span>
+                        <span className="detail-value-new">$ {plan.total_profit}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label-new">Duration</span>
+                        <span className="detail-value-new">{plan.duration_days || plan.duration} Days</span>
                       </div>
                     </div>
 

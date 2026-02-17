@@ -127,10 +127,13 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
   display: flex;
   gap: 10px;
   align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .referral-link-input {
-  flex: 1;
+  flex: 1 1 100%;
   background: #f8fafc;
   border: 1px dashed #c7d2fe;
   color: #334155;
@@ -139,11 +142,13 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
   border-radius: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  word-break: break-all;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .referral-copy-btn {
-      background: linear-gradient(135deg, #003366, #0055A4, #003366);   
+  background: linear-gradient(135deg, #003366, #0055A4, #003366);
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -151,10 +156,15 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   box-shadow: 0 6px 14px rgba(99, 102, 241, 0.25);
+  flex-shrink: 0;
+  white-space: nowrap;
+  width: 100%;
+  margin-top: 8px;
 }
 
 .referral-copy-btn:disabled {
@@ -182,6 +192,16 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
   .referral-link-row {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .referral-link-input {
+    flex: 1 1 100%;
+    margin-bottom: 8px;
+  }
+
+  .referral-copy-btn {
+    width: 100%;
+    margin-top: 0;
   }
 }
 
@@ -711,7 +731,7 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
   font-weight: 600;
 }
 
-@media (max-width: 900px) {
+/* @media (max-width: 900px) {
   .user-card-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -724,7 +744,7 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
   .user-stats-card {
     padding: 14px;
   }
-}
+} */
 
 .detail-item {
   display: flex;
@@ -1002,7 +1022,7 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
 }
 
 /* Responsive adjustments */
-@media (max-width: 500px) {
+/* @media (max-width: 500px) {
   .addplans-section {
     padding: 15px;
   }
@@ -1024,4 +1044,4 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
     padding: 12px 20px;
     font-size: 14px;
   }
-}
+} */

@@ -19,6 +19,7 @@ const AddPlans = () => {
         dailyProfit: '',
         duration: '',
         purchaseLimit: '',
+        countdownHours: '',
         image: null
     });
 
@@ -60,7 +61,7 @@ const AddPlans = () => {
     useEffect(() => { fetchPlans(); }, []);
 
     const resetForm = () => {
-        setForm({ planTitle: '', investmentAmount: '', dailyProfit: '', duration: '', purchaseLimit: '', image: null });
+        setForm({ planTitle: '', investmentAmount: '', dailyProfit: '', duration: '', purchaseLimit: '', countdownHours: '', image: null });
         setEditingId(null);
     };
 
@@ -74,6 +75,9 @@ const AddPlans = () => {
         formData.append('daily_profit', form.dailyProfit);
         formData.append('duration_days', form.duration);
         formData.append('purchase_limit', form.purchaseLimit || 0);
+        if (form.countdownHours) {
+            formData.append('countdown_hours', form.countdownHours);
+        }
         if (!editingId) {
             formData.append('status', 'active');
         }
@@ -159,6 +163,7 @@ const AddPlans = () => {
             dailyProfit: plan.daily_profit || '',
             duration: plan.duration_days || '',
             purchaseLimit: plan.purchase_limit || '',
+            countdownHours: plan.countdown_hours || '',
             image: null
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -290,6 +295,20 @@ const AddPlans = () => {
                                 />
                             </div>
 
+                            <div className="input-group">
+                                <label>
+                                    Countdown Timer (Hours) <span style={{ color: 'gray', fontSize: '12px' }}>(Optional - Plan will auto-deactivate)</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    name="countdownHours"
+                                    value={form.countdownHours}
+                                    onChange={onChange}
+                                    placeholder="Enter countdown duration in hours (leave empty for manual deactivation)"
+                                    min="0"
+                                />
+                            </div>
+
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <button type="submit" className="addplan-btn">
                                     {editingId ? 'Update Plan' : 'Add Plan'}
@@ -355,15 +374,15 @@ const AddPlans = () => {
                             <div className="plan-details-grid">
                                 <div className="detail-row">
                                     <span className="detail-label">Investment</span>
-                                    <span className="detail-value text-bold">Rs {plan.investment_amount}</span>
+                                    <span className="detail-value text-bold">${plan.investment_amount}</span>
                                 </div>
                                 <div className="detail-row">
                                     <span className="detail-label">Daily Income</span>
-                                    <span className="detail-value text-purple">Rs {plan.daily_profit}</span>
+                                    <span className="detail-value text-purple">${plan.daily_profit}</span>
                                 </div>
                                 <div className="detail-row">
                                     <span className="detail-label">Total Return</span>
-                                    <span className="detail-value text-green">Rs {plan.total_profit}</span>
+                                    <span className="detail-value text-green">${plan.total_profit}</span>
                                 </div>
                                 <div className="detail-row">
                                     <span className="detail-label">Purchase Limit</span>

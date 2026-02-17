@@ -10,6 +10,7 @@ const CheckUser = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchUsers();
@@ -40,7 +41,19 @@ const CheckUser = () => {
 
   const formatCurrency = (value) => {
     const amount = Number(value || 0);
-    return `Rs ${amount.toLocaleString()}`;
+    return `$ ${amount.toLocaleString()}`;
+  };
+
+  const getFilteredUsers = () => {
+    if (!searchQuery.trim()) return users;
+    
+    const query = searchQuery.toLowerCase();
+    return users.filter(user =>
+      user.name.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query) ||
+      (user.referralCode && user.referralCode.toLowerCase().includes(query)) ||
+      (user.referredByName && user.referredByName.toLowerCase().includes(query))
+    );
   };
 
   return (
@@ -57,6 +70,44 @@ const CheckUser = () => {
 
         {error && <p className="error-text">{error}</p>}
 
+        {/* Search Bar */}
+        <div style={{
+          marginBottom: '15px',
+          display: 'flex',
+          gap: '10px'
+        }}>
+          <input
+            type="text"
+            placeholder="Search by name, email, or referral code..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              flex: 1,
+              padding: '10px 14px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontFamily: 'inherit'
+            }}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              style={{
+                padding: '10px 16px',
+                backgroundColor: '#ef4444',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontWeight: 600
+              }}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         {loading ? (
           <div style={{ textAlign: 'center', padding: '20px' }}>
             <h3>Loading users...</h3>
@@ -67,7 +118,16 @@ const CheckUser = () => {
           </div>
         ) : (
           <div className="user-cards-wrapper">
-            {users.map((user) => (
+            {getFilteredUsers().length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '20px', width: '100%' }}>
+                <p>No users match your search</p>
+              </div>
+            ) : (
+              <>
+                <div style={{ width: '100%', fontSize: '14px', color: '#64748b', marginBottom: '10px' }}>
+                  Showing {getFilteredUsers().length} of {users.length} users
+                </div>
+                {getFilteredUsers().map((user) => (
               <div key={user.id} className="user-stats-card">
                 <div className="user-card-head">
                   <div>
@@ -133,6 +193,8 @@ const CheckUser = () => {
                 </div>
               </div>
             ))}
+              </>
+            )}
           </div>
         )}
 

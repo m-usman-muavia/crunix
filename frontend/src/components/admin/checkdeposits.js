@@ -13,6 +13,12 @@ const CheckDeposits = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [processing, setProcessing] = useState(null);
+  const [filters, setFilters] = useState({
+    all: false,
+    pending: true,
+    accepted: false,
+    rejected: false
+  });
 
   useEffect(() => {
     fetchDeposits();
@@ -102,6 +108,31 @@ const CheckDeposits = () => {
     }
   };
 
+  const handleFilterChange = (filterName) => {
+    if (filterName === 'all') {
+      setFilters({
+        all: !filters.all,
+        pending: !filters.all,
+        accepted: !filters.all,
+        rejected: !filters.all
+      });
+    } else {
+      const newFilters = { ...filters, [filterName]: !filters[filterName] };
+      newFilters.all = newFilters.pending && newFilters.accepted && newFilters.rejected;
+      setFilters(newFilters);
+    }
+  };
+
+  const getFilteredDeposits = () => {
+    return deposits.filter(deposit => {
+      if (filters.all) return true;
+      if (filters.pending && deposit.status === 'pending') return true;
+      if (filters.accepted && deposit.status === 'approved') return true;
+      if (filters.rejected && deposit.status === 'rejected') return true;
+      return false;
+    });
+  };
+
   if (loading) {
     return (
       <div className="main-wrapper">
@@ -166,13 +197,63 @@ const CheckDeposits = () => {
         {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
         {successMessage && <p style={{ color: 'green', textAlign: 'center', marginBottom: '15px' }}>{successMessage}</p>}
 
+        {/* Filter Checkboxes */}
+        <div style={{
+          backgroundColor: '#fff',
+          border: '1px solid #e0e0e0',
+          borderRadius: '8px',
+          padding: '15px',
+          marginBottom: '15px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <p style={{ margin: '0 0 10px 0', fontWeight: 'bold' }}>Filter by Status:</p>
+          <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={filters.all}
+                onChange={() => handleFilterChange('all')}
+                style={{ cursor: 'pointer' }}
+              />
+              <span>All</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={filters.pending}
+                onChange={() => handleFilterChange('pending')}
+                style={{ cursor: 'pointer' }}
+              />
+              <span>Pending</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={filters.accepted}
+                onChange={() => handleFilterChange('accepted')}
+                style={{ cursor: 'pointer' }}
+              />
+              <span>Accepted</span>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={filters.rejected}
+                onChange={() => handleFilterChange('rejected')}
+                style={{ cursor: 'pointer' }}
+              />
+              <span>Rejected</span>
+            </label>
+          </div>
+        </div>
+
         {deposits.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '20px' }}>
             <p>No deposits to review</p>
           </div>
         ) : (
           <div style={{ marginBottom: '80px' }}>
-            {deposits.map((deposit) => (
+            {getFilteredDeposits().map((deposit) => (
               <div key={deposit._id} style={{
                 backgroundColor: '#fff',
                 border: '1px solid #e0e0e0',
@@ -197,7 +278,7 @@ const CheckDeposits = () => {
 
                 <div style={{ fontSize: '14px', marginBottom: '10px' }}>
                   <p><strong>Email:</strong> {deposit.userId?.email || 'N/A'}</p>
-                  <p><strong>Amount:</strong> Rs {deposit.deposit_amount}</p>
+                  <p><strong>Amount:</strong> $ {deposit.deposit_amount}</p>
                   <p><strong>Mobile:</strong> {deposit.sender_mobile}</p>
                   <p><strong>Transaction ID:</strong> {deposit.transaction_id}</p>
                   <p><strong>Date:</strong> {new Date(deposit.created_at).toLocaleString()}</p>

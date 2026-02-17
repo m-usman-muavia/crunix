@@ -12,6 +12,7 @@ const AccrualHistory = () => {
   const [error, setError] = useState('');
   const [syncing, setSyncing] = useState(false);
   const [expandedPlanId, setExpandedPlanId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchAccrualHistory();
@@ -70,6 +71,19 @@ const AccrualHistory = () => {
     setExpandedPlanId(expandedPlanId === planId ? null : planId);
   };
 
+  const getFilteredPlans = () => {
+    if (!searchQuery.trim()) return plans;
+    
+    const query = searchQuery.toLowerCase();
+    return plans.filter(plan =>
+      (plan.planId && plan.planId.toLowerCase().includes(query)) ||
+      (plan.planName && plan.planName.toLowerCase().includes(query)) ||
+      (plan.userId && plan.userId.toLowerCase().includes(query)) ||
+      (plan.userName && plan.userName.toLowerCase().includes(query)) ||
+      (plan.userEmail && plan.userEmail.toLowerCase().includes(query))
+    );
+  };
+
   const formatDateTime = (date) => {
     const d = new Date(date);
     return d.toLocaleDateString('en-GB', {
@@ -97,8 +111,46 @@ const AccrualHistory = () => {
 
         {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
 
+        {/* Search Bar */}
+        <div style={{
+          marginBottom: '15px',
+          display: 'flex',
+          gap: '10px'
+        }}>
+          <input
+            type="text"
+            placeholder="Search by plan name, user name, or email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              flex: 1,
+              padding: '10px 14px',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontFamily: 'inherit'
+            }}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              style={{
+                padding: '10px 16px',
+                backgroundColor: '#ef4444',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontWeight: 600
+              }}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <div style={{ marginBottom: '15px' }}>
-          <button
+          {/* <button
             onClick={handleForceAccrue}
             disabled={syncing || loading}
             style={{
@@ -113,7 +165,7 @@ const AccrualHistory = () => {
             }}
           >
             <FontAwesomeIcon icon={faSync} /> {syncing ? 'Accruing...' : 'Force Accrue Now'}
-          </button>
+          </button> */}
         </div>
 
         {loading ? (
@@ -126,7 +178,16 @@ const AccrualHistory = () => {
           </div>
         ) : (
           <div style={{ marginBottom: '80px' }}>
-            {plans.map((plan) => (
+            {getFilteredPlans().length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '20px' }}>
+                <p>No plans match your search</p>
+              </div>
+            ) : (
+              <>
+                <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '10px' }}>
+                  Showing {getFilteredPlans().length} of {plans.length} plans
+                </div>
+                {getFilteredPlans().map((plan) => (
               <div
                 key={plan._id}
                 style={{
@@ -172,7 +233,7 @@ const AccrualHistory = () => {
                       {plan.status}
                     </span>
                     <p style={{ margin: '0', fontSize: '14px', fontWeight: 600 }}>
-                      Earned: Rs {plan.totalEarned} / {plan.totalProfit}
+                      Earned: ${plan.totalEarned} / {plan.totalProfit}
                     </p>
                   </div>
                 </div>
@@ -192,11 +253,11 @@ const AccrualHistory = () => {
                 >
                   <div>
                     <span style={{ color: '#64748b', fontWeight: 600 }}>Investment</span>
-                    <p style={{ margin: '2px 0 0 0', fontWeight: 700 }}>Rs {plan.investmentAmount}</p>
+                    <p style={{ margin: '2px 0 0 0', fontWeight: 700 }}>${plan.investmentAmount}</p>
                   </div>
                   <div>
                     <span style={{ color: '#64748b', fontWeight: 600 }}>Daily Profit</span>
-                    <p style={{ margin: '2px 0 0 0', fontWeight: 700 }}>Rs {plan.dailyProfit}</p>
+                    <p style={{ margin: '2px 0 0 0', fontWeight: 700 }}>${plan.dailyProfit}</p>
                   </div>
                   <div>
                     <span style={{ color: '#64748b', fontWeight: 600 }}>Accrual Count</span>
@@ -242,7 +303,7 @@ const AccrualHistory = () => {
                                   {accrual.daysAccrued}
                                 </td>
                                 <td style={{ textAlign: 'right', padding: '8px', fontWeight: 600, color: '#10b981' }}>
-                                  Rs {accrual.amountAdded}
+                                  ${accrual.amountAdded}
                                 </td>
                               </tr>
                             ))}
@@ -256,6 +317,8 @@ const AccrualHistory = () => {
                 )}
               </div>
             ))}
+              </>
+            )}
           </div>
         )}
 

@@ -28,7 +28,8 @@ exports.createPlan = async (req, res) => {
       daily_profit,
       duration_days,
       status,
-      purchase_limit
+      purchase_limit,
+      countdown_hours
     } = req.body;
 
     const total_profit = daily_profit * duration_days;
@@ -59,6 +60,14 @@ exports.createPlan = async (req, res) => {
       purchase_limit: purchase_limit || 0
     };
 
+    // Handle countdown timer
+    if (countdown_hours && countdown_hours > 0) {
+      const now = new Date();
+      planData.countdown_hours = countdown_hours;
+      planData.countdown_start_time = now;
+      planData.countdown_end_time = new Date(now.getTime() + countdown_hours * 60 * 60 * 1000);
+    }
+
     const newPlan = new Plan(planData);
     await newPlan.save();
 
@@ -86,7 +95,8 @@ exports.updatePlan = async (req, res) => {
       daily_profit,
       duration_days,
       status,
-      purchase_limit
+      purchase_limit,
+      countdown_hours
     } = req.body;
 
     const plan = await Plan.findById(id);
@@ -104,6 +114,21 @@ exports.updatePlan = async (req, res) => {
     if (duration_days) plan.duration_days = duration_days;
     if (status) plan.status = status;
     if (purchase_limit !== undefined) plan.purchase_limit = purchase_limit;
+    
+    // Handle countdown timer
+    if (countdown_hours !== undefined) {
+      if (countdown_hours && countdown_hours > 0) {
+        const now = new Date();
+        plan.countdown_hours = countdown_hours;
+        plan.countdown_start_time = now;
+        plan.countdown_end_time = new Date(now.getTime() + countdown_hours * 60 * 60 * 1000);
+      } else {
+        // Clear countdown if 0 or empty
+        plan.countdown_hours = null;
+        plan.countdown_start_time = null;
+        plan.countdown_end_time = null;
+      }
+    }
     
     // Handle image update
     if (req.file) {

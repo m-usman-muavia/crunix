@@ -220,7 +220,7 @@ const BonusGenerator = () => {
               />
               {quantity && bonusAmount && (
                 <small style={{ color: '#16a34a', fontSize: '12px', fontWeight: 'bold' }}>
-                  Each user will receive: Rs {(parseFloat(bonusAmount) / parseInt(quantity)).toFixed(2)}
+                  Each user will receive: ${(parseFloat(bonusAmount) / parseInt(quantity)).toFixed(2)}
                 </small>
               )}
             </div>
@@ -309,7 +309,7 @@ const BonusGenerator = () => {
                       Total Amount
                     </div>
                     <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#333' }}>
-                      Rs {generatedCode.totalAmount}
+                      ${generatedCode.totalAmount}
                     </div>
                   </div>
                   <div>
@@ -317,7 +317,7 @@ const BonusGenerator = () => {
                       Per User Amount
                     </div>
                     <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#16a34a' }}>
-                      Rs {generatedCode.perUserAmount}
+                      ${generatedCode.perUserAmount}
                     </div>
                   </div>
                   <div>
@@ -419,7 +419,7 @@ const BonusGenerator = () => {
                           Total Amount
                         </div>
                         <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#333' }}>
-                          Rs {code.totalAmount}
+                          ${code.totalAmount}
                         </div>
                       </div>
                       <div>
@@ -427,7 +427,7 @@ const BonusGenerator = () => {
                           Per User
                         </div>
                         <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#16a34a' }}>
-                          Rs {code.perUserAmount}
+                          ${code.perUserAmount}
                         </div>
                       </div>
                       <div>
