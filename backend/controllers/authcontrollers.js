@@ -2,6 +2,8 @@ const User = require('../models/user');
 const Wallet = require('../models/wallet');
 const Referral = require('../models/referral');
 const UserPlan = require('../models/userplan');
+const Deposit = require('../models/deposit');
+const Withdrawal = require('../models/withdrawal');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -593,11 +595,17 @@ exports.getAdminUsersWithReferrals = async (req, res) => {
         const wallets = await Wallet.find({ userId: { $in: userIds } }).lean();
         const walletMap = new Map(wallets.map((w) => [w.userId.toString(), w]));
 
-        const activePlans = await UserPlan.find({ userId: { $in: userIds }, status: 'active' }).lean();
+        const activePlans = await UserPlan.find(
+            { userId: { $in: userIds }, status: 'active' },
+            'userId planName'
+        ).lean();
         const planMap = new Map();
         activePlans.forEach((plan) => {
             const key = plan.userId.toString();
-            planMap.set(key, (planMap.get(key) || 0) + 1);
+            if (!planMap.has(key)) planMap.set(key, []);
+            if (plan.planName) {
+                planMap.get(key).push(plan.planName);
+            }
         });
 
         const referrals = await Referral.find({ referrer_id: { $in: userIds } })
@@ -610,6 +618,28 @@ exports.getAdminUsersWithReferrals = async (req, res) => {
             referralMap.get(key).push(ref);
         });
 
+        const approvedDeposits = await Deposit.find(
+            { userId: { $in: userIds }, status: 'approved' },
+            'userId deposit_amount'
+        ).lean();
+        const depositMap = new Map();
+        approvedDeposits.forEach((deposit) => {
+            const key = deposit.userId.toString();
+            const amount = Number(deposit.deposit_amount || 0);
+            depositMap.set(key, (depositMap.get(key) || 0) + amount);
+        });
+
+        const approvedWithdrawals = await Withdrawal.find(
+            { userId: { $in: userIds }, status: 'approved' },
+            'userId amount'
+        ).lean();
+        const withdrawalMap = new Map();
+        approvedWithdrawals.forEach((withdrawal) => {
+            const key = withdrawal.userId.toString();
+            const amount = Number(withdrawal.amount || 0);
+            withdrawalMap.set(key, (withdrawalMap.get(key) || 0) + amount);
+        });
+
         const referralCodeToUser = new Map(users.map((u) => [u.referralCode, u]));
 
         const payload = users.map((user) => {
@@ -618,6 +648,9 @@ exports.getAdminUsersWithReferrals = async (req, res) => {
             const activeReferrals = userReferrals.filter(
                 (ref) => ref.status === 'completed' || ref.status === 'activated'
             );
+            const userActivePlans = planMap.get(user._id.toString()) || [];
+            const totalDeposit = depositMap.get(user._id.toString()) || 0;
+            const totalWithdrawal = withdrawalMap.get(user._id.toString()) || 0;
 
             return {
                 id: user._id,
@@ -633,9 +666,17 @@ exports.getAdminUsersWithReferrals = async (req, res) => {
                     .map((ref) => ref.referred_user_id?.name)
                     .filter(Boolean),
                 activeReferrals: activeReferrals.length,
-                activePlans: planMap.get(user._id.toString()) || 0,
+                activeReferralNames: activeReferrals
+                    .map((ref) => ref.referred_user_id?.name)
+                    .filter(Boolean),
+                activePlans: userActivePlans,
+                activePlansCount: userActivePlans.length,
+                mainbalance: wallet.main_balance || 0,
+                referralBalance: wallet.referral_balance || 0,
+                bonusBalance: wallet.bonus_balance || 0,
                 balance: wallet.main_balance || 0,
-                referralBalance: wallet.referral_balance || 0
+                totalDeposit,
+                totalWithdrawal
             };
         });
 

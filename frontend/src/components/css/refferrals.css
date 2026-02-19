@@ -174,6 +174,7 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
 }
 
 .referral-info-banner {
+  text-align: left;
   margin-top: 12px;
   background: #e0f2fe;
   border-left: 4px solid #38bdf8;
@@ -185,9 +186,9 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
 }
 
 @media (max-width: 720px) {
-  .referral-stats-grid {
+  /* .referral-stats-grid {
     grid-template-columns: 1fr;
-  }
+  } */
 
   .referral-link-row {
     flex-direction: column;
@@ -304,7 +305,7 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
 }
 
 .milestone-main-title {
-  font-size: 20px;
+  font-size: 24px;
   color: #1e293b;
   margin-top: 0px;
   margin-bottom: 15px;
@@ -694,7 +695,7 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
 }
 
 .user-stat-label {
-  font-size: 12px;
+  font-size: 8px;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
@@ -702,7 +703,7 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
 }
 
 .user-stat-value {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: #0f172a;
   overflow: hidden;
@@ -721,7 +722,7 @@ background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7
   color: #0f172a;
   border-radius: 12px;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
 }
 

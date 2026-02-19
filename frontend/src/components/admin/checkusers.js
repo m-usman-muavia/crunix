@@ -11,6 +11,7 @@ const CheckUser = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState('activeusers');
 
   useEffect(() => {
     fetchUsers();
@@ -45,16 +46,36 @@ const CheckUser = () => {
   };
 
   const getFilteredUsers = () => {
-    if (!searchQuery.trim()) return users;
-    
-    const query = searchQuery.toLowerCase();
-    return users.filter(user =>
-      user.name.toLowerCase().includes(query) ||
-      user.email.toLowerCase().includes(query) ||
-      (user.referralCode && user.referralCode.toLowerCase().includes(query)) ||
-      (user.referredByName && user.referredByName.toLowerCase().includes(query))
-    );
+    const query = searchQuery.trim().toLowerCase();
+
+    return users.filter((user) => {
+      const matchesSearch = !query ||
+        user.name.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query) ||
+        (user.referralCode && user.referralCode.toLowerCase().includes(query)) ||
+        (user.referredByName && user.referredByName.toLowerCase().includes(query));
+
+      if (!matchesSearch) return false;
+
+      if (filterType === 'activeusers') {
+        if (Array.isArray(user.activePlans)) {
+          return user.activePlans.length > 0;
+        }
+        return Number(user.activePlansCount || user.activePlans || 0) > 0;
+      }
+
+      if (filterType === 'activerefferal') {
+        if (Array.isArray(user.activeReferralNames)) {
+          return user.activeReferralNames.length > 0;
+        }
+        return Number(user.activeReferrals || 0) > 0;
+      }
+
+      return true;
+    });
   };
+
+  const filteredUsers = getFilteredUsers();
 
   return (
     <div className="main-wrapper">
@@ -108,6 +129,33 @@ const CheckUser = () => {
           )}
         </div>
 
+        <div style={{ display: 'flex', gap: '18px', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={filterType === 'all'}
+              onChange={() => setFilterType('all')}
+            />
+            all
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={filterType === 'activeusers'}
+              onChange={() => setFilterType('activeusers')}
+            />
+            activeusers
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={filterType === 'activerefferal'}
+              onChange={() => setFilterType('activerefferal')}
+            />
+            activerefferal
+          </label>
+        </div>
+
         {loading ? (
           <div style={{ textAlign: 'center', padding: '20px' }}>
             <h3>Loading users...</h3>
@@ -118,16 +166,16 @@ const CheckUser = () => {
           </div>
         ) : (
           <div className="user-cards-wrapper">
-            {getFilteredUsers().length === 0 ? (
+            {filteredUsers.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '20px', width: '100%' }}>
                 <p>No users match your search</p>
               </div>
             ) : (
               <>
                 <div style={{ width: '100%', fontSize: '14px', color: '#64748b', marginBottom: '10px' }}>
-                  Showing {getFilteredUsers().length} of {users.length} users
+                  Showing {filteredUsers.length} of {users.length} users
                 </div>
-                {getFilteredUsers().map((user) => (
+                {filteredUsers.map((user) => (
               <div key={user.id} className="user-stats-card">
                 <div className="user-card-head">
                   <div>
@@ -159,35 +207,55 @@ const CheckUser = () => {
                       <span className="user-stat-value">{user.referredByName || user.referredByCode || '—'}</span>
                     </div>
                     <div className="user-stat">
-                      <span className="user-stat-label">Ref names</span>
+                      <span className="user-stat-label">Active referral names</span>
                       <div className="user-referral-names">
-                        {user.referralNames && user.referralNames.length > 0 ? (
-                          user.referralNames.map((name, idx) => (
-                            <span key={`${user.id}-ref-${idx}`} className="user-referral-chip">{name}</span>
+                        {user.activeReferralNames && user.activeReferralNames.length > 0 ? (
+                          user.activeReferralNames.map((name, idx) => (
+                            <span key={`${user.id}-active-ref-${idx}`} className="user-referral-chip">{name}</span>
                           ))
                         ) : (
-                          <span className="user-referral-empty">No referrals yet</span>
+                          <span className="user-referral-empty">No active referrals</span>
                         )}
                       </div>
                     </div>
-                    <div className="user-stat">
-                      <span className="user-stat-label">Active refs</span>
-                      <span className="user-stat-value text-green">{user.activeReferrals || 0}</span>
-                    </div>
+                                       
                   </div>
 
                   <div className="user-card-row">
                     <div className="user-stat">
                       <span className="user-stat-label">Active plans</span>
-                      <span className="user-stat-value">{user.activePlans || 0}</span>
+                      <div className="user-referral-names">
+                        {Array.isArray(user.activePlans) && user.activePlans.length > 0 ? (
+                          user.activePlans.map((planName, idx) => (
+                            <span key={`${user.id}-active-plan-${idx}`} className="user-referral-chip">{planName}</span>
+                          ))
+                        ) : (
+                          <span className="user-referral-empty">No active plans</span>
+                        )}
+                      </div>
                     </div>
                     <div className="user-stat">
-                      <span className="user-stat-label">Balance</span>
-                      <span className="user-stat-value">{formatCurrency(user.balance)}</span>
+                      <span className="user-stat-label">Total Deposit</span>
+                      <span className="user-stat-value">{formatCurrency(user['totalDeposit'])}</span>
+                    </div>
+                    <div className="user-stat">
+                      <span className="user-stat-label">Total Withdrawal</span>
+                      <span className="user-stat-value">{formatCurrency(user['totalWithdrawal'])}</span>
+                    </div>
+                    
+                  </div>
+                  <div className="user-card-row">
+                    <div className="user-stat">
+                      <span className="user-stat-label">Main Balance</span>
+                      <span className="user-stat-value">{formatCurrency(user.mainbalance)}</span>
                     </div>
                     <div className="user-stat">
                       <span className="user-stat-label">Ref balance</span>
                       <span className="user-stat-value text-purple">{formatCurrency(user.referralBalance)}</span>
+                    </div>
+                    <div className="user-stat">
+                      <span className="user-stat-label">Bonus balance</span>
+                      <span className="user-stat-value text-purple">{formatCurrency(user.bonusBalance)}</span>
                     </div>
                   </div>
                 </div>

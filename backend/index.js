@@ -55,79 +55,6 @@ app.use("/api/referral", referralRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/bonus", bonusCodeRoutes);
 
-// Daily profit accrual scheduler
-const startProfitScheduler = () => {
-  const MS_PER_DAY = 24 * 60 * 60 * 1000;
-  const run = async () => {
-    try {
-      const now = new Date();
-      const activePlans = await UserPlan.find({ status: 'active' });
-      for (const plan of activePlans) {
-        const cutoff = plan.endDate && plan.endDate < now ? plan.endDate : now;
-        const last = plan.lastAccruedAt || plan.investmentDate || now;
-        let daysToAccrue = Math.floor((cutoff - last) / MS_PER_DAY);
-        if (daysToAccrue <= 0) {
-          // If end reached or profit cap achieved, mark complete
-          if ((plan.totalEarned || 0) >= (plan.total_profit || 0) || now >= plan.endDate) {
-            plan.status = 'completed';
-            await plan.save();
-          }
-          continue;
-        }
-
-        const remainingProfit = (plan.total_profit || 0) - (plan.totalEarned || 0);
-        const maxDaysByProfit = Math.floor(remainingProfit / (plan.daily_profit || 0));
-        const actualDays = Math.min(daysToAccrue, Math.max(0, maxDaysByProfit));
-        if (actualDays <= 0) {
-          // No profit left to accrue
-          plan.status = 'completed';
-          await plan.save();
-          continue;
-        }
-
-        const increment = actualDays * (plan.daily_profit || 0);
-        await Wallet.updateOne({ userId: plan.userId }, { $inc: { main_balance: increment } });
-        plan.totalEarned = (plan.totalEarned || 0) + increment;
-        plan.lastAccruedAt = new Date(last.getTime() + actualDays * MS_PER_DAY);
-        plan.accrualHistory = plan.accrualHistory || [];
-        plan.accrualHistory.push({ timestamp: new Date(), daysAccrued: actualDays, amountAdded: increment });
-
-        if (plan.totalEarned >= plan.total_profit || plan.lastAccruedAt >= plan.endDate) {
-          plan.status = 'completed';
-        }
-        await plan.save();
-      }
-    } catch (err) {
-      console.error('Profit scheduler error:', err);
-    }
-  };
-
-  const PKT_OFFSET_MINUTES = 5 * 60;
-  const getNextRunDelayMs = () => {
-    const now = new Date();
-    const nowUtcMs = now.getTime() + now.getTimezoneOffset() * 60000;
-    const nowPkt = new Date(nowUtcMs + PKT_OFFSET_MINUTES * 60000);
-    const nextPkt = new Date(nowPkt);
-    nextPkt.setHours(2, 0, 0, 0);
-    if (nextPkt <= nowPkt) {
-      nextPkt.setDate(nextPkt.getDate() + 1);
-    }
-    const nextUtcMs = nextPkt.getTime() - PKT_OFFSET_MINUTES * 60000;
-    return Math.max(0, nextUtcMs - now.getTime());
-  };
-
-  const scheduleNextRun = () => {
-    const delay = getNextRunDelayMs();
-    setTimeout(async () => {
-      await run();
-      scheduleNextRun();
-    }, delay);
-  };
-
-  // Run daily at 2:00 AM Pakistan time (UTC+5)
-  scheduleNextRun();
-};
-
 // SERVING THE FRONTEND
 const buildPath = path.join(__dirname, "..", "frontend", "build");
 
@@ -166,8 +93,7 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await connectDB();
-    // Start profit accrual scheduler after DB connects
-    startProfitScheduler();
+    // Manual collection system used at /collect-income - no automatic scheduler
   } catch (err) {
     console.error("Database connection failed:", err.message);
     // Continue anyway - app can run without DB

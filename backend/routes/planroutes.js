@@ -100,6 +100,32 @@ router.post('/invest-now', verifyToken, async (req, res) => {
 
       await userPlan.save();
 
+      // Update referral status to 'activated' if user was referred
+      try {
+        const User = require('../models/user');
+        const Referral = require('../models/referral');
+        const currentUser = await User.findById(userId);
+        
+        if (currentUser && currentUser.referredBy) {
+          // Find the referrer
+          const referrer = await User.findOne({ referralCode: currentUser.referredBy });
+          if (referrer) {
+            // Update referral status to activated
+            await Referral.updateOne(
+              { 
+                referrer_id: referrer._id, 
+                referred_user_id: userId,
+                status: 'registered'
+              },
+              { $set: { status: 'activated' } }
+            );
+          }
+        }
+      } catch (refError) {
+        console.error('Error updating referral status:', refError);
+        // Don't fail the investment if referral update fails
+      }
+
       // Create notification
       await createNotification(
         userId,
@@ -302,6 +328,59 @@ router.post('/:planId/collect-income', verifyToken, async (req, res) => {
       { $inc: { main_balance: collectedAmount } },
       { upsert: true }
     );
+
+    // Multi-Level Referral Commission System
+    // Level 1: 10%, Level 2: 3%, Level 3: 1%
+    try {
+      const User = require('../models/user');
+      const currentUser = await User.findById(userId);
+      let commissionsDistributed = [];
+
+      if (currentUser && currentUser.referredBy) {
+        // Level 1: Direct Referrer - 10%
+        const level1User = await User.findOne({ referralCode: currentUser.referredBy });
+        if (level1User) {
+          const level1Commission = collectedAmount * 0.10;
+          await Wallet.updateOne(
+            { userId: level1User._id },
+            { $inc: { referral_balance: level1Commission } },
+            { upsert: true }
+          );
+          commissionsDistributed.push({ level: 1, userId: level1User._id, amount: level1Commission });
+
+          // Level 2: Who referred Level 1 - 3%
+          if (level1User.referredBy) {
+            const level2User = await User.findOne({ referralCode: level1User.referredBy });
+            if (level2User) {
+              const level2Commission = collectedAmount * 0.03;
+              await Wallet.updateOne(
+                { userId: level2User._id },
+                { $inc: { referral_balance: level2Commission } },
+                { upsert: true }
+              );
+              commissionsDistributed.push({ level: 2, userId: level2User._id, amount: level2Commission });
+
+              // Level 3: Who referred Level 2 - 1%
+              if (level2User.referredBy) {
+                const level3User = await User.findOne({ referralCode: level2User.referredBy });
+                if (level3User) {
+                  const level3Commission = collectedAmount * 0.01;
+                  await Wallet.updateOne(
+                    { userId: level3User._id },
+                    { $inc: { referral_balance: level3Commission } },
+                    { upsert: true }
+                  );
+                  commissionsDistributed.push({ level: 3, userId: level3User._id, amount: level3Commission });
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (commissionError) {
+      console.error('Error distributing referral commissions:', commissionError);
+      // Don't fail the income collection if commission distribution fails
+    }
 
     // Create notification
     await createNotification(

@@ -107,4 +107,86 @@ router.get('/list', verifyToken, async (req, res) => {
   }
 });
 
+// GET collectible referral bonuses (active referrals not yet collected)
+router.get('/collectible', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user.userId;
+    if (!userId) {
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+
+    // Find all active referrals that haven't been collected yet
+    const collectibleReferrals = await Referral.find({
+      referrer_id: userId,
+      status: 'activated',
+      bonusCollected: false
+    }).populate('referred_user_id', 'name email');
+
+    res.json({
+      count: collectibleReferrals.length,
+      totalAmount: collectibleReferrals.length * 0.8,
+      referrals: collectibleReferrals.map(ref => ({
+        _id: ref._id,
+        name: ref.referred_user_id.name,
+        email: ref.referred_user_id.email,
+        bonus: 0.8
+      }))
+    });
+  } catch (error) {
+    console.error('Collectible referrals error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// POST collect referral bonuses
+router.post('/collect-bonus', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user.userId;
+    if (!userId) {
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+
+    // Find all active referrals that haven't been collected yet
+    const collectibleReferrals = await Referral.find({
+      referrer_id: userId,
+      status: 'activated',
+      bonusCollected: false
+    });
+
+    if (collectibleReferrals.length === 0) {
+      return res.status(400).json({ message: 'No bonuses to collect' });
+    }
+
+    const bonusPerReferral = 0.8;
+    const totalBonus = collectibleReferrals.length * bonusPerReferral;
+
+    // Mark all as collected
+    await Referral.updateMany(
+      {
+        referrer_id: userId,
+        status: 'activated',
+        bonusCollected: false
+      },
+      { $set: { bonusCollected: true } }
+    );
+
+    // Add to wallet bonus balance
+    const Wallet = require('../models/wallet');
+    await Wallet.updateOne(
+      { userId: userId },
+      { $inc: { bonus_balance: totalBonus } },
+      { upsert: true }
+    );
+
+    res.json({
+      message: `Collected $${totalBonus.toFixed(2)} from ${collectibleReferrals.length} active referrals`,
+      collected: collectibleReferrals.length,
+      totalAmount: totalBonus
+    });
+  } catch (error) {
+    console.error('Collect bonus error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

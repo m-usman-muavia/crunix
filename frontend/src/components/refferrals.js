@@ -15,12 +15,16 @@ const Refferrals = () => {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [referralList, setReferralList] = useState([]);
+  const [collectibleBonuses, setCollectibleBonuses] = useState({ count: 0, totalAmount: 0, referrals: [] });
+  const [collecting, setCollecting] = useState(false);
+  const [collectMessage, setCollectMessage] = useState('');
 
   useEffect(() => {
     fetchBalance();
     fetchReferralCode();
     fetchReferralStats();
     fetchReferralList();
+    fetchCollectibleBonuses();
   }, []);
 
   const fetchBalance = async () => {
@@ -138,6 +142,69 @@ const Refferrals = () => {
     });
   };
 
+  const fetchCollectibleBonuses = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/referral/collectible`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch collectible bonuses');
+      }
+
+      const data = await response.json();
+      setCollectibleBonuses(data);
+    } catch (err) {
+      console.error('Error fetching collectible bonuses:', err);
+      setCollectibleBonuses({ count: 0, totalAmount: 0, referrals: [] });
+    }
+  };
+
+  const handleCollectBonus = async () => {
+    if (collectibleBonuses.count === 0) {
+      setCollectMessage('No bonuses to collect');
+      setTimeout(() => setCollectMessage(''), 3000);
+      return;
+    }
+
+    setCollecting(true);
+    setCollectMessage('');
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/referral/collect-bonus`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setCollectMessage(data.message || 'Failed to collect bonuses');
+        setTimeout(() => setCollectMessage(''), 3000);
+        return;
+      }
+
+      setCollectMessage(`✅ ${data.message}`);
+      
+      // Refresh data
+      await fetchBalance();
+      await fetchCollectibleBonuses();
+      
+      setTimeout(() => setCollectMessage(''), 5000);
+    } catch (err) {
+      console.error('Error collecting bonuses:', err);
+      setCollectMessage('Error collecting bonuses. Please try again.');
+      setTimeout(() => setCollectMessage(''), 3000);
+    } finally {
+      setCollecting(false);
+    }
+  };
+
   // Calculate milestone status based on active referrals
   const getMilestoneStatus = (target) => {
     if (activeReferrals >= target) {
@@ -185,13 +252,12 @@ const Refferrals = () => {
 
         <div className="refferrals-section refferrals-section-new">
           <div className="referral-panel">
-            <div className="referral-hero">
               <div className="referral-hero-text">
                 <h3>Invite & Earn</h3>
                 <p>Build your team and earn passive income.</p>
               </div>
-              <div className="referral-hero-chip">10% Commission</div>
-            </div>
+  
+            
 
             <div className="referral-stats-grid">
               <div className="referral-stat-card">
@@ -229,7 +295,12 @@ const Refferrals = () => {
                 </button>
               </div>
               <div className="referral-info-banner">
-                <strong>Level 1 Bonus:</strong> You will receive a 10% commission instantly on your active referrals.
+                <strong>Multi-Level System:</strong>
+                <ul style={{ margin: '8px 0 0 0', paddingLeft: '16px' }}>
+                  <li>Level 1 (Direct): 10% on their daily income</li>
+                  <li>Level 2: 3% on indirect referrals' daily income</li>
+                  <li>Level 3: 1% on 3rd tier referrals' daily income</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -279,6 +350,57 @@ const Refferrals = () => {
 
         <div className="refferrals-milestones-section">
           <h3 className="milestone-main-title">Bonus Milestones</h3>
+
+          {/* Per-Active-Referral Collection Card */}
+          <div className="refferrals-milestones-cards" style={{ marginBottom: '20px' }}>
+            <div className="milestone-card milestone-card-dark" style={{background: '#eaf4ff', border: '2px solid #0055A4', borderRadius: '8px' }} >
+              <div className="milestone-row" style={{ marginBottom: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+                  <span className="milestone-target" style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                    Active Referral Bonus
+                  </span>
+                  <span style={{ 
+                fontSize: '12px'
+              }}>Bonus: Get $0.8 for each active referral (one-time when they purchase a plan)</span>
+                </div>
+                <button
+                  onClick={handleCollectBonus}
+                  disabled={collecting || collectibleBonuses.count === 0}
+                  style={{
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: collectibleBonuses.count > 0 ? '#10b981' : '#6b7280',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    cursor: collectibleBonuses.count > 0 ? 'pointer' : 'not-allowed',
+                    opacity: collecting ? 0.7 : 1,
+                    transition: 'all 0.3s ease',
+                    boxShadow: collectibleBonuses.count > 0 ? '0 4px 6px rgba(0, 51, 102, 0.3)' : 'none'
+                  }}
+                >
+                  {collecting ? 'Collecting...' : collectibleBonuses.count > 0 ? `Collect $${collectibleBonuses.totalAmount.toFixed(2)}` : 'Locked  '}
+                </button>
+              </div>
+              
+              {collectMessage && (
+                <div style={{
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  background: collectMessage.includes('✅') ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                  color: 'white',
+                  fontSize: '13px',
+                  marginTop: '10px',
+                  border: `1px solid ${collectMessage.includes('✅') ? 'rgba(16, 185, 129, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`
+                }}>
+                  {collectMessage}
+                </div>
+              )}
+
+            </div>
+          </div>
+          <h3 className="milestone-main-title" style={{ marginTop: '30px' }}>Team Growth Rewards</h3>
           <div className="refferrals-milestones-cards">
             {milestones.map((item, index) => {
               const progressPercentage = Math.min((item.current / item.target) * 100, 100);
