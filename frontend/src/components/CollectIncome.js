@@ -142,7 +142,8 @@ const CollectIncome = () => {
                 return;
             }
 
-            setCollectMessage({ type: 'success', text: `Collected $${data.collectedAmount || data.amount || 0} successfully!` });
+            const collectedAmount = data.collectedAmount || data.amount || 0;
+            setCollectMessage({ type: 'success', text: `Collected $${collectedAmount} successfully!` });
             
             // Refresh plans after collection
             setTimeout(() => {

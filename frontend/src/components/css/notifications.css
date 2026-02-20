@@ -1,0 +1,165 @@
+.notification-content {
+  padding-bottom: 80px;
+}
+
+.notification-card {
+    text-align: left;
+  background: radial-gradient(120% 140% at 100% 0%, #eef4ff 0%, #ffffff 45%, #f5f7fb 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.notification-card:hover {
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12);
+  transform: translateY(-2px);
+}
+
+.notification-card.unread {
+  background: radial-gradient(120% 140% at 100% 0%, #e0f2ff 0%, #ffffff 45%, #f0f7ff 100%);
+}
+
+.notification-card.read {
+  opacity: 0.9;
+}
+
+.notification-type {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.notification-message {
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.notification-timestamp {
+  font-size: 12px;
+  color: #999;
+  margin-top: 2px;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: white;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.filter-btn:hover {
+  border-color: #0055A4;
+  color: #0055A4;
+}
+
+.filter-btn.active {
+  border: 2px solid #0055A4;
+  background: #e3f2fd;
+  color: #0055A4;
+  font-weight: bold;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  transition: transform 0.3s ease;
+}
+
+.back-button:hover {
+  transform: translateX(-4px);
+}
+
+.notification-delete-btn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  transition: color 0.3s ease;
+}
+
+.notification-delete-btn:hover {
+  color: #d32f2f;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  opacity: 0.3;
+}
+
+.empty-state-title {
+  font-size: 16px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.empty-state-subtitle {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.error-banner {
+  background: #ffebee;
+  color: #d32f2f;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.error-banner button {
+  padding: 8px 16px;
+  background: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+@media (max-width: 480px) {
+  .notification-card {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .filter-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .notification-message {
+    font-size: 14px;
+  }
+}

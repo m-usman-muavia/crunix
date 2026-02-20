@@ -4,7 +4,7 @@ import { faArrowDown, faArrowUp, faChartLine, faCheck, faClock, faCopy, faHeadse
 import { faWhatsapp, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import './css/dashboard.css';
 import './css/plans.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './css/style.css';
 import './css/profile.css';
 import API_BASE_URL from '../config/api';
@@ -13,6 +13,7 @@ import InvestModal from './InvestModal';
 import ErrorModal from './ErrorModal';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
   const [plans, setPlans] = useState([]);
   const [account, setAccount] = useState(null);
@@ -454,9 +455,25 @@ const Dashboard = () => {
                 <a href="https://www.facebook.com/share/1ATnDDf9HV/" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="Facebook">
                   <FontAwesomeIcon style={{ fontSize: '22px' }} icon={faFacebook} />
                 </a>
-                <a href="https://chat.whatsapp.com/BxU2NKIDvxvJVny2czRVAo?mode=gi_t" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="Customer care">
+                <button
+                  type="button"
+                  onClick={() => navigate('/notifications')}
+                  className="helpcenter-button"
+                  aria-label="Notifications"
+                  style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '0px 3px', fontSize: '18px', fontWeight: 'bold', position: 'relative' }}
+                >
                   <FontAwesomeIcon style={{ fontSize: '20px', paddingLeft: '10px' }} icon={faBell} />
-                </a>
+                  <span style={{
+                    position: 'absolute',
+                    top: '-5px',
+                    right: '5px',
+                    width: '5px',
+                    height: '5px',
+                    backgroundColor: 'rgb(255, 107, 107)',
+                    borderRadius: '50%',
+                    boxShadow: 'rgba(255, 107, 107, 0.2) 0px 0px 0px 2px'
+                  }} />
+                </button>
               </div>
             </div>
         

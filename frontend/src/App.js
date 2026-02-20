@@ -27,6 +27,7 @@ import BonusGenerator from './components/admin/bonus';
 import DashboardImage from './components/admin/dashboardimage';
 import ActivePlans from './components/ActivePlans';
 import CollectIncome from './components/CollectIncome';
+import Notifications from './components/notifications';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route path="/deposithistory" element={<ProtectedRoute><DepositHistory /></ProtectedRoute>} />
         <Route path="/refferrals" element={<ProtectedRoute><Refferrals /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
         <Route path="/admin/addplans" element={<ProtectedRoute><AddPlan /></ProtectedRoute>} />
         <Route path="/admin/accounts" element={<ProtectedRoute><Accounts /></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute><CheckUser /></ProtectedRoute>} />
