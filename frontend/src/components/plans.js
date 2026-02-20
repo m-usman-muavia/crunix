@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faChartLine,faBell } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import InvestModal from './InvestModal';
 import ErrorModal from './ErrorModal';
 import './css/dashboard.css';
@@ -10,6 +11,7 @@ import API_BASE_URL from '../config/api';
 import BottomNav from './BottomNav';
 
 const Plans = () => {
+  const navigate = useNavigate();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -202,6 +204,10 @@ const Plans = () => {
     }
   };
 
+  const handleNotificationClick = () => {
+    navigate('/profile', { state: { activeTab: 'notification' } });
+  };
+
   return (
     <div className="main-wrapper">
       <div className="main-container">
@@ -215,7 +221,18 @@ const Plans = () => {
         />
 
         {/* Top Header Section */}
-        <div className="deposit-header">Investment Plans</div>
+        <div className="deposit-header" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div>Investment Plans</div>
+          {/* <button
+            type="button"
+            className="helpcenter-button"
+            aria-label="Notifications"
+            onClick={handleNotificationClick}
+            style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)' }}
+          >
+            <FontAwesomeIcon style={{fontSize:'20px'}} icon={faBell} />
+          </button> */}
+        </div>
         
         <div className="plan-image">
           <img 

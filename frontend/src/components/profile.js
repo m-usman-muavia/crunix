@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faCheckCircle, faPause, faPlay, faTrophy, faBox } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import './css/dashboard.css';
 import './css/style.css';
 import './css/profile.css';
@@ -31,6 +31,13 @@ const Profile = () => {
     const [notifLoading, setNotifLoading] = useState(false);
     const [notifError, setNotifError] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.activeTab) {
+            setActiveTab(location.state.activeTab);
+        }
+    }, [location.state]);
 
     // Get user info on component mount
     useEffect(() => {

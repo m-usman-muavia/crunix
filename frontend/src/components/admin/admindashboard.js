@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faClock, faImage } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import '../css/dashboard.css';
 import { Link } from 'react-router-dom';
@@ -49,6 +49,10 @@ const Dashboard = () => {
           <Link to="/admin/bonus" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
             <span className="btn-icon">⏱️</span>
             bonus
+          </Link>
+          <Link to="/admin/dashboard-image" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span className="btn-icon"><FontAwesomeIcon icon={faImage} /></span>
+            dashboard image
           </Link>
         </div>
 

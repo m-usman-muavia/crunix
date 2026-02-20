@@ -24,6 +24,7 @@ import CheckWithdrawals from './components/admin/checkwithdrawals';
 import CheckUser from './components/admin/checkusers';
 import AccrualHistory from './components/admin/accrualhistory';
 import BonusGenerator from './components/admin/bonus';
+import DashboardImage from './components/admin/dashboardimage';
 import ActivePlans from './components/ActivePlans';
 import CollectIncome from './components/CollectIncome';
 
@@ -54,6 +55,7 @@ function App() {
         <Route path="/admin/accounts" element={<ProtectedRoute><Accounts /></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute><CheckUser /></ProtectedRoute>} />
         <Route path="/admin/" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/admin/dashboard-image" element={<ProtectedRoute><DashboardImage /></ProtectedRoute>} />
         <Route path="/admin/accrual-history" element={<ProtectedRoute><AccrualHistory /></ProtectedRoute>} />
         <Route path="/check-deposits" element={<ProtectedRoute><CheckDeposits /></ProtectedRoute>} />
         <Route path="/check-withdrawals" element={<ProtectedRoute><CheckWithdrawals /></ProtectedRoute>} />

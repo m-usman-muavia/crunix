@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faArrowUp, faChartLine, faCheck, faClock, faCopy, faHeadset, faHouse, faClipboardList, faUser, faUsers, faCoins, faGift } from '@fortawesome/free-solid-svg-icons';
-import { faWhatsapp, faFacebook, faTelegram } from '@fortawesome/free-brands-svg-icons';
+import { faArrowDown, faArrowUp, faChartLine, faCheck, faClock, faCopy, faHeadset, faHouse, faClipboardList, faUser, faUsers, faCoins, faGift, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faWhatsapp, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import './css/dashboard.css';
 import './css/plans.css';
 import { Link } from 'react-router-dom';
@@ -36,6 +36,9 @@ const Dashboard = () => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [countdowns, setCountdowns] = useState({});
+  const [dashboardImage, setDashboardImage] = useState('');
+  const [sliderImages, setSliderImages] = useState([]);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   useEffect(() => {
     fetchBalance();
@@ -45,6 +48,7 @@ const Dashboard = () => {
     fetchUser();
     fetchReferralStats();
     fetchTotalWithdrawn();
+    fetchDashboardImage();
   }, []);
 
   // Countdown timer effect
@@ -79,6 +83,17 @@ const Dashboard = () => {
 
     return () => clearInterval(interval);
   }, [plans]);
+
+  // Auto-rotate slider effect
+  useEffect(() => {
+    if (sliderImages.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlideIndex((prev) => (prev + 1) % sliderImages.length);
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [sliderImages.length]);
 
   const fetchBalance = async () => {
     try {
@@ -222,6 +237,40 @@ const Dashboard = () => {
     if (userData) {
       setUser(JSON.parse(userData));
     }
+  };
+
+  const fetchDashboardImage = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/dashboard-image`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+      const images = data?.data?.images || [];
+      setSliderImages(images);
+      setDashboardImage('');
+      setCurrentSlideIndex(0);
+    } catch (err) {
+      console.error('Error fetching dashboard images:', err);
+    }
+  };
+
+  const handlePrevSlide = () => {
+    setCurrentSlideIndex((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+  };
+
+  const handleNextSlide = () => {
+    setCurrentSlideIndex((prev) => (prev + 1) % sliderImages.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlideIndex(index);
   };
 
   const resolveImageUrl = (imagePath) => {
@@ -403,32 +452,126 @@ const Dashboard = () => {
                   <FontAwesomeIcon style={{fontSize:'24px'}} icon={faWhatsapp} />
                 </a>
                 <a href="https://www.facebook.com/share/1ATnDDf9HV/" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="Facebook">
-                  <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faFacebook} />
+                  <FontAwesomeIcon style={{ fontSize: '22px' }} icon={faFacebook} />
                 </a>
                 <a href="https://chat.whatsapp.com/BxU2NKIDvxvJVny2czRVAo?mode=gi_t" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="Customer care">
-                  <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faHeadset} />
+                  <FontAwesomeIcon style={{ fontSize: '20px', paddingLeft: '10px' }} icon={faBell} />
                 </a>
               </div>
             </div>
         
-        <div className="plan-image">
-          <img 
-            src="/image2.webp" 
-            alt="Investment Plans" 
-            style={{ 
-              width: '100%', 
-              height: '200px', 
-              objectFit: 'cover',
-              borderRadius: '0px 0px 15px 15px',
-              borderBottom: '2px solid #000000',
-            }} 
-          />
+        <div className="plan-image" style={{
+          position: 'relative',
+          width: '100%',
+          height: '200px',
+          overflow: 'hidden',
+          borderRadius: '0px 0px 15px 15px',
+          borderBottom: '2px solid #000000'
+        }}>
+          {sliderImages.length > 0 ? (
+            <>
+              <img
+                src={sliderImages[currentSlideIndex]?.image_path || '/image2.webp'}
+                alt={`Slide ${currentSlideIndex + 1}`}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  transition: 'opacity 0.5s ease-in-out'
+                }}
+              />
+              {sliderImages.length > 1 && (
+                <>
+                  {/* Previous Button */}
+                  <button
+                    onClick={handlePrevSlide}
+                    style={{
+                      position: 'absolute',
+                      left: '10px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'rgba(0, 0, 0, 0.5)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 12px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '18px',
+                      zIndex: 10
+                    }}
+                  >
+                    ❮
+                  </button>
+
+                  {/* Next Button */}
+                  <button
+                    onClick={handleNextSlide}
+                    style={{
+                      position: 'absolute',
+                      right: '10px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'rgba(0, 0, 0, 0.5)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 12px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '18px',
+                      zIndex: 10
+                    }}
+                  >
+                    ❯
+                  </button>
+
+                  {/* Dots Indicator */}
+                  {/* <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '10px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      display: 'flex',
+                      gap: '8px',
+                      zIndex: 10
+                    }}
+                  >
+                    {sliderImages.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        style={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                          border: 'none',
+                          background: index === currentSlideIndex ? 'white' : 'rgba(255, 255, 255, 0.5)',
+                          cursor: 'pointer',
+                          transition: 'background 0.3s'
+                        }}
+                      />
+                    ))}
+                  </div> */}
+                </>
+              )}
+            </>
+          ) : (
+            <img
+              src="/image2.webp"
+              alt="Investment Plans"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          )}
         </div>
                  <header className="dashboard-header">
 
           <div className="dashboard-balance-card">
             <div className="dashboard-main-balance">
-              <p className="dashboard-main-balance-label">Total  Assets</p>
+              <p className="dashboard-main-balance-label">Total Assets</p>
               <h2 className="dashboard-main-balance-amount">$ {balance.toFixed(2)}</h2>
             </div>
             <div className="dashboard-main-balance">

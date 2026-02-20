@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const { register, login, verifyOTP, getAdminAccounts, addAdminAccount, updateAdminAccount, deleteAdminAccount, changePassword, forgotPassword, verifyForgotOTP, resetPassword, getAdminUsersWithReferrals } = require('../controllers/authcontrollers');
 const { adminPlans, updateAdminPlan, deleteAdminPlan } = require('../controllers/plancontrollers');
+const { getDashboardImages, addDashboardImage, deleteDashboardImage } = require('../controllers/dashboardimagecontrollers');
 const verifyToken = require('../middleware/auth');
 
 // Setup multer for plan image uploads (memory storage for Cloudinary)
@@ -36,6 +37,10 @@ router.route('/adminaccounts')
 router.route('/adminaccounts/:id')
   .patch(accountUpload.single('qr_image'), updateAdminAccount)
   .delete(deleteAdminAccount);
+
+router.get('/dashboard-image', verifyToken, getDashboardImages);
+router.post('/admin/dashboard-image', verifyToken, upload.single('image'), addDashboardImage);
+router.delete('/admin/dashboard-image/:imageId', verifyToken, deleteDashboardImage);
   
 
 module.exports = router;
