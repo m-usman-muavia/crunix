@@ -49,7 +49,7 @@ exports.createDeposit = async (req, res) => {
     await createNotification(
       userId,
       'deposit_request_sent',
-      `Your deposit request of Rs ${deposit_amount} has been sent for verification. Your transaction ID is ${transaction_id}.`,
+      `Your deposit request of $${deposit_amount} has been sent for verification. Your transaction ID is ${transaction_id}.`,
       deposit_amount,
       { depositId: deposit._id }
     );
@@ -125,7 +125,7 @@ exports.approveDeposit = async (req, res) => {
     await createNotification(
       userId,
       'deposit_approved',
-      `Your deposit of Rs ${deposit_amount} has been approved and added to your wallet.`,
+      `Your deposit of $${deposit_amount} has been approved and added to your wallet.`,
       deposit_amount,
       { depositId: deposit._id }
     );
@@ -162,7 +162,7 @@ exports.rejectDeposit = async (req, res) => {
     await createNotification(
       deposit.userId,
       'deposit_rejected',
-      `Your deposit request of Rs ${deposit.deposit_amount} has been rejected. Reason: ${reason || 'Invalid details'}`,
+      `Your deposit request of $${deposit.deposit_amount} has been rejected. Reason: ${reason || 'Invalid details'}`,
       deposit.deposit_amount,
       { depositId: deposit._id }
     );

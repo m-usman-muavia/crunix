@@ -28,7 +28,7 @@ body {
   width: 100%;
   max-width: 400px;
   min-height: 100vh;
-  background: url('../../../public/loginbkimage.png');
+  background: url('../../../public/loginimage.webp');
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

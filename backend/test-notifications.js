@@ -53,28 +53,28 @@ const createTestNotifications = async () => {
             {
                 userId: user._id,
                 type: 'withdrawal_request_sent',
-                message: 'Your withdrawal request of Rs 1000 via Bank Transfer has been submitted for processing.',
+                message: 'Your withdrawal request of $1000 via Bank Transfer has been submitted for processing.',
                 amount: 1000,
                 metadata: { withdrawalId: 'test789' }
             },
             {
                 userId: user._id,
                 type: 'withdrawal_approved',
-                message: 'Your withdrawal of Rs 1000 has been approved and processed to your account.',
+                message: 'Your withdrawal of $1000 has been approved and processed to your account.',
                 amount: 1000,
                 metadata: { withdrawalId: 'test789' }
             },
             {
                 userId: user._id,
                 type: 'withdrawal_rejected',
-                message: 'Your withdrawal request of Rs 500 has been rejected due to insufficient funds.',
+                message: 'Your withdrawal request of $500 has been rejected due to insufficient funds.',
                 amount: 500,
                 metadata: { withdrawalId: 'test790' }
             },
             {
                 userId: user._id,
                 type: 'plan_activated',
-                message: 'You have successfully activated the Premium Plan with Rs 3000 investment. Enjoy daily profits!',
+                message: 'You have successfully activated the Premium Plan with $3000 investment. Enjoy daily profits!',
                 amount: 3000,
                 metadata: { planId: 'test456' }
             },
@@ -95,21 +95,21 @@ const createTestNotifications = async () => {
             {
                 userId: user._id,
                 type: 'plan_completed',
-                message: 'Congratulations! Your Premium Plan has completed. Total earned: Rs 4500',
+                message: 'Congratulations! Your Premium Plan has completed. Total earned: $4500',
                 amount: 4500,
                 metadata: { planId: 'test456' }
             },
             {
                 userId: user._id,
                 type: 'daily_income',
-                message: 'You have earned Rs 150 as daily income from your active Premium Plan.',
+                message: 'You have earned $150 as daily income from your active Premium Plan.',
                 amount: 150,
                 metadata: { planId: 'test456' }
             },
             {
                 userId: user._id,
                 type: 'daily_income',
-                message: 'You have earned Rs 200 as daily income from your active Gold Plan.',
+                message: 'You have earned $200 as daily income from your active Gold Plan.',
                 amount: 200,
                 metadata: { planId: 'test457' }
             },
@@ -123,14 +123,14 @@ const createTestNotifications = async () => {
             {
                 userId: user._id,
                 type: 'referral_earning',
-                message: 'You earned Rs 300 (10% commission) from your referral\'s Rs 3000 plan investment.',
+                message: 'You earned $300 (10% commission) from your referral\'s $3000 plan investment.',
                 amount: 300,
                 metadata: { referralId: 'test999' }
             },
             {
                 userId: user._id,
                 type: 'referral_earning',
-                message: 'You earned Rs 500 (10% commission) from your referral\'s Rs 5000 deposit.',
+                message: 'You earned $500 (10% commission) from your referral\'s $5000 deposit.',
                 amount: 500,
                 metadata: { referralId: 'test1000' }
             }
@@ -164,7 +164,7 @@ const createTestNotifications = async () => {
             const emoji = typeEmoji[notif.type] || '📬';
             console.log(`${index + 1}. ${emoji} [${notif.type}]`);
             console.log(`   Message: ${notif.message}`);
-            if (notif.amount) console.log(`   Amount: Rs ${notif.amount}`);
+            if (notif.amount) console.log(`   Amount: $${notif.amount}`);
             console.log('');
         });
         console.log('═══════════════════════════════════════════════════════════════');

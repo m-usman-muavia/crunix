@@ -130,7 +130,7 @@ router.post('/invest-now', verifyToken, async (req, res) => {
       await createNotification(
         userId,
         'plan_activated',
-        `You have successfully activated the ${plan.name} plan with Rs ${plan.investment_amount} investment.`,
+        `You have successfully activated the ${plan.name} plan with $${plan.investment_amount} investment.`,
         plan.investment_amount,
         { planId: plan._id, userPlanId: userPlan._id }
       );
@@ -463,7 +463,7 @@ router.post('/force-accrue', verifyToken, async (req, res) => {
             await Notification.create({
               userId: parentUser._id,
               type: 'referral_earning',
-              message: `You earned Rs ${commission.toFixed(2)} (10% commission) from your referral's daily income.`,
+              message: `You earned $${commission.toFixed(2)} (10% commission) from your referral's daily income.`,
               amount: commission
             });
           }

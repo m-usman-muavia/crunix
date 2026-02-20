@@ -64,7 +64,7 @@ exports.createWithdrawal = async (req, res) => {
     await createNotification(
       userId,
       'withdrawal_request_sent',
-      `Your withdrawal request of Rs ${amount} via ${method} has been submitted for processing.`,
+      `Your withdrawal request of $${amount} via ${method} has been submitted for processing.`,
       amount,
       { withdrawalId: withdrawal._id }
     );
@@ -163,7 +163,7 @@ exports.approveWithdrawal = async (req, res) => {
     await createNotification(
       userId,
       'withdrawal_approved',
-      `Your withdrawal of Rs ${amount} has been approved and processed.`,
+      `Your withdrawal of $${amount} has been approved and processed.`,
       amount,
       { withdrawalId: withdrawal._id }
     );
@@ -200,7 +200,7 @@ exports.rejectWithdrawal = async (req, res) => {
     await createNotification(
       withdrawal.userId,
       'withdrawal_rejected',
-      `Your withdrawal request of Rs ${withdrawal.amount} has been rejected.`,
+      `Your withdrawal request of $${withdrawal.amount} has been rejected.`,
       withdrawal.amount,
       { withdrawalId: withdrawal._id }
     );

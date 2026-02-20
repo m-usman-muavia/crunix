@@ -565,7 +565,7 @@ const Profile = () => {
                                         {notif.amount && (
                                                 <div className="tx-amount">
                                                     <div className="tx-amount-deposit">
-                                                        Rs {formatAmount(notif.amount)}
+                                                        ${formatAmount(notif.amount)}
                                                     </div>
                                                 </div>
                                             )}
@@ -631,7 +631,7 @@ const Profile = () => {
 
                                                                     <div className="tx-amount">
                                                                         <div className={tx.type === 'deposit' ? 'tx-amount-deposit' : 'tx-amount-withdrawal'}>
-                                                                            {tx.type === 'deposit' ? '+' : '-'}Rs {formatAmount(tx.amount)}
+                                                                            {tx.type === 'deposit' ? '+' : '-'}${formatAmount(tx.amount)}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -711,15 +711,15 @@ const Profile = () => {
                                             <div className="plan-investment">
                                                 <div className="date-item1">
                                                     <span className="date-label">Invested</span>
-                                                    <span className="date-value">Rs {plan.investmentAmount || '01'}</span>
+                                                    <span className="date-value">${plan.investmentAmount || '01'}</span>
                                                 </div>
                                                 <div className="date-item">
                                                     <span className="date-label">Daily Income</span>
-                                                    <span className="date-value">Rs {plan.dailyProfit || '01'}</span>
+                                                    <span className="date-value">${plan.dailyProfit || '01'}</span>
                                                 </div>
                                                 <div className="date-item">
                                                     <span className="date-label">Total Return</span>
-                                                    <span className="date-value">Rs {plan.totalProfit || '01'}</span>
+                                                    <span className="date-value">${plan.totalProfit || '01'}</span>
                                                 </div>
                                             </div>
 
@@ -740,11 +740,11 @@ const Profile = () => {
                                             <div className="plan-dates">
                                                 <div className="date-item1">
                                                     <span className="date-label">Earned</span>
-                                                    <span className="date-value">Rs {formatAmount(plan.currentEarnings || 0)}</span>
+                                                    <span className="date-value">${formatAmount(plan.currentEarnings || 0)}</span>
                                                 </div>
                                                 <div className="date-item">
                                                     <span className="date-label">Remaining Profit</span>
-                                                    <span className="date-value">Rs {formatAmount((plan.totalProfit || 0) - (plan.currentEarnings || 0))}</span>
+                                                    <span className="date-value">${formatAmount((plan.totalProfit || 0) - (plan.currentEarnings || 0))}</span>
                                                 </div>
                                                 
                                             </div>
