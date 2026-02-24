@@ -643,8 +643,8 @@ const Dashboard = () => {
               <p className="dashboard-refferal-text">Daily Earnings</p>
             </div>
           </Link>
-          <Link to="#" className="dashboard-refferal-container">
-            <span className="new-badge">Soon</span>
+          <Link to="/crx-digital" className="dashboard-refferal-container">
+            <span className="new-badge">NEW</span>
             <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faGift} />  
             <div className="dashboard-refferal-content">
               <h2 className="dashboard-refferal-header">CRX</h2>

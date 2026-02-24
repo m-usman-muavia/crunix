@@ -25,9 +25,12 @@ import CheckUser from './components/admin/checkusers';
 import AccrualHistory from './components/admin/accrualhistory';
 import BonusGenerator from './components/admin/bonus';
 import DashboardImage from './components/admin/dashboardimage';
+import CrxSettings from './components/admin/crxsettings';
+import BroadcastNotification from './components/admin/broadcastnotification';
 import ActivePlans from './components/ActivePlans';
 import CollectIncome from './components/CollectIncome';
 import Notifications from './components/notifications';
+import CRXDigital from './components/CRXDigital';
 
 function App() {
   return (
@@ -43,6 +46,7 @@ function App() {
         <Route path="/plans" element={<ProtectedRoute><Plan /></ProtectedRoute>} />
         <Route path="/active-plans" element={<ProtectedRoute><ActivePlans /></ProtectedRoute>} />
         <Route path="/collect-income" element={<ProtectedRoute><CollectIncome /></ProtectedRoute>} />
+        <Route path="/crx-digital" element={<ProtectedRoute><CRXDigital /></ProtectedRoute>} />
         <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
         <Route path="/depositconfirm" element={<ProtectedRoute><DepositConfirm /></ProtectedRoute>} />
         <Route path="/withdrawal" element={<ProtectedRoute><Withdrawal /></ProtectedRoute>} />
@@ -58,6 +62,8 @@ function App() {
         <Route path="/admin/users" element={<ProtectedRoute><CheckUser /></ProtectedRoute>} />
         <Route path="/admin/" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
         <Route path="/admin/dashboard-image" element={<ProtectedRoute><DashboardImage /></ProtectedRoute>} />
+        <Route path="/admin/crx" element={<ProtectedRoute><CrxSettings /></ProtectedRoute>} />
+        <Route path="/admin/notifications" element={<ProtectedRoute><BroadcastNotification /></ProtectedRoute>} />
         <Route path="/admin/accrual-history" element={<ProtectedRoute><AccrualHistory /></ProtectedRoute>} />
         <Route path="/check-deposits" element={<ProtectedRoute><CheckDeposits /></ProtectedRoute>} />
         <Route path="/check-withdrawals" element={<ProtectedRoute><CheckWithdrawals /></ProtectedRoute>} />

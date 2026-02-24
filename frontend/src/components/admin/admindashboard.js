@@ -54,6 +54,14 @@ const Dashboard = () => {
             <span className="btn-icon"><FontAwesomeIcon icon={faImage} /></span>
             dashboard image
           </Link>
+          <Link to="/admin/crx" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span className="btn-icon">📈</span>
+            CRX Price
+          </Link>
+          <Link to="/admin/notifications" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span className="btn-icon">🔔</span>
+            Notifications
+          </Link>
         </div>
 
         {/* Bottom Navigation */}

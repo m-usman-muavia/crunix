@@ -63,7 +63,7 @@ const Notifications = () => {
     try {
       const authToken = localStorage.getItem('authToken');
       const response = await fetch(`${API_BASE_URL}/api/notifications/${notificationId}/read`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ const Notifications = () => {
         // Update local state
         setNotifications(notifs =>
           notifs.map(notif =>
-            notif._id === notificationId ? { ...notif, is_read: true } : notif
+            notif._id === notificationId ? { ...notif, read: true, is_read: true } : notif
           )
         );
       }

@@ -22,7 +22,8 @@ const notificationSchema = new mongoose.Schema({
             'daily_income',
             'referral_earning',
             'referral_signup',
-            'general'
+            'general',
+            'admin'
         ],
         required: true
     },
