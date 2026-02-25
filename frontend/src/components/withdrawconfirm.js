@@ -91,8 +91,8 @@ const Withdrawal = () => {
     }
 
     const amount = parseFloat(formData.amount);
-    if (isNaN(amount) || amount < 1) {
-      setMessage('Minimum withdrawal amount is $ 1');
+    if (isNaN(amount) || amount < 3) {
+      setMessage('Minimum withdrawal amount is $ 3');
       setMessageType('error');
       setShowErrorModal(true);
       return;

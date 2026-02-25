@@ -159,7 +159,7 @@ const Withdrawal = () => {
           <li>$1.00 ≈ Rs 300</li>
           <li>5% handling fee will be charged</li>
           <li>No withdrawal Fee on USDT</li>
-          <li>Minimum withdrawal $1</li>
+          <li>Minimum withdrawal $3</li>
           <li>Use only official channels</li>
           <li>Transfer exact amount shown</li>
         </ul>

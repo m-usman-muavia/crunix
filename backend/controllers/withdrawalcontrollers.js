@@ -31,8 +31,8 @@ exports.createWithdrawal = async (req, res) => {
     }
 
     // Validate minimum withdrawal
-    if (!amount || amount < 1) {
-      return res.status(400).json({ message: 'Minimum withdrawal is $1' });
+    if (!amount || amount < 3) {
+      return res.status(400).json({ message: 'Minimum withdrawal is $3' });
     }
 
     if (!account_number) {
