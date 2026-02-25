@@ -15,7 +15,7 @@ const Withdrawal = () => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const quickAmounts = [1, 5, 10, 25, 50];
+  const quickAmounts = [3, 10, 25, 50, 100];
 
   useEffect(() => {
     fetchWallet();
