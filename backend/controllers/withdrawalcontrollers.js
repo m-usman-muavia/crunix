@@ -122,38 +122,6 @@ exports.approveWithdrawal = async (req, res) => {
 
     const { userId, amount } = withdrawal;
 
-    // Deduct from wallet (total balance)
-    const wallet = await Wallet.findOne({ userId });
-    if (!wallet) {
-      return res.status(404).json({ message: 'Wallet not found' });
-    }
-
-    const totalBalance = (wallet.main_balance || 0) + (wallet.referral_balance || 0) + (wallet.bonus_balance || 0);
-    if (totalBalance < amount) {
-      return res.status(400).json({ message: 'Insufficient wallet balance' });
-    }
-
-    // Deduct from balances in order: referral -> bonus -> main
-    let remaining = amount;
-    
-    if (wallet.referral_balance > 0) {
-      const deductFromReferral = Math.min(wallet.referral_balance, remaining);
-      wallet.referral_balance -= deductFromReferral;
-      remaining -= deductFromReferral;
-    }
-    
-    if (remaining > 0 && wallet.bonus_balance > 0) {
-      const deductFromBonus = Math.min(wallet.bonus_balance, remaining);
-      wallet.bonus_balance -= deductFromBonus;
-      remaining -= deductFromBonus;
-    }
-    
-    if (remaining > 0) {
-      wallet.main_balance -= remaining;
-    }
-    
-    await wallet.save();
-
     // Update withdrawal status
     withdrawal.status = 'approved';
     withdrawal.approved_at = new Date();
@@ -170,8 +138,7 @@ exports.approveWithdrawal = async (req, res) => {
 
     res.status(200).json({ 
       message: 'Withdrawal approved successfully',
-      withdrawal,
-      wallet
+      withdrawal
     });
   } catch (err) {
     console.error('Approve withdrawal error:', err);

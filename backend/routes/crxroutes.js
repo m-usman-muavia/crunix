@@ -275,4 +275,32 @@ router.post('/admin/price', verifyToken, async (req, res) => {
   }
 });
 
+router.get('/admin/stats', verifyToken, async (req, res) => {
+  try {
+    if (!isAdminRequest(req)) {
+      return res.status(403).json({ message: 'Only admin can view CRX stats' });
+    }
+
+    const totals = await CrxTransaction.aggregate([
+      { $match: { type: 'BUY' } },
+      {
+        $group: {
+          _id: null,
+          total_crx_purchased: { $sum: '$crx_amount' },
+          total_usd_spent: { $sum: '$usd_amount' }
+        }
+      }
+    ]);
+
+    const stats = totals[0] || { total_crx_purchased: 0, total_usd_spent: 0 };
+
+    return res.json({
+      total_crx_purchased: roundCrx(stats.total_crx_purchased || 0),
+      total_usd_spent: roundUsd(stats.total_usd_spent || 0)
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

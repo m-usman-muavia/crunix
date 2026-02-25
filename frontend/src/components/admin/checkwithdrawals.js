@@ -46,9 +46,10 @@ const CheckWithdrawals = () => {
   };
 
   const handleApprove = async (withdrawalId) => {
-    if (!window.confirm('Approve this withdrawal? Amount will be deducted from user wallet.')) return;
+    if (!window.confirm('Approve this withdrawal?')) return;
 
     setProcessing(withdrawalId);
+    setError('');
     try {
       const response = await fetch(`${API_BASE_URL}/api/withdrawals/approve/${withdrawalId}`, {
         method: 'PUT',
@@ -59,10 +60,18 @@ const CheckWithdrawals = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to approve withdrawal');
+        let errorMessage = 'Failed to approve withdrawal';
+        try {
+          const errorData = await response.json();
+          if (errorData?.message) {
+            errorMessage = errorData.message;
+          }
+        } catch (parseError) {
+        }
+        throw new Error(errorMessage);
       }
 
-      setSuccessMessage('Withdrawal approved successfully! Amount deducted from user wallet.');
+      setSuccessMessage('Withdrawal approved successfully!');
       fetchWithdrawals();
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {

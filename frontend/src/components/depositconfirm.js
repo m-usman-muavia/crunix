@@ -41,7 +41,7 @@ const DepositConfirm = () => {
   // USDT TRC20 static details
   const usdtDetails = {
     qrImagePath: 'InternationalQRcode.jpeg',
-    tillId: 'TAbBYea4sh7f9RZRKE26JgtcxpoMfbyYR3'
+    tillId: 'TR9mrr8vnRJxcifijkHHRwAQcQMCWCi1Pv'
   };
 
   useEffect(() => {

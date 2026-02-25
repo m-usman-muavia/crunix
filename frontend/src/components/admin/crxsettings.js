@@ -10,6 +10,10 @@ const CrxSettings = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [market, setMarket] = useState(null);
+  const [stats, setStats] = useState({
+    total_crx_purchased: 0,
+    total_usd_spent: 0
+  });
   const [form, setForm] = useState({
     price: '',
     expected_rise_percent: '',
@@ -55,8 +59,32 @@ const CrxSettings = () => {
     }
   };
 
+  const fetchAdminStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/crx/admin/stats`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      const data = await parseJsonSafe(response);
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch CRX stats');
+      }
+
+      setStats({
+        total_crx_purchased: Number(data.total_crx_purchased || 0),
+        total_usd_spent: Number(data.total_usd_spent || 0)
+      });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   useEffect(() => {
     fetchMarket();
+    fetchAdminStats();
   }, []);
 
   const handleSubmit = async (event) => {
@@ -87,6 +115,7 @@ const CrxSettings = () => {
 
       setSuccess('CRX price updated successfully.');
       await fetchMarket();
+      await fetchAdminStats();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -100,6 +129,15 @@ const CrxSettings = () => {
     <div className="main-wrapper">
       <div className="main-container" style={{ paddingBottom: 20 }}>
         <div className="deposit-header">CRX Admin</div>
+
+        <div className="addplans-section" style={{ marginTop: 12 }}>
+          <div className="addplans-card">
+            <h3 className="addplans-header">CRX Purchase Summary</h3>
+            <p style={{ margin: '8px 0' }}>
+              Total CRX Purchased by Users: <strong>{Number(stats.total_crx_purchased || 0).toFixed(6)} CRX</strong>
+            </p>
+          </div>
+        </div>
 
         <div className="addplans-section">
           <div className="addplans-card">
