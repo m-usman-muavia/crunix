@@ -14,12 +14,58 @@ const Withdrawal = () => {
   const [selectedChannel, setSelectedChannel] = useState('jazzcash');
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSundayBlockModal, setIsSundayBlockModal] = useState(false);
+  const [countdownText, setCountdownText] = useState('');
 
   const quickAmounts = [3, 10, 25, 50, 100];
 
   useEffect(() => {
     fetchWallet();
   }, []);
+
+  useEffect(() => {
+    if (!isSundayBlockModal || !errorModalOpen) {
+      return;
+    }
+
+    const getNextMondayEightAM = () => {
+      const now = new Date();
+      const target = new Date(now);
+      const day = now.getDay();
+      const daysUntilMonday = day === 0 ? 1 : (8 - day) % 7;
+      target.setDate(now.getDate() + daysUntilMonday);
+      target.setHours(8, 0, 0, 0);
+      if (daysUntilMonday === 0 && now >= target) {
+        target.setDate(target.getDate() + 7);
+      }
+      return target;
+    };
+
+    const formatCountdown = (milliseconds) => {
+      if (milliseconds <= 0) {
+        return '0h 0m 0s';
+      }
+      const totalSeconds = Math.floor(milliseconds / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return `${hours}h ${minutes}m ${seconds}s`;
+    };
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const target = getNextMondayEightAM();
+      const remaining = target.getTime() - now.getTime();
+      const countdown = formatCountdown(remaining);
+      setCountdownText(countdown);
+      setErrorMessage(`Withdrawals are closed on Sunday. They will begin again on Monday morning at 8 a.m. Countdown: ${countdown}`);
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [isSundayBlockModal, errorModalOpen]);
 
   const fetchWallet = async () => {
     try {
@@ -52,6 +98,16 @@ const Withdrawal = () => {
   };
 
   const handleWithdraw = () => {
+    const today = new Date();
+    if (today.getDay() === 0) {
+      setIsSundayBlockModal(true);
+      setErrorModalOpen(true);
+      setErrorMessage(`Withdrawals are closed on Sunday. They will begin again on Monday morning at 8 a.m. Countdown: ${countdownText || 'calculating...'}`);
+      return;
+    }
+
+    setIsSundayBlockModal(false);
+
     if (!amount || parseFloat(amount) <= 0) {
       setErrorMessage('Please enter a valid amount');
       setErrorModalOpen(true);
@@ -72,8 +128,12 @@ const Withdrawal = () => {
       <ErrorModal
         isOpen={errorModalOpen}
         message={errorMessage}
-        onClose={() => setErrorModalOpen(false)}
-        autoClose={true}
+        onClose={() => {
+          setErrorModalOpen(false);
+          setIsSundayBlockModal(false);
+          setCountdownText('');
+        }}
+        autoClose={!isSundayBlockModal}
         closeDuration={3000}
       />
 
@@ -161,7 +221,7 @@ const Withdrawal = () => {
           <li>No withdrawal Fee on USDT</li>
           <li>Minimum withdrawal $3</li>
           <li>Use only official channels</li>
-          <li>Transfer exact amount shown</li>
+          <li style={{color:'red'}}>No Withdrawal On Sunday</li>
         </ul>
       </div>
 
