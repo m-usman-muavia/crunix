@@ -1,0 +1,8 @@
+﻿/* Register page: smaller hero + scrollable card */
+.sp-page-register .sp-header {
+  padding-bottom: 22px;
+}
+
+.sp-page-register .sp-card {
+  padding-bottom: 40px;
+}

@@ -1,403 +1,233 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-body {
-  background-color: #ffffff;
-}
-
-.login-page {
-  width: 100%;
-  max-width: 1500px;
+/* ─── Full-page wrapper ─────────────────────── */
+.sp-page {
   min-height: 100vh;
-  margin: 0 auto;
-  background-color: #e6e9ff;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  position: relative;
-  font-family: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-sizing: border-box;
+  background: linear-gradient(175deg, #8ec5e0 0%, #b5daf2 28%, #d4edf9 58%, #edf7fd 100%);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
-.login-gradient-wrapper {
-  width: 100%;
-  max-width: 400px;
-  min-height: 100vh;
-  background: url('../../../public/loginimage.webp');
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.login-page-content {
-  width: 100%;
+/* ─── Header / hero ─────────────────────────── */
+.sp-header {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 2;
-  box-sizing: border-box;
+  padding: 72px 24px 40px;
 }
 
-.login-bg-shape {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(8px);
-  opacity: 0.35;
-  z-index: 0;
+.sp-header.sp-header-sm {
+  padding: 48px 24px 26px;
 }
 
-.login-bg-shape-1 {
-  width: 220px;
-  height: 220px;
-  top: -60px;
-  left: -40px;
-  background: radial-gradient(circle at 30% 30%, #9b8cff, #4a46c6);
+.sp-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(13, 71, 161, 0.25));
 }
 
-.login-bg-shape-2 {
-  width: 260px;
-  height: 260px;
-  bottom: -90px;
-  right: -60px;
-  background: radial-gradient(circle at 70% 40%, #a7b8ff, #6d7cff);
+.sp-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 28px;
+  font-weight: 900;
+  color: #0d47a1;
+  letter-spacing: -0.02em;
 }
 
-.login-brand {
-  z-index: 2;
-  margin-bottom: 24px;
-  margin-top: auto;
-  padding-top: 40px;
+.sp-brand-mark {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1565c0;
 }
 
-.login-brand .logo-wrapper {
-  margin-bottom: 0;
-}
-
-.login-brand .logo-container {
-  box-shadow: none;
-  padding: 6px 12px;
-}
-
-.login-brand .logo-text {
-  color: #ffffff;
-}
-
-.login-brand .logo-tagline {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.login-card {
-  width: 100%;
-  max-width: 400px;
-  background: #ffffff;
-  padding: 30px 30px 40px;
-  border-radius: 25px 25px 0px 0px;
-  box-shadow: 0 -10px 40px rgba(15, 23, 42, 0.15);
-  box-sizing: border-box;
-}
-
-.login-title {
-  font-size: 24px;
-  color: #1a1f36;
-  margin-bottom: 8px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-}
-
-.login-subtitle {
-  color: #6b7280;
-  font-size: 14px;
-  margin-bottom: 20px;
+.sp-tagline {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  color: #1976d2;
+  text-align: center;
   font-weight: 500;
+  opacity: 0.88;
 }
 
-.login-form {
+/* ─── White card ────────────────────────────── */
+.sp-card {
+  flex: 1;
+  background: #ffffff;
+  padding: 28px 22px 36px;
+  box-shadow: 0 -4px 20px rgba(13, 71, 161, 0.07);
+}
+
+/* ─── Form ──────────────────────────────────── */
+.sp-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin-bottom: 4px;
+  gap: 13px;
 }
 
-.input-field {
+/* ─── Input wrap ────────────────────────────── */
+.sp-inp-wrap {
   position: relative;
-  display: flex;
-  align-items: center;
-  background: #f7f8ff;
-  border: 1px solid #e6e9ff;
-  border-radius: 12px;
-  padding: 12px 14px;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
 }
 
-.input-field:focus-within {
-  background: #ffffff;
-  border-color: #4a46c6;
-  box-shadow: 0 0 0 3px rgba(74, 70, 198, 0.08);
-}
-
-.input-field input {
+/* ─── Input ─────────────────────────────────── */
+.sp-inp {
   width: 100%;
-  border: none;
-  background: transparent;
-  outline: none;
+  padding: 10px 16px;
+  background: #f4f8fb;
+  border: 1.5px solid #e3edf6;
+  border-radius: 12px;
+  font-family: inherit;
   font-size: 14px;
-  color: #1f2937;
+  color: #1a2d4a;
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
 }
 
-.input-field input::placeholder {
-  color: #9aa4bf;
+.sp-inp:focus {
+  background: #ffffff;
+  border-color: #2196f3;
+  box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
 }
 
-.password-field {
-  padding-right: 44px;
+.sp-inp::placeholder {
+  color: #9db0c3;
 }
 
-.toggle-btn {
+.sp-inp:disabled {
+  background: #eef4f9;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.sp-inp-pw {
+  padding-right: 48px;
+}
+
+/* ─── Eye toggle button ─────────────────────── */
+.sp-eye-btn {
   position: absolute;
-  right: 10px;
   top: 50%;
+  right: 14px;
   transform: translateY(-50%);
   border: none;
   background: transparent;
-  padding: 6px;
+  padding: 4px;
   cursor: pointer;
-  color: #7c86a5;
-  transition: color 0.2s ease;
+  color: #7ea8c8;
   display: flex;
   align-items: center;
+  transition: color 0.2s;
 }
 
-.toggle-btn:hover {
-  color: #4a46c6;
+.sp-eye-btn:hover {
+  color: #1565c0;
 }
 
-.toggle-btn svg {
+.sp-eye-btn svg {
   width: 18px;
   height: 18px;
 }
 
-.login-error {
-  color: #ef4444;
-  font-size: 12px;
-  text-align: center;
-  margin: 6px 0 0 0;
-  padding: 8px 12px;
-  background: #fee2e2;
-  border-radius: 8px;
-  box-sizing: border-box;
+/* ─── Forgot password row ───────────────────── */
+.sp-forgot-row {
+  display: flex;
+  justify-content: flex-end;
 }
 
-.primary-btn {
+.sp-forgot-link {
+  font-size: 12.5px;
+  color: #1565c0;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.sp-forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* ─── Error message ─────────────────────────── */
+.sp-error {
+  margin: 0;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+/* ─── Submit button ─────────────────────────── */
+.sp-btn {
   width: 100%;
+  padding: 15px;
   border: none;
-  border-radius: 6px;
-  padding: 13px;
-  background: linear-gradient(135deg, #003366, #0055A4, #003366);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1565c0 0%, #1e88e5 100%);
   color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
   font-weight: 700;
-  font-size: 14px;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 2px;
-  box-sizing: border-box;
+  box-shadow: 0 8px 22px rgba(25, 118, 210, 0.34);
+  transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+  margin-top: 4px;
 }
 
-.primary-btn:disabled {
+.sp-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(25, 118, 210, 0.42);
+}
+
+.sp-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.sp-btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-.primary-btn:not(:disabled):active {
-  transform: translateY(1px);
-}
-
-.primary-btn:not(:disabled):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(74, 70, 198, 0.4);
-}
-
-.auth-links-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2px;
-  margin: 16px 0 0 0;
-  padding-top: 12px;
-  font-size: 12px;
-}
-
-.links-separator {
-  color: #d1d5db;
-}
-
-.forgot-link {
-  color: #6b7280;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.forgot-link:hover {
-  color: #374151;
-}
-
-.divider {
-  position: relative;
+/* ─── Bottom footer link ────────────────────── */
+.sp-card-footer {
   text-align: center;
-  font-size: 11px;
-  color: #9aa4bf;
-  margin: 16px 0 18px;
-  font-weight: 500;
+  margin-top: 22px;
+  font-size: 13.5px;
+  color: #5a7e9a;
 }
 
-.divider::before,
-.divider::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 38%;
-  height: 1px;
-  background: #e5e7ff;
-}
-
-.divider::before {
-  left: 0;
-}
-
-.divider::after {
-  right: 0;
-}
-
-.social-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 4px;
-}
-
-.social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-radius: 12px;
-  border: 1px solid #e6e9ff;
-  background: #ffffff;
-  padding: 11px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #1f2937;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-.social-btn:hover {
-  background: #f9faff;
-  border-color: #4a46c6;
-  color: #4a46c6;
-}
-
-.social-icon {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
+.sp-card-footer a {
+  color: #1565c0;
   font-weight: 700;
-  background: #f3f4ff;
-  color: #4a46c6;
-}
-
-.social-btn.facebook .social-icon {
-  background: #e8f0ff;
-  color: #2b5bff;
-}
-
-.signup-link {
-  color: #6b7280;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
 }
 
-.signup-link:hover {
-  color: #374151;
+.sp-card-footer a:hover {
+  text-decoration: underline;
 }
 
-.signup-link span {
-  color: #4a46c6;
-  font-weight: 700;
-}
-
-/* EmailOTP specific styles */
+/* ─── EmailOTP back-link (reused by EmailOTP page) ── */
 .back-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #6b7280;
+  color: #5a7e9a;
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 20px;
-  transition: color 0.2s ease;
+  transition: color 0.2s;
 }
 
 .back-link:hover {
-  color: #374151;
-}
-
-.email-display {
-  color: #1a1f36;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  padding: 10px 14px;
-  background: #f7f8ff;
-  border: 1px solid #e6e9ff;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.otp-instruction {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 0px;
-  margin-top: -6px;
-  text-align: center;
-}
-
-.resend-text {
-  color: #6b7280;
-  font-weight: 500;
-}
-
-@media (max-width: 480px) {
-
-
-  .login-card {
-
-    padding: 24px 18px 20px;
-    border-radius: 18px 18px 0px 0px;
-  }
-
-  .login-title {
-    font-size: 20px;
-  }
-
-  .login-subtitle {
-    font-size: 12px;
-  }
+  color: #1565c0;
 }

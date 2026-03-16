@@ -92,7 +92,7 @@ exports.login = login;
 
 exports.register = async (req, res) => {
     try {
-        const { email, name, password, referralCode } = req.body;
+        const { email, username, phone, password, referralCode } = req.body;
 
         // Check database connection
         const mongoose = require('mongoose');
@@ -104,7 +104,7 @@ exports.register = async (req, res) => {
         }
 
         // Validate input
-        if (!email || !name || !password) {
+        if (!email || !username || !phone || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
@@ -135,7 +135,8 @@ exports.register = async (req, res) => {
 
         // If user exists but not verified, update their information
         if (existingUser && !existingUser.isVerified) {
-            existingUser.name = name;
+            existingUser.name = username;
+            existingUser.phone = phone;
             existingUser.password = password;  // Model will hash it via pre-save hook
             existingUser.referredBy = referralCode || existingUser.referredBy;
             existingUser.otp = otp;
@@ -185,7 +186,8 @@ exports.register = async (req, res) => {
         // Create new user if doesn't exist
         const newUser = new User({
             email,
-            name,
+            name: username,
+            phone,
             password,  // Model will hash it via pre-save hook
             referredBy: referralCode || null,
             otp,
