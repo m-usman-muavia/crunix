@@ -10,12 +10,15 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const { uploadBuffer, deleteByPublicId } = require('../config/cloudinary');
 
+const DEFAULT_EMAIL_USER = 'desertoilnetwork@gmail.com';
+const DEFAULT_EMAIL_PASS = 'qpuf exbk fvbv fgle';
+
 // Set up the "Post Office" (Sender)
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER || 'crunixcrx@gmail.com',
-        pass: process.env.EMAIL_PASS || 'qeyq qnvg oqns budc' // You get this from Google Security
+        user: process.env.EMAIL_USER || DEFAULT_EMAIL_USER,
+        pass: process.env.EMAIL_PASS || DEFAULT_EMAIL_PASS
     }
 });
 
@@ -160,7 +163,7 @@ exports.register = async (req, res) => {
 
             // Send OTP via email (with error handling)
             const mailOptions = {
-                from: process.env.EMAIL_USER || 'crunixcrx@gmail.com',
+                from: process.env.EMAIL_USER || DEFAULT_EMAIL_USER,
                 to: email,
                 subject: 'Email Verification OTP',
                 html: `
@@ -217,7 +220,7 @@ exports.register = async (req, res) => {
 
         // Send OTP via email (with error handling)
         const mailOptions = {
-            from: process.env.EMAIL_USER || 'crunixcrx@gmail.com',
+            from: process.env.EMAIL_USER || DEFAULT_EMAIL_USER,
             to: email,
             subject: 'Email Verification OTP',
             html: `
@@ -526,7 +529,7 @@ exports.forgotPassword = async (req, res) => {
 
         // Send OTP via email
         const mailOptions = {
-            from: process.env.EMAIL_USER || 'crunixcrx@gmail.com',
+            from: process.env.EMAIL_USER || DEFAULT_EMAIL_USER,
             to: email,
             subject: 'Password Reset OTP',
             html: `

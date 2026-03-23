@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from './logo';
 import './css/login.css';
-import './css/style.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import API_BASE_URL from '../config/api';
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: New Password
@@ -31,7 +28,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/forgot-password', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -77,7 +74,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/verify-forgot-otp', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/verify-forgot-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -128,7 +125,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/reset-password', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -155,118 +152,138 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-gradient-wrapper">
-        <div className="login-bg-shape login-bg-shape-1"></div>
-        <div className="login-bg-shape login-bg-shape-2"></div>
-
-        <div className="login-page-content">
-          <div className="login-brand">
-            <Logo />
-          </div>
-
-          <div className="login-card">
-            <Link to="/" className="back-link">
-              <FontAwesomeIcon icon={faArrowLeft} /> Back to sign in
-            </Link>
-            <h1 className="login-title">Forgot Password</h1>
-            {error && <p className="login-error">{error}</p>}
-
-
-          {/* Step 1: Enter Email */}
-          {step === 1 && (
-            <form onSubmit={handleSendOTP} className="login-form">
-              <p className="login-subtitle">Enter your email to receive an OTP</p>
-              <div className="input-field">
-                <input 
-                  type="email" 
-                  placeholder="Email Address" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required 
-                />
-              </div>
-              <button type="submit" className="primary-btn" disabled={isLoading}>
-                {isLoading ? 'Sending OTP...' : 'Send OTP'}
-              </button>
-            </form>
-          )}
-
-          {/* Step 2: Enter OTP */}
-          {step === 2 && (
-            <form onSubmit={handleVerifyOTP} className="login-form">
-              <p className="login-subtitle">Enter the 6-digit OTP sent to {email}</p>
-              <div className="input-field">
-                <input 
-                  type="text" 
-                  placeholder="000000" 
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  maxLength="6"
-                  required 
-                />
-              </div>
-              <button type="submit" className="primary-btn" disabled={isLoading}>
-                {isLoading ? 'Verifying OTP...' : 'Verify OTP'}
-              </button>
-              <button 
-                type="button" 
-                className="back-btn"
-                onClick={() => {
-                  setStep(1);
-                  setOtp('');
-                  setError('');
-                }}
-              >
-                Back
-              </button>
-            </form>
-          )}
-
-          {/* Step 3: Enter New Password */}
-          {step === 3 && (
-            <form onSubmit={handleResetPassword} className="login-form">
-              <p className="login-subtitle">Enter your new password</p>
-              <div className="input-field">
-                <input 
-                  type="password" 
-                  placeholder="New Password" 
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required 
-                />
-              </div>
-              <div className="input-field">
-                <input 
-                  type="password" 
-                  placeholder="Confirm Password" 
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required 
-                />
-              </div>
-              <button type="submit" className="primary-btn" disabled={isLoading}>
-                {isLoading ? 'Resetting Password...' : 'Reset Password'}
-              </button>
-              <button 
-                type="button" 
-                className="back-btn"
-                onClick={() => {
-                  setStep(2);
-                  setNewPassword('');
-                  setConfirmPassword('');
-                  setError('');
-                }}
-              >
-                Back
-              </button>
-            </form>
-          )}
-            </div>
-          </div>
-        </div>
+    <div className="ref-page">
+      <div className="ref-header">
+        <h1 className="ref-header-title">Welcome!</h1>
+        <p className="ref-header-desc">Unlocking prosperity with opportunity to secure your future.</p>
       </div>
-  
+
+      <div className="ref-card">
+        <div className="ref-tabs">
+          <button className="ref-tab">
+            <Link to="/">Login</Link>
+          </button>
+          <button className="ref-tab ref-tab-active">
+            <span>Forgot Password</span>
+          </button>
+        </div>
+
+        <Link to="/" className="ref-back-link">Back to sign in</Link>
+        {error && <p className="ref-error">{error}</p>}
+        {message && <p className="ref-success">{message}</p>}
+
+        {step === 1 && (
+          <form onSubmit={handleSendOTP} className="ref-form">
+            <p className="ref-flow-subtitle">Enter your email to receive an OTP</p>
+            <div className="ref-inp-group">
+              <svg className="ref-inp-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor" />
+              </svg>
+              <input
+                type="email"
+                className="ref-inp"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="ref-btn-submit" disabled={isLoading} aria-label={isLoading ? 'Sending OTP' : 'Send OTP'}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </form>
+        )}
+
+        {step === 2 && (
+          <form onSubmit={handleVerifyOTP} className="ref-form">
+            <p className="ref-flow-subtitle">Enter the 6-digit OTP sent to {email}</p>
+            <div className="ref-inp-group">
+              <svg className="ref-inp-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M17 1H7c-1.1 0-2 .9-2 2v18l7-3 7 3V3c0-1.1-.9-2-2-2zm-1 14.14l-4-1.71-4 1.71V3h8v12.14z" fill="currentColor" />
+              </svg>
+              <input
+                type="text"
+                className="ref-inp"
+                placeholder="000000"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                maxLength="6"
+                required
+              />
+            </div>
+            <button type="submit" className="ref-btn-submit" disabled={isLoading} aria-label={isLoading ? 'Verifying OTP' : 'Verify OTP'}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="ref-btn-secondary"
+              onClick={() => {
+                setStep(1);
+                setOtp('');
+                setError('');
+                setMessage('');
+              }}
+            >
+              Back
+            </button>
+          </form>
+        )}
+
+        {step === 3 && (
+          <form onSubmit={handleResetPassword} className="ref-form">
+            <p className="ref-flow-subtitle">Enter your new password</p>
+            <div className="ref-inp-group">
+              <svg className="ref-inp-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2l7 3.46v5.54c0 4.52-2.98 8.69-7 10-4.02-1.31-7-5.48-7-10V6.46L12 3zm0 5c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z" fill="currentColor" />
+              </svg>
+              <input
+                type="password"
+                className="ref-inp"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="ref-inp-group">
+              <svg className="ref-inp-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2l7 3.46v5.54c0 4.52-2.98 8.69-7 10-4.02-1.31-7-5.48-7-10V6.46L12 3zm0 5c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z" fill="currentColor" />
+              </svg>
+              <input
+                type="password"
+                className="ref-inp"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="ref-btn-submit" disabled={isLoading} aria-label={isLoading ? 'Resetting password' : 'Reset Password'}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="ref-btn-secondary"
+              onClick={() => {
+                setStep(2);
+                setNewPassword('');
+                setConfirmPassword('');
+                setError('');
+                setMessage('');
+              }}
+            >
+              Back
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
   );
 };
 

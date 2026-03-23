@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import './css/login.css';
-import './css/style.css';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import Logo from './logo';
 import axios from 'axios';
 import API_BASE_URL from '../config/api';
 
@@ -45,51 +41,61 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-gradient-wrapper">
+    <div className="ref-page">
+      <div className="ref-header">
+        <h1 className="ref-header-title">Welcome!</h1>
+        <p className="ref-header-desc">Unlocking prosperity with opportunity to secure your future.</p>
+      </div>
 
-        <div className="login-brand">
-          <Logo />
+      <div className="ref-card">
+        <div className="ref-tabs">
+          <button className="ref-tab">
+            <Link to="/">Login</Link>
+          </button>
+          <button className="ref-tab ref-tab-active">
+            <span>Email OTP</span>
+          </button>
         </div>
 
-        <div className="login-card">
-          <Link to="/" className="back-link">
-            <FontAwesomeIcon icon={faArrowLeft} /> Back to sign in
-          </Link>
+        <Link to="/" className="ref-back-link">Back to sign in</Link>
 
-          <h1 className="login-title">Verify your email</h1>
-          <p className="login-subtitle">We've sent a 6-digit code to</p>
-          <p className="email-display">{email}</p>
+        <p className="ref-flow-subtitle">We've sent a 6-digit code to</p>
+        <p className="ref-email-display">{email || 'your email'}</p>
 
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="input-field">
-              <input 
-                type="text" 
-                placeholder="Enter 6-digit OTP" 
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                maxLength="6"
-                required
-                autoFocus
-              />
-            </div>
-
-            <p className="otp-instruction">Enter the 6-digit verification code sent to your email</p>
-
-            {error && <p className="login-error">{error}</p>}
-
-            <button type="submit" className="primary-btn" disabled={loading}>
-              {loading ? 'Verifying...' : 'Verify Email'}
-            </button>
-          </form>
-
-          <div className="auth-links-row">
-            <span className="resend-text">Didn't receive code?</span>
-            <span className="links-separator">•</span>
-            <Link to="/" className="forgot-link">Resend OTP</Link>
+        <form className="ref-form" onSubmit={handleSubmit}>
+          <div className="ref-inp-group">
+            <svg className="ref-inp-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M17 1H7c-1.1 0-2 .9-2 2v18l7-3 7 3V3c0-1.1-.9-2-2-2zm-1 14.14l-4-1.71-4 1.71V3h8v12.14z" fill="currentColor" />
+            </svg>
+            <input
+              type="text"
+              className="ref-inp"
+              placeholder="Enter 6-digit OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              maxLength="6"
+              required
+              autoFocus
+            />
           </div>
-        </div>
 
+          <p className="ref-help-text">Enter the 6-digit verification code sent to your email.</p>
+
+          {error && <p className="ref-error">{error}</p>}
+
+          <button type="submit" className="ref-btn-submit" disabled={loading} aria-label={loading ? 'Verifying email' : 'Verify email'}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </form>
+
+        <div className="ref-divider">Or</div>
+
+        <div className="ref-row-center">
+          <span className="ref-help-inline">Didn't receive code?</span>
+          <Link to="/" className="ref-forgot-link">Resend OTP</Link>
+        </div>
       </div>
     </div>
   );
