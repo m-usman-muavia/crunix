@@ -36,10 +36,10 @@ const Dashboard = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [countdowns, setCountdowns] = useState({});
   const [avatarImageError, setAvatarImageError] = useState(false);
-  const [offerImageError, setOfferImageError] = useState(false);
+  const [sliderImages, setSliderImages] = useState([]);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [imageErrorMap, setImageErrorMap] = useState({});
   const [recentTransactions, setRecentTransactions] = useState([]);
-
-  const OFFER_IMAGE_URL = 'https://img.freepik.com/free-photo/lavender-field-sunset-near-valensole_268835-3910.jpg?semt=ais_hybrid&w=740&q=80';
 
   useEffect(() => {
     fetchBalance();
@@ -49,8 +49,21 @@ const Dashboard = () => {
     fetchUser();
     fetchReferralStats();
     fetchTotalWithdrawn();
+    fetchDashboardImages();
     fetchRecentTransactions();
   }, []);
+
+  useEffect(() => {
+    if (sliderImages.length <= 1) {
+      return undefined;
+    }
+
+    const timer = setInterval(() => {
+      setActiveSlideIndex((prev) => (prev + 1) % sliderImages.length);
+    }, 4500);
+
+    return () => clearInterval(timer);
+  }, [sliderImages]);
 
   // Countdown timer effect
   useEffect(() => {
@@ -204,6 +217,30 @@ const Dashboard = () => {
     } catch (err) {
       console.error('Error fetching recent transactions:', err);
       setRecentTransactions([]);
+    }
+  };
+
+  const fetchDashboardImages = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/dashboard-image`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        setSliderImages([]);
+        return;
+      }
+
+      const data = await response.json();
+      const images = data?.data?.images || [];
+      setSliderImages(images);
+      setActiveSlideIndex(0);
+      setImageErrorMap({});
+    } catch (err) {
+      console.error('Error fetching dashboard images:', err);
+      setSliderImages([]);
     }
   };
 
@@ -438,6 +475,9 @@ const Dashboard = () => {
   const avatarLetter = displayName.charAt(0).toUpperCase() || 'U';
   const avatarImage = user?.profileImage || user?.profile_image || user?.avatar || user?.image || '';
   const currentMonthly = plans.reduce((sum, plan) => sum + (Number(plan.daily_profit || 0) * 30), 0);
+  const currentSlide = sliderImages[activeSlideIndex] || null;
+  const currentSlideSrc = resolveImageUrl(currentSlide?.image_path || '');
+  const isCurrentSlideBroken = !!imageErrorMap[activeSlideIndex];
   const fallbackTransactions = [
     { _id: 'f-1', amount: 10, date: new Date(), type: 'Deposit' },
     { _id: 'f-2', amount: 5, date: new Date(), type: 'Withdrawal' },
@@ -520,29 +560,27 @@ const Dashboard = () => {
           </div>
           <div className="dashboard-special-row">
             <Link to="/active-plans" className="dashboard-special-card dashboard-special-card-image">
-              {!offerImageError ? (
-                <img
-                  src={OFFER_IMAGE_URL}
-                  alt="Special Offer"
-                  className="dashboard-special-image"
-                  onError={() => setOfferImageError(true)}
-                />
-              ) : (
-                <div className="dashboard-special-image-fallback" />
-              )}
               <div className="dashboard-special-overlay">
-                <h4>90% OFF</h4>
-                <p>First Purchase Discount</p>
-                <small>Enjoy a special discount as a token of appreciation for chosing us for you.</small>
-                <span className="dashboard-shop-chip">Shop Now</span>
+                {currentSlide && currentSlideSrc && !isCurrentSlideBroken ? (
+                  <img
+                    src={currentSlideSrc}
+                    alt={`Dashboard slide ${activeSlideIndex + 1}`}
+                    className="dashboard-special-image"
+                    onError={() => setImageErrorMap((prev) => ({ ...prev, [activeSlideIndex]: true }))}
+                  />
+                ) : (
+                  <div className="dashboard-special-image-fallback" />
+                )}
               </div>
             </Link>
           </div>
-          <div className="dashboard-slider-dots" aria-hidden="true">
-            <span className="dashboard-dot dashboard-dot-active" />
-            <span className="dashboard-dot" />
-            <span className="dashboard-dot" />
-          </div>
+          {sliderImages.length > 1 && (
+            <div className="dashboard-slider-dots" aria-hidden="true">
+              {sliderImages.map((img, idx) => (
+                <span key={img._id || idx} className={`dashboard-dot ${idx === activeSlideIndex ? 'dashboard-dot-active' : ''}`} />
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="dashboard-showcase dashboard-quick-section">
@@ -572,7 +610,7 @@ const Dashboard = () => {
               <h3>Transation History</h3>
               <p className="dashboard-section-sub">See All Transations</p>
             </div>
-            <Link to="/transactions" className="dashboard-view-chip">View</Link>
+            <Link to="/transactions" className="dashboard-modern-edit-link">View</Link>
           </div>
           <div className="dashboard-transactions-list">
             {transactionItems.map((tx) => (
