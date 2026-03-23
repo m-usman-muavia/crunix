@@ -1,8 +1,8 @@
-﻿/* Register page: smaller hero + scrollable card */
-.sp-page-register .sp-header {
-  padding-bottom: 22px;
+﻿/* Register page: keep same design but optimize for longer form */
+.ref-page-register .ref-header {
+  padding: 48px 28px 30px;
 }
 
-.sp-page-register .sp-card {
+.ref-page-register .ref-card {
   padding-bottom: 40px;
 }

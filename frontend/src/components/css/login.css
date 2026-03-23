@@ -2,6 +2,11 @@
 
 * { box-sizing: border-box; }
 
+:root {
+  --auth-main: #0557b4c7;
+  --auth-main-solid: #0557b4c7;
+}
+
 /* ─── Full-page wrapper ─────────────────────── */
 .ref-page {
   min-height: 100vh;
@@ -14,7 +19,7 @@
 /* ─── Header / hero ─────────────────────────── */
 .ref-header {
   flex-shrink: 0;
-  background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+  background: #0557b4c7;
   padding: 56px 28px 36px;
   text-align: center;
   color: #ffffff;
@@ -67,8 +72,8 @@
 }
 
 .ref-tab-active {
-  color: #4361ee;
-  border-bottom-color: #4361ee;
+  color: var(--auth-main-solid);
+  border-bottom-color: var(--auth-main-solid);
 }
 
 .ref-tab:not(.ref-tab-active):hover {
@@ -82,9 +87,9 @@
 
 /* ─── Error message ─────────────────────────── */
 .ref-error {
-  margin: 0 0 16px;
-  padding: 12px 14px;
-  border-radius: 10px;
+  margin: 0 0 10px;
+  padding: 2px 14px;
+  border-radius: 3px;
   background: #fef2f2;
   border: 1px solid #fecdd3;
   color: #be123c;
@@ -131,8 +136,8 @@
 
 .ref-inp:focus {
   background: #ffffff;
-  border-color: #4361ee;
-  box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+  border-color: var(--auth-main-solid);
+  box-shadow: 0 0 0 4px rgba(5, 87, 180, 0.14);
 }
 
 .ref-inp::placeholder {
@@ -160,7 +165,7 @@
 }
 
 .ref-eye-btn:hover {
-  color: #4361ee;
+  color: var(--auth-main-solid);
 }
 
 .ref-eye-btn svg {
@@ -182,7 +187,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #4361ee;
+  accent-color: var(--auth-main-solid);
 }
 
 /* ─── Row between ───────────────────────────── */
@@ -195,7 +200,7 @@
 }
 
 .ref-forgot-link {
-  color: #4361ee;
+  color: var(--auth-main-solid);
   text-decoration: none;
   font-weight: 600;
   white-space: nowrap;
@@ -211,20 +216,20 @@
   height: 52px;
   border: none;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+  background: var(--auth-main-solid);
   color: #ffffff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 8px auto 0;
-  box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+  box-shadow: 0 8px 20px rgba(5, 87, 180, 0.3);
   transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 
 .ref-btn-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(67, 97, 238, 0.4);
+  box-shadow: 0 12px 28px rgba(5, 87, 180, 0.4);
 }
 
 .ref-btn-submit:active:not(:disabled) {
