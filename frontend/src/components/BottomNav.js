@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox, faDollarSign, faClock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBox, faPaperPlane, faInbox } from '@fortawesome/free-solid-svg-icons';
 import './css/BottomNav.css';
 
 const BottomNav = () => {
@@ -13,44 +13,34 @@ const BottomNav = () => {
     <nav className="modern-bottom-nav">
       <Link 
         to="/dashboard" 
-        className={`nav-item-modern ${isActive('/dashboard') ? 'active' : ''}`}
+        className={`nav-item-modern nav-icon-only ${isActive('/dashboard') ? 'active' : ''}`}
+        aria-label="Home"
       >
         <FontAwesomeIcon icon={faHouse} />
-        <span>Home</span>
       </Link>
 
       <Link 
         to="/plans" 
-        className={`nav-item-modern ${isActive('/plans') ? 'active' : ''}`}
+        className={`nav-item-modern nav-icon-only ${isActive('/plans') ? 'active' : ''}`}
+        aria-label="Plan"
       >
         <FontAwesomeIcon icon={faBox} />
-        <span>Plan</span>
       </Link>
 
       <Link 
         to="/deposit" 
-        className="nav-item-center"
+        className={`nav-item-modern nav-icon-only ${isActive('/deposit') ? 'active' : ''}`}
+        aria-label="Send"
       >
-        <div className="center-icon-wrapper">
-          <FontAwesomeIcon icon={faDollarSign} />
-        </div>
-        <span>Deposit</span>
+        <FontAwesomeIcon icon={faPaperPlane} />
       </Link>
 
       <Link 
-        to="/withdrawal" 
-        className={`nav-item-modern ${isActive('/withdrawal') ? 'active' : ''}`}
+        to="/withdrawalhistory" 
+        className={`nav-item-modern nav-icon-only ${isActive('/withdrawalhistory') ? 'active' : ''}`}
+        aria-label="Received"
       >
-        <FontAwesomeIcon icon={faClock} />
-        <span>Withdraw</span>
-      </Link>
-
-      <Link 
-        to="/profile" 
-        className={`nav-item-modern ${isActive('/profile') ? 'active' : ''}`}
-      >
-        <FontAwesomeIcon icon={faUser} />
-        <span>Profile</span>
+        <FontAwesomeIcon icon={faInbox} />
       </Link>
     </nav>
   );

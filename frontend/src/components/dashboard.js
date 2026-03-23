@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faArrowUp, faChartLine, faCheck, faClock, faCopy, faHeadset, faHouse, faClipboardList, faUser, faUsers, faCoins, faGift, faBell } from '@fortawesome/free-solid-svg-icons';
-import { faWhatsapp, faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faArrowDown, faArrowUp, faChartLine, faClipboardList, faUser, faCoins, faBell } from '@fortawesome/free-solid-svg-icons';
 import './css/dashboard.css';
 import './css/plans.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './css/style.css';
 import './css/profile.css';
 import API_BASE_URL from '../config/api';
@@ -13,7 +12,6 @@ import InvestModal from './InvestModal';
 import ErrorModal from './ErrorModal';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
   const [plans, setPlans] = useState([]);
   const [account, setAccount] = useState(null);
@@ -37,9 +35,11 @@ const Dashboard = () => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [countdowns, setCountdowns] = useState({});
-  const [dashboardImage, setDashboardImage] = useState('');
-  const [sliderImages, setSliderImages] = useState([]);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [avatarImageError, setAvatarImageError] = useState(false);
+  const [offerImageError, setOfferImageError] = useState(false);
+  const [recentTransactions, setRecentTransactions] = useState([]);
+
+  const OFFER_IMAGE_URL = 'https://img.freepik.com/free-photo/lavender-field-sunset-near-valensole_268835-3910.jpg?semt=ais_hybrid&w=740&q=80';
 
   useEffect(() => {
     fetchBalance();
@@ -49,7 +49,7 @@ const Dashboard = () => {
     fetchUser();
     fetchReferralStats();
     fetchTotalWithdrawn();
-    fetchDashboardImage();
+    fetchRecentTransactions();
   }, []);
 
   // Countdown timer effect
@@ -84,17 +84,6 @@ const Dashboard = () => {
 
     return () => clearInterval(interval);
   }, [plans]);
-
-  // Auto-rotate slider effect
-  useEffect(() => {
-    if (sliderImages.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentSlideIndex((prev) => (prev + 1) % sliderImages.length);
-    }, 5000); // Change image every 5 seconds
-
-    return () => clearInterval(interval);
-  }, [sliderImages.length]);
 
   const fetchBalance = async () => {
     try {
@@ -174,6 +163,50 @@ const Dashboard = () => {
     }
   };
 
+  const fetchRecentTransactions = async () => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      const [depositsRes, withdrawalsRes] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/deposits/my-deposits`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        }),
+        fetch(`${API_BASE_URL}/api/withdrawals/my-withdrawals`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        })
+      ]);
+
+      let merged = [];
+
+      if (depositsRes.ok) {
+        const depositsData = await depositsRes.json();
+        const deposits = Array.isArray(depositsData) ? depositsData : (depositsData.data || []);
+        merged = merged.concat(deposits.map((d) => ({
+          _id: d._id,
+          type: 'Deposit',
+          amount: Number(d.deposit_amount ?? d.amount ?? 0),
+          date: d.createdAt
+        })));
+      }
+
+      if (withdrawalsRes.ok) {
+        const withdrawalsData = await withdrawalsRes.json();
+        const withdrawals = Array.isArray(withdrawalsData) ? withdrawalsData : (withdrawalsData.data || []);
+        merged = merged.concat(withdrawals.map((w) => ({
+          _id: w._id,
+          type: 'Withdrawal',
+          amount: Number(w.withdrawal_amount ?? w.amount ?? 0),
+          date: w.createdAt
+        })));
+      }
+
+      merged.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setRecentTransactions(merged.slice(0, 3));
+    } catch (err) {
+      console.error('Error fetching recent transactions:', err);
+      setRecentTransactions([]);
+    }
+  };
+
   const fetchPlans = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/plans/active`, {
@@ -238,40 +271,6 @@ const Dashboard = () => {
     if (userData) {
       setUser(JSON.parse(userData));
     }
-  };
-
-  const fetchDashboardImage = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/dashboard-image`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        }
-      });
-
-      if (!response.ok) {
-        return;
-      }
-
-      const data = await response.json();
-      const images = data?.data?.images || [];
-      setSliderImages(images);
-      setDashboardImage('');
-      setCurrentSlideIndex(0);
-    } catch (err) {
-      console.error('Error fetching dashboard images:', err);
-    }
-  };
-
-  const handlePrevSlide = () => {
-    setCurrentSlideIndex((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
-  };
-
-  const handleNextSlide = () => {
-    setCurrentSlideIndex((prev) => (prev + 1) % sliderImages.length);
-  };
-
-  const goToSlide = (index) => {
-    setCurrentSlideIndex(index);
   };
 
   const resolveImageUrl = (imagePath) => {
@@ -435,345 +434,166 @@ const Dashboard = () => {
     }
   };
 
+  const displayName = (user?.name || user?.username || user?.email || 'U').trim();
+  const avatarLetter = displayName.charAt(0).toUpperCase() || 'U';
+  const avatarImage = user?.profileImage || user?.profile_image || user?.avatar || user?.image || '';
+  const currentMonthly = plans.reduce((sum, plan) => sum + (Number(plan.daily_profit || 0) * 30), 0);
+  const fallbackTransactions = [
+    { _id: 'f-1', amount: 10, date: new Date(), type: 'Deposit' },
+    { _id: 'f-2', amount: 5, date: new Date(), type: 'Withdrawal' },
+    { _id: 'f-3', amount: 2.2, date: new Date(), type: 'Withdrawal' }
+  ];
+  const transactionItems = recentTransactions.length > 0 ? recentTransactions : fallbackTransactions;
+
+  const formatTxTime = (value) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return 'Today, 5:00 PM';
+    }
+
+    const now = new Date();
+    const isToday =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
+
+    const timePart = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    if (isToday) {
+      return `Today, ${timePart}`;
+    }
+
+    const datePart = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
+
+    return `${datePart}, ${timePart}`;
+  };
+
   return (
-    <div className="main-wrapper">
-      <div className="main-container">
-            {/* Top Header Section */}
-            <div className="deposit-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',padding: '8px 20px' }}>
-              <img 
-            src="/homelogo3.svg" 
-            alt="Investment Plans" 
-            style={{ 
-              width: 'auto', 
-              height: '40px'
-            }} 
-          />
-                      <div className="helpcenter">
-                <a href="https://chat.whatsapp.com/BxU2NKIDvxvJVny2czRVAo?mode=gi_t" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="WhatsApp">
-                  <FontAwesomeIcon style={{fontSize:'24px'}} icon={faWhatsapp} />
-                </a>
-                <a href="https://www.facebook.com/share/1ATnDDf9HV/" target="_blank" rel="noopener noreferrer" className="helpcenter-button" aria-label="Facebook">
-                  <FontAwesomeIcon style={{ fontSize: '22px' }} icon={faFacebook} />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => navigate('/notifications')}
-                  className="helpcenter-button"
-                  aria-label="Notifications"
-                  style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: '0px 3px', fontSize: '18px', fontWeight: 'bold', position: 'relative' }}
-                >
-                  <FontAwesomeIcon style={{ fontSize: '20px', paddingLeft: '10px' }} icon={faBell} />
-                  <span style={{
-                    position: 'absolute',
-                    top: '-5px',
-                    right: '5px',
-                    width: '5px',
-                    height: '5px',
-                    backgroundColor: 'rgb(255, 107, 107)',
-                    borderRadius: '50%',
-                    boxShadow: 'rgba(255, 107, 107, 0.2) 0px 0px 0px 2px'
-                  }} />
-                </button>
+    <div className="main-wrapper dom-wrapper">
+      <div className="main-container dom-container">
+        <div className="dashboard-modern-hero dashboard-service-hero">
+          <div className="dashboard-modern-hero-top">
+            <div>
+              <p className="dashboard-service-label">Welcome back,</p>
+              <h1 className="dashboard-modern-title">{displayName}</h1>
+            </div>
+            <div className="dashboard-header-actions">
+              <button type="button" className="dashboard-header-icon" aria-label="Notifications">
+                <FontAwesomeIcon icon={faBell} />
+              </button>
+              <div className="dashboard-modern-avatar" aria-label="User avatar">
+                {avatarImage && !avatarImageError ? (
+                  <img
+                    src={avatarImage}
+                    alt={displayName}
+                    onError={() => setAvatarImageError(true)}
+                  />
+                ) : (
+                  <span>
+                    <FontAwesomeIcon icon={faUser} />
+                  </span>
+                )}
               </div>
             </div>
-        
-        <div className="plan-image" style={{
-          position: 'relative',
-          width: '100%',
-          height: '200px',
-          overflow: 'hidden',
-          borderRadius: '0px 0px 15px 15px',
-          borderBottom: '2px solid #000000'
-        }}>
-          {sliderImages.length > 0 ? (
-            <>
-              <img
-                src={sliderImages[currentSlideIndex]?.image_path || '/image2.webp'}
-                alt={`Slide ${currentSlideIndex + 1}`}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  transition: 'opacity 0.5s ease-in-out'
-                }}
-              />
-              {sliderImages.length > 1 && (
-                <>
-                  {/* Previous Button */}
-                  <button
-                    onClick={handlePrevSlide}
-                    style={{
-                      position: 'absolute',
-                      left: '10px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'rgba(0, 0, 0, 0.5)',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 12px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '18px',
-                      zIndex: 10
-                    }}
-                  >
-                    ❮
-                  </button>
-
-                  {/* Next Button */}
-                  <button
-                    onClick={handleNextSlide}
-                    style={{
-                      position: 'absolute',
-                      right: '10px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'rgba(0, 0, 0, 0.5)',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 12px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '18px',
-                      zIndex: 10
-                    }}
-                  >
-                    ❯
-                  </button>
-
-                  {/* Dots Indicator */}
-                  {/* <div
-                    style={{
-                      position: 'absolute',
-                      bottom: '10px',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      display: 'flex',
-                      gap: '8px',
-                      zIndex: 10
-                    }}
-                  >
-                    {sliderImages.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => goToSlide(index)}
-                        style={{
-                          width: '10px',
-                          height: '10px',
-                          borderRadius: '50%',
-                          border: 'none',
-                          background: index === currentSlideIndex ? 'white' : 'rgba(255, 255, 255, 0.5)',
-                          cursor: 'pointer',
-                          transition: 'background 0.3s'
-                        }}
-                      />
-                    ))}
-                  </div> */}
-                </>
-              )}
-            </>
-          ) : (
-            <img
-              src="/image2.webp"
-              alt="Investment Plans"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-            />
-          )}
-        </div>
-                 <header className="dashboard-header">
+          </div>
 
           <div className="dashboard-balance-card">
-            <div className="dashboard-main-balance">
-              <p className="dashboard-main-balance-label">Total Assets</p>
-              <h2 className="dashboard-main-balance-amount">$ {balance.toFixed(2)}</h2>
+            <div>
+              <p className="dashboard-balance-label">Current Balance</p>
+              <h3 className="dashboard-balance-value">AED {Number(balance || 0).toFixed(2)}</h3>
             </div>
-            <div className="dashboard-main-balance">
-              <p className="dashboard-main-balance-label">Total Withdrawal</p>
-              <h2 className="dashboard-main-balance-amount">$ {totalWithdrawn.toFixed(2)}</h2>
-            </div>
+            <Link to="/active-plans" className="dashboard-modern-edit-link">SEE ALL</Link>
           </div>
-        </header> 
-
-        <div className="dashboard-grid">
-          <Link to="/plans" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faChartLine} />
-                        <h2 className='dashboard-grid-text'>Plans</h2>
-
-          </Link>
-          <Link to="/deposit" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faArrowDown} />
-                        <h2 className='dashboard-grid-text'>Deposit</h2>
-          </Link>
-                    <Link to="/withdrawal" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faArrowUp} />
-            <h2 className='dashboard-grid-text'>Withdrawal</h2>
-          </Link>
-          <Link to="/profile" className="dashboard-grid-button">
-            <FontAwesomeIcon className="dashboard-grid-icon" icon={faUser} />
-                        <h2 className='dashboard-grid-text'>Profile</h2>
-
-          </Link>
         </div>
 
-        <div className="dashboard-refferal-section">
-          <Link to="/active-plans" className="dashboard-refferal-container">
-            <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faClipboardList} />
-            <div className="dashboard-refferal-content">
-              <h2 className="dashboard-refferal-header">Active Plans</h2>
-              <p className="dashboard-refferal-text">Check Plans</p>
-            </div>
-          </Link>
-          <Link to="/refferrals" className="dashboard-refferal-container">
-          <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faUsers} />  
-            <div className="dashboard-refferal-content">
-              <h2 className="dashboard-refferal-header">Referrals</h2>
-              <p className="dashboard-refferal-text">Refer & Earn</p>
-            </div>
-          </Link>
-        </div>
-        <div className="dashboard-refferal-section">
-          <Link to="/collect-income" className="dashboard-refferal-container">
-            <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faCoins} />
-            <div className="dashboard-refferal-content">
-              <h2 className="dashboard-refferal-header">Collect</h2>
-              <p className="dashboard-refferal-text">Daily Earnings</p>
-            </div>
-          </Link>
-          <Link to="/crx-digital" className="dashboard-refferal-container">
-            <span className="new-badge">NEW</span>
-            <FontAwesomeIcon className="dashboard-refferal-icon" style={{ fontSize: '23px' }} icon={faGift} />  
-            <div className="dashboard-refferal-content">
-              <h2 className="dashboard-refferal-header">CRX</h2>
-              <p className="dashboard-refferal-text">Digital Currency</p>
-            </div>
-          </Link>
-        </div>
-
- <div className="dashboard-bonus-section" style={{ padding: '20px' }}>
-          <div className="bonus-card" >
-
-              <div className='bonus-card-header'>
-                Get A Free Bonus
-              </div>
-
-            <form onSubmit={handleRedeemBonusCode} style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <input
-                  type="text"
-                  value={bonusCode}
-                  onChange={(e) => setBonusCode(e.target.value.toUpperCase())}
-                  placeholder="Enter Bonus Code"
-                  disabled={redeemingBonus}
-                  style={{
-                    flex: 1,
-                    padding: '10px 12px',
-                    border: '1px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontFamily: 'inherit'
-                  }}
-                  required
+        <section className="dashboard-showcase">
+          <div className="dashboard-section-head">
+            <h3>Special Offers</h3>
+            <Link to="/active-plans">See all</Link>
+          </div>
+          <div className="dashboard-special-row">
+            <Link to="/active-plans" className="dashboard-special-card dashboard-special-card-image">
+              {!offerImageError ? (
+                <img
+                  src={OFFER_IMAGE_URL}
+                  alt="Special Offer"
+                  className="dashboard-special-image"
+                  onError={() => setOfferImageError(true)}
                 />
-                <button
-                  type="submit"
-                  className='Bonus-btn'
-                  disabled={redeemingBonus}
-                
-                >
-                  {redeemingBonus ? 'Processing...' : 'Get Now'}
-                </button>
+              ) : (
+                <div className="dashboard-special-image-fallback" />
+              )}
+              <div className="dashboard-special-overlay">
+                <h4>90% OFF</h4>
+                <p>First Purchase Discount</p>
+                <small>Enjoy a special discount as a token of appreciation for chosing us for you.</small>
+                <span className="dashboard-shop-chip">Shop Now</span>
               </div>
-            </form>
+            </Link>
           </div>
-        </div>
+          <div className="dashboard-slider-dots" aria-hidden="true">
+            <span className="dashboard-dot dashboard-dot-active" />
+            <span className="dashboard-dot" />
+            <span className="dashboard-dot" />
+          </div>
+        </section>
 
+        <section className="dashboard-showcase dashboard-quick-section">
+          <div className="dashboard-categories-row">
+            <Link to="/plans" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartLine} /></span>
+              <span>Plans</span>
+            </Link>
+            <Link to="/deposit" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faArrowDown} /></span>
+              <span>Deposit</span>
+            </Link>
+            <Link to="/withdrawal" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faArrowUp} /></span>
+              <span>Withdrawal</span>
+            </Link>
+            <Link to="/withdrawalhistory" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faClipboardList} /></span>
+              <span>recieve</span>
+            </Link>
+          </div>
+        </section>
 
-        <div className="dashboard-plans-section">
-          <div style={{ padding: '20px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: 'bold', textAlign: 'left', margin: '0 0 15px 0', color: '#0f172a' }}>Investment Plan</h2>
-            
-            {plans.length > 0 ? (
-              plans.map((plan, index) => (
-                <div className="plan-card-new" key={plan._id || index}>
-                  {/* Limited Badge - Show Countdown if Available */}
-                  {plan.countdown_end_time && countdowns[plan._id] && (
-                    <div className="limited-badge">
-                      ⏱️ {countdowns[plan._id]}
-                    </div>
-                  )}
-                  
-                  {/* Top Section with Image and Details */}
-                  <div className="plan-card-top">
-                    {/* Product Image */}
-                    <div className="plan-product-image">
-                      {plan.image_path ? (
-                        <>
-                          <img 
-                            src={resolveImageUrl(plan.image_path)} 
-                            alt={plan.name}
-                            onError={(e) => { e.target.style.display = 'none'; }}
-                          />
-                          {/* Purchase count badge on image */}
-                          {plan.purchase_limit > 0 && (
-                            <div className="image-badge">
-                              limit {plan.user_purchase_count || 0}/{plan.purchase_limit}
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="no-image">No Image</div>
-                      )}
-                    </div>
-                    
-                    {/* Product Info */}
-                    <div className="plan-product-info">
-                      <h3 className="product-title">{plan.name}</h3>
-                      
-                      <div className="product-details">
-                        <div className="detail-item">
-                          <span className="detail-label-new">Price:</span>
-                          <span className="detail-value-new">${plan.investment_amount}</span>
-                        </div>
-                        <div className="detail-item">
-                          <span className="detail-label-new">Daily income:</span>
-                          <span className="detail-value-new">${plan.daily_profit}</span>
-                        </div>
-                        <div className="detail-item">
-                          <span className="detail-label-new">Total income:</span>
-                          <span className="detail-value-new">${plan.total_profit}</span>
-                        </div>
-                        <div className="detail-item">
-                          <span className="detail-label-new">Duration:</span>
-                          <span className="detail-value-new">{plan.duration_days} Days</span>
-                        </div>
-                      </div>
-
-                      <button 
-                        className="buy-now-btn"
-                        onClick={() => handleInvestClick(plan)}
-                        disabled={loadingInvest || (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit)}
-                        style={{
-                          opacity: (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 0.5 : 1,
-                          cursor: (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'not-allowed' : 'pointer'
-                        }}
-                      >
-                        {loadingInvest ? 'Loading...' : 
-                         (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'LIMIT REACHED' : 
-                         'BUY NOW'}
-                      </button>
-                    </div>
+        <section className="dashboard-showcase">
+          <div className="dashboard-section-head dashboard-transaction-header">
+            <div>
+              <h3>Transation History</h3>
+              <p className="dashboard-section-sub">See All Transations</p>
+            </div>
+            <Link to="/transactions" className="dashboard-view-chip">View</Link>
+          </div>
+          <div className="dashboard-transactions-list">
+            {transactionItems.map((tx) => (
+              <div key={tx._id} className="dashboard-transaction-card">
+                <div className="dashboard-transaction-left">
+                  <div className="dashboard-transaction-icon">
+                    <FontAwesomeIcon icon={faCoins} />
+                  </div>
+                  <div>
+                    <h4>AED {Number(tx.amount || 0).toFixed(2)}</h4>
+                    <p>{formatTxTime(tx.date)}</p>
                   </div>
                 </div>
-              ))
-            ) : (
-              <p style={{ textAlign: 'center', color: '#64748b' }}>No plans available</p>
-            )}
+                <div className="dashboard-transaction-right">
+                  <h4>AED {Number(tx.amount || 0).toFixed(2)}</h4>
+                  <p>{tx.type}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+        </section>
 
        
         {/* Error Modal */}

@@ -32,7 +32,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background:    #0557b4c7;
+  background: linear-gradient(170deg, #0557b4 0%, #3f4ae5 100%);
 }
 
 .app-splash-content {
