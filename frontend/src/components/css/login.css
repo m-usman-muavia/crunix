@@ -3,231 +3,297 @@
 * { box-sizing: border-box; }
 
 /* ─── Full-page wrapper ─────────────────────── */
-.sp-page {
+.ref-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(175deg, #8ec5e0 0%, #b5daf2 28%, #d4edf9 58%, #edf7fd 100%);
+  background: #ffffff;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 /* ─── Header / hero ─────────────────────────── */
-.sp-header {
+.ref-header {
   flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 72px 24px 40px;
+  background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+  padding: 56px 28px 36px;
+  text-align: center;
+  color: #ffffff;
 }
 
-.sp-header.sp-header-sm {
-  padding: 48px 24px 26px;
-}
-
-.sp-logo {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  filter: drop-shadow(0 6px 16px rgba(13, 71, 161, 0.25));
-}
-
-.sp-brand {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 16px;
-  font-size: 28px;
-  font-weight: 900;
-  color: #0d47a1;
+.ref-header-title {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
-.sp-brand-mark {
-  font-size: 22px;
-  font-weight: 900;
-  color: #1565c0;
-}
-
-.sp-tagline {
-  margin: 10px 0 0;
-  font-size: 13.5px;
-  color: #1976d2;
-  text-align: center;
-  font-weight: 500;
-  opacity: 0.88;
+.ref-header-desc {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+  opacity: 0.92;
 }
 
 /* ─── White card ────────────────────────────── */
-.sp-card {
+.ref-card {
   flex: 1;
   background: #ffffff;
-  padding: 28px 22px 36px;
-  box-shadow: 0 -4px 20px rgba(13, 71, 161, 0.07);
+  padding: 28px 24px;
+  box-shadow: 0 -4px 20px rgba(67, 97, 238, 0.08);
+}
+
+/* ─── Tabs ──────────────────────────────────── */
+.ref-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.ref-tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 0;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #9ca3af;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.ref-tab-active {
+  color: #4361ee;
+  border-bottom-color: #4361ee;
+}
+
+.ref-tab:not(.ref-tab-active):hover {
+  color: #6b7280;
+}
+
+.ref-tab a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ─── Error message ─────────────────────────── */
+.ref-error {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 /* ─── Form ──────────────────────────────────── */
-.sp-form {
+.ref-form {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-/* ─── Input wrap ────────────────────────────── */
-.sp-inp-wrap {
+/* ─── Input group with icon ─────────────────── */
+.ref-inp-group {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
-/* ─── Input ─────────────────────────────────── */
-.sp-inp {
+.ref-inp-icon {
+  position: absolute;
+  left: 14px;
+  width: 20px;
+  height: 20px;
+  color: #d1d5db;
+  pointer-events: none;
+}
+
+.ref-inp {
   width: 100%;
-  padding: 10px 16px;
-  background: #f4f8fb;
-  border: 1.5px solid #e3edf6;
+  padding: 13px 14px 13px 42px;
+  background: #f3f4f6;
+  border: 1.5px solid #e5e7eb;
   border-radius: 12px;
   font-family: inherit;
   font-size: 14px;
-  color: #1a2d4a;
+  color: #1f2937;
   outline: none;
   transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
 }
 
-.sp-inp:focus {
+.ref-inp:focus {
   background: #ffffff;
-  border-color: #2196f3;
-  box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
+  border-color: #4361ee;
+  box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
 }
 
-.sp-inp::placeholder {
-  color: #9db0c3;
+.ref-inp::placeholder {
+  color: #9ca3af;
 }
 
-.sp-inp:disabled {
-  background: #eef4f9;
+.ref-inp:disabled {
+  background: #f9fafb;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-.sp-inp-pw {
-  padding-right: 48px;
-}
-
 /* ─── Eye toggle button ─────────────────────── */
-.sp-eye-btn {
+.ref-eye-btn {
   position: absolute;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-50%);
+  right: 12px;
   border: none;
   background: transparent;
   padding: 4px;
   cursor: pointer;
-  color: #7ea8c8;
+  color: #9ca3af;
   display: flex;
   align-items: center;
   transition: color 0.2s;
 }
 
-.sp-eye-btn:hover {
-  color: #1565c0;
+.ref-eye-btn:hover {
+  color: #4361ee;
 }
 
-.sp-eye-btn svg {
+.ref-eye-btn svg {
   width: 18px;
   height: 18px;
 }
 
-/* ─── Forgot password row ───────────────────── */
-.sp-forgot-row {
+/* ─── Checkbox ──────────────────────────────── */
+.ref-checkbox {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #4b5563;
+  cursor: pointer;
 }
 
-.sp-forgot-link {
-  font-size: 12.5px;
-  color: #1565c0;
+.ref-checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #4361ee;
+}
+
+/* ─── Row between ───────────────────────────── */
+.ref-row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.ref-forgot-link {
+  color: #4361ee;
   text-decoration: none;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.sp-forgot-link:hover {
+.ref-forgot-link:hover {
   text-decoration: underline;
 }
 
-/* ─── Error message ─────────────────────────── */
-.sp-error {
-  margin: 0;
-  padding: 11px 14px;
-  border-radius: 10px;
-  background: #fff1f2;
-  border: 1px solid #fecdd3;
-  color: #be123c;
-  font-size: 12.5px;
-  line-height: 1.45;
-}
-
 /* ─── Submit button ─────────────────────────── */
-.sp-btn {
-  width: 100%;
-  padding: 15px;
+.ref-btn-submit {
+  width: 52px;
+  height: 52px;
   border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #1565c0 0%, #1e88e5 100%);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
   color: #ffffff;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(25, 118, 210, 0.34);
-  transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
-  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto 0;
+  box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 
-.sp-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(25, 118, 210, 0.42);
+.ref-btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(67, 97, 238, 0.4);
 }
 
-.sp-btn:active:not(:disabled) {
+.ref-btn-submit:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.sp-btn:disabled {
+.ref-btn-submit:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-/* ─── Bottom footer link ────────────────────── */
-.sp-card-footer {
+.ref-btn-submit svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ─── Divider ───────────────────────────────── */
+.ref-divider {
   text-align: center;
-  margin-top: 22px;
-  font-size: 13.5px;
-  color: #5a7e9a;
-}
-
-.sp-card-footer a {
-  color: #1565c0;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.sp-card-footer a:hover {
-  text-decoration: underline;
-}
-
-/* ─── EmailOTP back-link (reused by EmailOTP page) ── */
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #5a7e9a;
-  text-decoration: none;
   font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  transition: color 0.2s;
+  color: #d1d5db;
+  margin: 16px 0;
+  position: relative;
 }
 
-.back-link:hover {
-  color: #1565c0;
+.ref-divider::before,
+.ref-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.ref-divider::before {
+  left: 0;
+}
+
+.ref-divider::after {
+  right: 0;
+}
+
+/* ─── Social buttons ────────────────────────── */
+.ref-socials {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.ref-social-btn {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.ref-social-btn:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.ref-social-btn svg {
+  width: 22px;
+  height: 22px;
 }
