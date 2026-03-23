@@ -26,7 +26,7 @@
   color: #9ca3af;
   transition: all 0.3s ease;
   padding: 8px 10px;
-  border-radius: 12px;
+  border-radius: 8px;
   min-width: 46px;
   min-height: 40px;
 }
@@ -41,13 +41,13 @@
 }
 
 .nav-item-modern:hover {
-  color: #0557b4;
+  color: #ffde59;
   background: #eff6ff;
 }
 
 .nav-item-modern.active {
-  color: #0557b4;
-  background: #dbeafe;
+  color:  #ff914d;
+  background: #ffde59;
 }
 
 .nav-icon-only span {
