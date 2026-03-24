@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCheckCircle, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import './css/dashboard.css';
+import './css/plans.css';
 import './css/style.css';
 import './css/notifications.css';
 import API_BASE_URL from '../config/api';
@@ -182,118 +183,67 @@ const Notifications = () => {
   };
 
   const filteredNotifications = getFilteredNotifications();
+  const unreadCount = notifications.filter(n => !n.is_read && !n.read).length;
+  const readCount = notifications.filter(n => n.is_read || n.read).length;
 
   return (
-    <div className="main-wrapper">
-      <div className="main-container">
-        {/* Header */}
-        <div className="deposit-header" style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '14px' }}>
-          <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', flex: 1 }}>Notifications</h1>
+    <div className="main-wrapper dom-wrapper">
+      <div className="main-container dom-container">
+        <div className="dashboard-modern-hero dashboard-service-hero">
+          <div className="dashboard-modern-hero-top">
+            <div>
+              <p className="dashboard-service-label">Inbox</p>
+              <h1 className="dashboard-modern-title">Notifications</h1>
+            </div>
+            <div className="dashboard-header-actions">
+            
+            </div>
+          </div>
         </div>
 
-        {/* Filter Tabs */}
-        <div style={{
-          display: 'flex',
-          gap: '10px',
-          padding: '15px',
-          borderBottom: '1px solid #e0e0e0',
-          backgroundColor: '#f9f9f9'
-        }}>
+        <div className="notifications-filter-wrap">
           <button
             onClick={() => setFilter('all')}
-            style={{
-              padding: '8px 16px',
-              border: filter === 'all' ? '2px solid #0055A4' : '1px solid #ddd',
-              borderRadius: '20px',
-              background: filter === 'all' ? '#e3f2fd' : 'white',
-              color: filter === 'all' ? '#0055A4' : '#666',
-              cursor: 'pointer',
-              fontWeight: filter === 'all' ? 'bold' : 'normal',
-              transition: 'all 0.3s ease'
-            }}
-            className="filter-btn"
+            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
           >
             All ({notifications.length})
           </button>
           <button
             onClick={() => setFilter('unread')}
-            style={{
-              padding: '8px 16px',
-              border: filter === 'unread' ? '2px solid #0055A4' : '1px solid #ddd',
-              borderRadius: '20px',
-              background: filter === 'unread' ? '#e3f2fd' : 'white',
-              color: filter === 'unread' ? '#0055A4' : '#666',
-              cursor: 'pointer',
-              fontWeight: filter === 'unread' ? 'bold' : 'normal',
-              transition: 'all 0.3s ease'
-            }}
-            className="filter-btn"
+            className={`filter-btn ${filter === 'unread' ? 'active' : ''}`}
           >
-            Unread ({notifications.filter(n => !n.is_read && !n.read).length})
+            Unread ({unreadCount})
           </button>
           <button
             onClick={() => setFilter('read')}
-            style={{
-              padding: '8px 16px',
-              border: filter === 'read' ? '2px solid #0055A4' : '1px solid #ddd',
-              borderRadius: '20px',
-              background: filter === 'read' ? '#e3f2fd' : 'white',
-              color: filter === 'read' ? '#0055A4' : '#666',
-              cursor: 'pointer',
-              fontWeight: filter === 'read' ? 'bold' : 'normal',
-              transition: 'all 0.3s ease'
-            }}
-            className="filter-btn"
+            className={`filter-btn ${filter === 'read' ? 'active' : ''}`}
           >
-            Read ({notifications.filter(n => n.is_read || n.read).length})
+            Read ({readCount})
           </button>
         </div>
 
-        {/* Content */}
-        <div className="notification-content" style={{ padding: '15px', minHeight: '300px' }}>
+        <div className="notification-content">
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#999' }}>
+            <div className="notifications-state loading-state">
               <p>Loading notifications...</p>
             </div>
           ) : error ? (
-            <div style={{
-              textAlign: 'center',
-              padding: '40px 20px',
-              color: '#d32f2f',
-              backgroundColor: '#ffebee',
-              borderRadius: '8px',
-              marginBottom: '15px'
-            }}>
+            <div className="error-banner">
               <p>Error: {error}</p>
-              <button
-                onClick={fetchNotifications}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#d32f2f',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  marginTop: '10px'
-                }}
-              >
+              <button onClick={fetchNotifications}>
                 Retry
               </button>
             </div>
           ) : filteredNotifications.length === 0 ? (
-            <div style={{
-              textAlign: 'center',
-              padding: '60px 20px',
-              color: '#999'
-            }}>
-              <FontAwesomeIcon icon={faBell} style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.3 }} />
-              <p style={{ fontSize: '16px', marginBottom: '5px' }}>No notifications</p>
-              <p style={{ fontSize: '14px', opacity: 0.7 }}>
+            <div className="empty-state">
+              <FontAwesomeIcon icon={faEnvelopeOpenText} className="empty-state-icon" />
+              <p className="empty-state-title">No notifications</p>
+              <p className="empty-state-subtitle">
                 {filter === 'all' ? 'You are all caught up!' : `No ${filter} notifications`}
               </p>
             </div>
           ) : (
-            <div>
+            <div className="notifications-list-wrap">
               {filteredNotifications.map((notif) => {
                 const isUnread = !notif.is_read && !notif.read;
                 const bgColor = getNotificationBgColor(notif.type || notif.notification_type);
@@ -307,63 +257,26 @@ const Notifications = () => {
                         markAsRead(notif._id);
                       }
                     }}
-                    style={{
-                      padding: '15px',
-                      marginBottom: '12px',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      opacity: isUnread ? 1 : 0.9,
-                      position: 'relative'
-                    }}
-                    className="notification-card"
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = '0 15px 35px rgba(15, 23, 42, 0.12)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = '0 10px 26px rgba(15, 23, 42, 0.08)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
+                    style={{ '--notif-border': borderColor, '--notif-bg': bgColor }}
+                    className={`notification-card ${isUnread ? 'unread' : 'read'}`}
                   >
-                    {/* Unread Indicator */}
-                   
-                    {/* Notification Title/Type */}
-                    <div style={{
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      color: '#0055A4',
-                      marginBottom: '8px',
-                      textTransform: 'capitalize',
-                      letterSpacing: '0.5px',
-                      opacity: 0.85
-                    }}>
+                    {isUnread && <span className="unread-dot" aria-hidden="true" />}
+
+                    <div className="notification-type">
                       {notif.type || notif.notification_type || 'Notification'}
                     </div>
 
-                    {/* Notification Message */}
-                    <div style={{
-                      fontSize: '15px',
-                      color: '#0f172a',
-                      marginBottom: '10px',
-                      lineHeight: '1.6',
-                      paddingRight: '25px',
-                      fontWeight: '500'
-                    }}>
+                    <div className="notification-message">
                       {notif.message || notif.title || 'No message provided'}
                     </div>
 
-                    {/* Additional Details */}
                     {(notif.amount || notif.reference_id) && (
-                      <div style={{
-                        display: 'flex',
-                        gap: '20px',
-                        fontSize: '13px',
-                        color: '#475569',
-                        borderTop: '1px solid rgba(15, 23, 42, 0.06)',
-                        paddingTop: '5px',
-                        marginTop: '8px'
-                      }}>
-                       
+                      <div className="notification-meta" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        {notif.amount && (
+                          <div >
+                            <strong>Amount: </strong> AED {Number(notif.amount).toFixed(2)}
+                          </div>
+                        )}
                         {notif.reference_id && (
                           <div>
                             <strong>Ref:</strong> {notif.reference_id}
@@ -372,41 +285,16 @@ const Notifications = () => {
                       </div>
                     )}
 
-                    {/* Timestamp */}
-                    <div style={{
-                      fontSize: '12px',
-                      color: '#64748b',
-                      marginTop: '10px',
-                      opacity: 0.8
-                    }}>
+                    <div className="notification-timestamp">
                       {formatDate(notif.createdAt || notif.date)}
                     </div>
 
-                    {/* Delete Button */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         deleteNotification(notif._id);
                       }}
-                      style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: isUnread ? '10px' : '15px',
-                        background: 'none',
-                        border: 'none',
-                        color: '#cbd5e1',
-                        cursor: 'pointer',
-                        fontSize: '18px',
-                        padding: '0',
-                        width: '24px',
-                        height: '24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'color 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.color = '#e11d48'}
-                      onMouseLeave={(e) => e.currentTarget.style.color = '#cbd5e1'}
+                      className="notification-delete-btn"
                       title="Delete notification"
                     >
                       ✕
@@ -418,7 +306,6 @@ const Notifications = () => {
           )}
         </div>
 
-        {/* Bottom Navigation */}
         <BottomNav />
       </div>
     </div>

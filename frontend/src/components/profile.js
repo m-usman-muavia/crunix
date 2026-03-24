@@ -1,212 +1,105 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faCheckCircle, faPause, faPlay, faTrophy, faBox } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { faUser, faRightFromBracket, faCheckCircle, faLock } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import './css/dashboard.css';
+import './css/plans.css';
 import './css/style.css';
 import './css/profile.css';
-import './css/transactions.css';
 import API_BASE_URL from '../config/api';
 import BottomNav from './BottomNav';
 
+const PROFILE_STORAGE_KEY = 'profileDetails';
+
 const Profile = () => {
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
-    const [activeTab, setActiveTab] = useState('profile');
+    const [profileMessage, setProfileMessage] = useState('');
+    const [profileError, setProfileError] = useState('');
+    const [profileForm, setProfileForm] = useState({
+        fullName: '',
+        email: '',
+        phone: '',
+        country: '',
+        city: '',
+        address: '',
+        dateOfBirth: '',
+        gender: ''
+    });
+
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [changeMessage, setChangeMessage] = useState('');
     const [changeError, setChangeError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [activePlans, setActivePlans] = useState([]);
-    const [loadingPlans, setLoadingPlans] = useState(false);
-    const [plansError, setPlansError] = useState('');
-    const [transactions, setTransactions] = useState([]);
-    const [txLoading, setTxLoading] = useState(false);
-    const [txError, setTxError] = useState('');
-    const [txTab, setTxTab] = useState('deposits');
-    const [plansTab, setPlansTab] = useState('active');
-    const [referralCode, setReferralCode] = useState('');
-    const [notifications, setNotifications] = useState([]);
-    const [notifLoading, setNotifLoading] = useState(false);
-    const [notifError, setNotifError] = useState('');
-    const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
-        if (location.state?.activeTab) {
-            setActiveTab(location.state.activeTab);
-        }
-    }, [location.state]);
-
-    // Get user info on component mount
-    useEffect(() => {
-        const token = localStorage.getItem('authToken');
         const userData = localStorage.getItem('user');
+        if (!userData) return;
 
-        if (userData) {
-            setUser(JSON.parse(userData));
-        }
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
 
-        // Fetch referral code
-        fetchReferralCode();
+        const savedProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
+        const parsedProfile = savedProfile ? JSON.parse(savedProfile) : {};
+
+        setProfileForm({
+            fullName: parsedProfile.fullName || parsedUser.name || '',
+            email: parsedProfile.email || parsedUser.email || '',
+            phone: parsedProfile.phone || '',
+            country: parsedProfile.country || '',
+            city: parsedProfile.city || '',
+            address: parsedProfile.address || '',
+            dateOfBirth: parsedProfile.dateOfBirth || '',
+            gender: parsedProfile.gender || ''
+        });
     }, []);
 
-    const fetchReferralCode = async () => {
-        try {
-            const token = localStorage.getItem('authToken');
-            if (!token) return;
+    const completionPercent = useMemo(() => {
+        const fields = [
+            profileForm.fullName,
+            profileForm.email,
+            profileForm.phone,
+            profileForm.country,
+            profileForm.city,
+            profileForm.address,
+            profileForm.dateOfBirth,
+            profileForm.gender
+        ];
+        const filled = fields.filter(Boolean).length;
+        return Math.round((filled / fields.length) * 100);
+    }, [profileForm]);
 
-            const response = await fetch(`${API_BASE_URL}/api/referral/code`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setReferralCode(data.referralCode || 'N/A');
-                // Also update user state with referral code
-                setUser(prevUser => ({
-                    ...prevUser,
-                    referralCode: data.referralCode || 'N/A'
-                }));
-            }
-        } catch (err) {
-            console.error('Error fetching referral code:', err);
-            setReferralCode('N/A');
-        }
+    const handleProfileInput = (e) => {
+        const { name, value } = e.target;
+        setProfileForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Fetch active plans when activeplans tab is selected
-    useEffect(() => {
-        if (activeTab === 'activeplans') {
-            fetchActivePlans();
+    const handleSaveProfile = (e) => {
+        e.preventDefault();
+        setProfileMessage('');
+        setProfileError('');
+
+        if (!profileForm.fullName.trim() || !profileForm.email.trim() || !profileForm.phone.trim()) {
+            setProfileError('Full Name, Email, and Mobile Number are required to complete profile.');
+            return;
         }
-    }, [activeTab]);
 
-    // Fetch transactions when transactions tab is selected
-    useEffect(() => {
-        if (activeTab === 'transactions') {
-            fetchTransactions();
+        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileForm));
+
+        if (user) {
+            const updatedUser = {
+                ...user,
+                name: profileForm.fullName,
+                email: profileForm.email
+            };
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
         }
-    }, [activeTab]);
 
-    // Fetch notifications when notifications tab is selected
-    useEffect(() => {
-        if (activeTab === 'notification') {
-            fetchNotifications();
-        }
-    }, [activeTab]);
-
-    const fetchActivePlans = async () => {
-        setLoadingPlans(true);
-        setPlansError('');
-        try {
-            const token = localStorage.getItem('authToken');
-            const response = await fetch(`${API_BASE_URL}/api/plans/user/active`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch active plans');
-            }
-
-            const data = await response.json();
-            setActivePlans(Array.isArray(data) ? data : data.data || []);
-        } catch (err) {
-            console.error('Error fetching active plans:', err);
-            setPlansError(err.message);
-            setActivePlans([]);
-        } finally {
-            setLoadingPlans(false);
-        }
-    };
-
-    const fetchTransactions = async () => {
-        try {
-            setTxLoading(true);
-            setTxError('');
-            const authToken = localStorage.getItem('authToken');
-
-            const depositsRes = await fetch(`${API_BASE_URL}/api/deposits/my-deposits`, {
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            });
-
-            const withdrawalsRes = await fetch(`${API_BASE_URL}/api/withdrawals/my-withdrawals`, {
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            });
-
-            let allTransactions = [];
-
-            if (depositsRes.ok) {
-                const depositsData = await depositsRes.json();
-                const deposits = Array.isArray(depositsData) ? depositsData : (depositsData.data || []);
-                const formattedDeposits = deposits.map(dep => ({
-                    _id: dep._id,
-                    type: 'deposit',
-                    amount: Number(dep.deposit_amount ?? dep.amount ?? 0),
-                    status: dep.status,
-                    date: dep.createdAt,
-                    sender_mobile: dep.sender_mobile,
-                    transaction_id: dep.transaction_id
-                }));
-                allTransactions = [...allTransactions, ...formattedDeposits];
-            }
-
-            if (withdrawalsRes.ok) {
-                const withdrawalsData = await withdrawalsRes.json();
-                const withdrawals = Array.isArray(withdrawalsData) ? withdrawalsData : (withdrawalsData.data || []);
-                const formattedWithdrawals = withdrawals.map(wit => ({
-                    _id: wit._id,
-                    type: 'withdrawal',
-                    amount: Number(wit.withdrawal_amount ?? wit.amount ?? 0),
-                    status: wit.status,
-                    date: wit.createdAt,
-                    wallet_address: wit.wallet_address
-                }));
-                allTransactions = [...allTransactions, ...formattedWithdrawals];
-            }
-
-            allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            setTransactions(allTransactions);
-        } catch (err) {
-            setTxError(err.message);
-            setTransactions([]);
-        } finally {
-            setTxLoading(false);
-        }
-    };
-
-    const fetchNotifications = async () => {
-        try {
-            setNotifLoading(true);
-            setNotifError('');
-            const authToken = localStorage.getItem('authToken');
-
-            const response = await fetch(`${API_BASE_URL}/api/notifications`, {
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                const notifs = Array.isArray(data) ? data : (data.data || []);
-                setNotifications(notifs);
-            } else {
-                throw new Error('Failed to fetch notifications');
-            }
-        } catch (err) {
-            setNotifError(err.message);
-            setNotifications([]);
-        } finally {
-            setNotifLoading(false);
-        }
+        setProfileMessage('Profile details saved successfully.');
+        setTimeout(() => setProfileMessage(''), 3000);
     };
 
     const handleChangePassword = async (e) => {
@@ -214,9 +107,8 @@ const Profile = () => {
         setChangeMessage('');
         setChangeError('');
 
-        // Validation
         if (!oldPassword || !newPassword || !confirmPassword) {
-            setChangeError('All fields are required');
+            setChangeError('All password fields are required');
             return;
         }
 
@@ -231,7 +123,7 @@ const Profile = () => {
         }
 
         if (oldPassword === newPassword) {
-            setChangeError('New password must be different from the old password');
+            setChangeError('New password must be different from old password');
             return;
         }
 
@@ -243,285 +135,194 @@ const Profile = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    oldPassword,
-                    newPassword
-                })
+                body: JSON.stringify({ oldPassword, newPassword })
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                // Handle specific errors
-                if (response.status === 401) {
-                    setChangeError('Old password is incorrect. Please try again.');
-                } else if (response.status === 404) {
-                    setChangeError('User not found. Please login again.');
-                } else {
-                    setChangeError(data.message || 'Failed to change password');
-                }
+                setChangeError(data.message || 'Failed to change password');
                 return;
             }
 
-            setChangeMessage('Password changed successfully!');
+            setChangeMessage('Password changed successfully.');
             setOldPassword('');
             setNewPassword('');
             setConfirmPassword('');
-
-            // Clear message after 3 seconds
             setTimeout(() => setChangeMessage(''), 3000);
         } catch (error) {
-            setChangeError('Error: ' + error.message);
+            setChangeError(`Error: ${error.message}`);
         } finally {
             setIsLoading(false);
         }
     };
 
     const handleLogout = () => {
-        // Clear all stored data
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
-
-        // Redirect to login
         navigate('/');
     };
 
-    const handlePausePlan = async (planId) => {
-        try {
-            const token = localStorage.getItem('authToken');
-            const response = await fetch(`${API_BASE_URL}/api/plans/${planId}/pause`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to pause plan');
-            }
-
-            // Refresh the plans list
-            fetchActivePlans();
-        } catch (err) {
-            console.error('Error pausing plan:', err);
-            setPlansError(err.message);
-        }
-    };
-
-    const handleResumePlan = async (planId) => {
-        try {
-            const token = localStorage.getItem('authToken');
-            const response = await fetch(`${API_BASE_URL}/api/plans/${planId}/resume`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to resume plan');
-            }
-
-            // Refresh the plans list
-            fetchActivePlans();
-        } catch (err) {
-            console.error('Error resuming plan:', err);
-            setPlansError(err.message);
-        }
-    };
-
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case 'active':
-                return { color: '#16a34a', icon: faCheckCircle, label: 'Active' };
-            case 'paused':
-                return { color: '#f59e0b', icon: faPause, label: 'Paused' };
-            case 'completed':
-                return { color: '#6366f1', icon: faTrophy, label: 'Completed' };
-            default:
-                return { color: '#6b7280', icon: faCheckCircle, label: 'Active' };
-        }
-    };
-
-    const getStatusColor = (status) => {
-        switch (status?.toLowerCase()) {
-            case 'approved':
-            case 'accept':
-                return '#27ae60';
-            case 'rejected':
-            case 'reject':
-                return '#e74c3c';
-            case 'pending':
-                return '#f39c12';
-            default:
-                return '#7f8c8d';
-        }
-    };
-
-    const getStatusText = (status) => {
-        return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
-    };
-
-    const calculateProgress = (startDate, endDate) => {
-        const now = new Date();
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const total = end - start;
-        const elapsed = now - start;
-        const progress = Math.min((elapsed / total) * 100, 100);
-        return Math.max(0, progress);
-    };
-
-    const formatDate = (date) => {
-        return new Date(date).toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        });
-    };
-
-    const formatTime = (date) => {
-        return new Date(date).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-    };
-
-    const formatAmount = (value) => {
-        const num = Number(value);
-        return Number.isFinite(num) ? num.toFixed(2) : '0.0';
-    };
-
-    const filteredTransactions = transactions.filter(tx => tx.type === txTab.slice(0, -1));
-
-    const filteredPlans = activePlans.filter(plan => {
-        if (plansTab === 'active') {
-            return plan.status === 'active' || plan.status === 'paused';
-        } else if (plansTab === 'completed') {
-            return plan.status === 'completed';
-        }
-        return true;
-    });
-
     return (
-        <div className="main-wrapper">
-            <div className="main-container">
-                {/* <div className="deposit-header">Profile</div> */}
-                <div className="deposit-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',padding: '10px 20px' }}>
-                              Profile
-                                      <div className="helpcenter">  
-                                                  <button className="primary-btn" style={{padding: '6px 16px', fontSize: '14px', background: 'red'}} onClick={handleLogout}>Logout</button>
-
-                              </div>
-                            </div>
-                <div className="plan-image">
-                    <img
-                        src="/planimage.webp"
-                        alt="Investment Plans"
-                        style={{
-                            width: '100%',
-                            height: '200px',
-                            objectFit: 'cover',
-                            borderRadius: '0px 0px 15px 15px',
-                            borderBottom: '2px solid #000000',
-                        }}
-                    />
-                </div>
-
-
-
-
-
-
-                {/* Profile Section */}
-                {activeTab === 'profile' && (
-                    <div className="profile-content">
-                        <h2 className="profile-title"></h2>
-
-                        <div className="card-container">
-                            <div className="content-card password-card">
-                                <div className="profile-card-title" style={{fontSize: '24px', fontWeight:'bold', padding:'8px 0px 10px 0px'}}>Profile Information</div>
-                                <form onSubmit={handleChangePassword} className="password-form">
-                                    <div className="form-group">
-                                        <input
-                                            className="form-input"
-                                            placeholder={user?.name || 'N/A'}
-                                            value={user?.name || 'N/A'}
-                                            disabled
-                                        />
-                                        <input
-                                            className="form-input"
-                                            value={user?.email || 'N/A'}
-                                            disabled
-                                        />
-                                        {/* <label className="form-label">Mobile Number</label>
-                                        <input
-                                            className="form-input"
-                                            value=
-                                        /> */}
-                                        <label className="form-label">Old Password:</label>
-                                        <input
-                                            type="password"
-                                            className="form-input"
-                                            value={oldPassword}
-                                            onChange={(e) => setOldPassword(e.target.value)}
-                                            placeholder="Enter your current password"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label className="form-label">New Password:</label>
-                                        <input
-                                            type="password"
-                                            className="form-input"
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                            placeholder="Enter your new password"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label className="form-label">Confirm New Password:</label>
-                                        <input
-                                            type="password"
-                                            className="form-input"
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            placeholder="Confirm your new password"
-                                            required
-                                        />
-                                    </div>
-                                    {changeMessage && <div className="success-message">{changeMessage}</div>}
-                                    {changeError && <div className="error-message">{changeError}</div>}
-
-                                    <button
-                                        type="submit"
-                                        className="primary-btn"
-                                        disabled={isLoading}
-                                    >
-                                        {isLoading ? 'Changing Password...' : 'Change Password'}
-                                    </button>
-                                </form>
-                            </div>
+        <div className="main-wrapper dom-wrapper">
+            <div className="main-container dom-container">
+                <div className="dashboard-modern-hero dashboard-service-hero">
+                    <div className="dashboard-modern-hero-top">
+                        <div>
+                            <p className="dashboard-service-label">Account</p>
+                            <h1 className="dashboard-modern-title">Profile</h1>
+                        </div>
+                        <div className="dashboard-header-actions">
+                            <button className="dashboard-modern-edit-link2" aria-hidden="true" onClick={handleLogout}>
+                                Logout
+                            </button>
                         </div>
                     </div>
-                )}
 
-                <div className="logout-section">
-
-                    {/* <button className="primary-btn" style={{margin: '0 50px'}} onClick={handleLogout}>Logout</button> */}
+                   
                 </div>
 
-                {/* Bottom Navigation */}
-                <BottomNav />
+                <section className="dashboard-showcase profile-modern-section">
+                    <div className="profile-modern-card">
+                        <div className="profile-modern-card-head">
+                            <h3>
+                                <FontAwesomeIcon icon={faCheckCircle} /> Complete Profile
+                            </h3>
+                            <p>Add your details to complete your profile.</p>
+                        </div>
 
+                        <form onSubmit={handleSaveProfile} className="profile-modern-form">
+                            <div className="profile-grid-two">
+                                <input
+                                    name="fullName"
+                                    value={profileForm.fullName}
+                                    onChange={handleProfileInput}
+                                    className="profile-modern-input"
+                                    placeholder="Full Name"
+                                    required
+                                />
+                                <input
+                                    name="email"
+                                    value={profileForm.email}
+                                    onChange={handleProfileInput}
+                                    className="profile-modern-input"
+                                    placeholder="Email"
+                                    type="email"
+                                    required
+                                />
+                                <input
+                                    name="phone"
+                                    value={profileForm.phone}
+                                    onChange={handleProfileInput}
+                                    className="profile-modern-input"
+                                    placeholder="Mobile Number"
+                                    required
+                                />
+                                <input
+                                    name="country"
+                                    value={profileForm.country}
+                                    onChange={handleProfileInput}
+                                    className="profile-modern-input"
+                                    placeholder="Country"
+                                />
+                                <input
+                                    name="city"
+                                    value={profileForm.city}
+                                    onChange={handleProfileInput}
+                                    className="profile-modern-input"
+                                    placeholder="City"
+                                />
+                                <select
+                                    name="gender"
+                                    value={profileForm.gender}
+                                    onChange={handleProfileInput}
+                                    className="profile-modern-input"
+                                >
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <input
+                                    name="dateOfBirth"
+                                    value={profileForm.dateOfBirth}
+                                    onChange={handleProfileInput}
+                                    className="profile-modern-input"
+                                    type="date"
+                                />
+                                <input
+                                    name="address"
+                                    value={profileForm.address}
+                                    onChange={handleProfileInput}
+                                    className="profile-modern-input"
+                                    placeholder="Address"
+                                />
+                            </div>
+
+                            {profileMessage && <div className="success-message">{profileMessage}</div>}
+                            {profileError && <div className="error-message">{profileError}</div>}
+
+                            <button type="submit" className="profile-modern-btn">
+                                Save Profile
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <section className="dashboard-showcase profile-modern-section">
+                    <div className="profile-modern-card">
+                        <div className="profile-modern-card-head">
+                            <h3>
+                                <FontAwesomeIcon icon={faLock} /> Change Password
+                            </h3>
+                            <p>Keep your account secure by updating your password.</p>
+                        </div>
+
+                        <form onSubmit={handleChangePassword} className="profile-modern-form">
+                            <input
+                                type="password"
+                                className="profile-modern-input"
+                                value={oldPassword}
+                                onChange={(e) => setOldPassword(e.target.value)}
+                                placeholder="Current Password"
+                                required
+                            />
+                            <input
+                                type="password"
+                                className="profile-modern-input"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                placeholder="New Password"
+                                required
+                            />
+                            <input
+                                type="password"
+                                className="profile-modern-input"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                placeholder="Confirm New Password"
+                                required
+                            />
+
+                            {changeMessage && <div className="success-message">{changeMessage}</div>}
+                            {changeError && <div className="error-message">{changeError}</div>}
+
+                            <button type="submit" className="profile-modern-btn" disabled={isLoading}>
+                                {isLoading ? 'Changing Password...' : 'Change Password'}
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <section className="dashboard-showcase profile-modern-section profile-logout-wrap">
+                    <button className="profile-logout-btn" onClick={handleLogout}>
+                        <FontAwesomeIcon icon={faRightFromBracket} /> Logout
+                    </button>
+                </section>
+
+                <BottomNav />
             </div>
         </div>
     );

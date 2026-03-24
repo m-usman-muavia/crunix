@@ -73,8 +73,8 @@ const createTestNotifications = async () => {
             },
             {
                 userId: user._id,
-                type: 'plan_activated',
-                message: 'You have successfully activated the Premium Plan with $3000 investment. Enjoy daily profits!',
+                type: 'plan_ativated',
+                message: 'You have successfully activated the Premium Plan with AED3000 investment. Enjoy daily profits!',
                 amount: 3000,
                 metadata: { planId: 'test456' }
             },

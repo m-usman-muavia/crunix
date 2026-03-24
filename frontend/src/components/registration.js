@@ -73,9 +73,9 @@ const Registration = () => {
 
   return (
     <div className="ref-page ref-page-register">
-      <div className="ref-header">
+      <div className="ref-header login-service-hero">
         <h1 className="ref-header-title">Welcome!</h1>
-        <p className="ref-header-desc">Unlocking prosperity with opportunity to secure your future.</p>
+        <p className="ref-header-desc">Desert Oil Network is a Dubai-based platform generating daily profits based on oil price. </p>
       </div>
 
       <div className="ref-card">

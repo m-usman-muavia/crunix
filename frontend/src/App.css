@@ -113,7 +113,7 @@ background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   text-align: center;
 }
 
-.app-splash-halo {
+/* .app-splash-halo {
   position: absolute;
   top: -34px;
   width: 170px;
@@ -121,7 +121,7 @@ background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   border-radius: 999px;
   background: radial-gradient(circle, #ffde59 0%, #ff914d79 70%);
   animation: splashHaloPulse 3s ease-in-out both;
-}
+} */
 
 .app-splash-logo {
   position: relative;
@@ -130,7 +130,7 @@ background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   height: 140px;
   object-fit: contain;
   filter: drop-shadow(0 8px 20px rgba(21, 101, 192, 0.22));
-  animation: splashLogoEntrance 1000s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: splashLogoEntrance 3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 .app-splash-brand {

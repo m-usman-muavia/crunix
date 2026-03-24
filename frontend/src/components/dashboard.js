@@ -525,10 +525,10 @@ const Dashboard = () => {
               <h1 className="dashboard-modern-title">{displayName}</h1>
             </div>
             <div className="dashboard-header-actions">
-              <button type="button" className="dashboard-header-icon" aria-label="Notifications">
+              <Link to="/notifications" className="dashboard-header-icon" aria-label="Notifications">
                 <FontAwesomeIcon icon={faBell} />
-              </button>
-              <div className="dashboard-modern-avatar" aria-label="User avatar">
+              </Link>
+              <Link to="/profile" className="dashboard-modern-avatar" aria-label="User profile">
                 {avatarImage && !avatarImageError ? (
                   <img
                     src={avatarImage}
@@ -540,7 +540,7 @@ const Dashboard = () => {
                     <FontAwesomeIcon icon={faUser} />
                   </span>
                 )}
-              </div>
+              </Link>
             </div>
           </div>
 
