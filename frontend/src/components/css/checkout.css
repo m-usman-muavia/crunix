@@ -1,0 +1,128 @@
+.checkout-page-content {
+  padding: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.checkout-pay-card,
+.checkout-form-card {
+  background: linear-gradient(160deg, #ffffff 0%, #fff9f0 100%);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.checkout-section-title {
+  margin: 0 0 12px;
+  text-align: left;
+  font-family: 'Sora', 'Segoe UI', sans-serif;
+  color: #111827;
+  font-size: 18px;
+}
+
+.checkout-qr-wrap {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.6);
+  background: #f8fafc;
+  min-height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.checkout-qr-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.checkout-qr-fallback {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.checkout-till-box {
+  margin-top: 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 10px;
+}
+
+.checkout-till-label {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.checkout-till-value {
+  margin: 5px 0 8px;
+  color: #0f172a;
+  font-weight: 800;
+  word-break: break-all;
+  text-align: left;
+}
+
+.checkout-copy-btn {
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.checkout-form-group {
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.checkout-form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.checkout-form-group input {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  padding: 10px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.checkout-file-name {
+  margin: 7px 0 0;
+  font-size: 11px;
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.checkout-submit-btn {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  color: #fff;
+  padding: 11px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.checkout-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

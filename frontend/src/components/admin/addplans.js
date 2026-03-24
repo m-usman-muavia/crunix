@@ -15,6 +15,7 @@ const AddPlans = () => {
     const [showInactive, setShowInactive] = useState(false);
     const [form, setForm] = useState({
         planTitle: '',
+        category: 'Premium Plan',
         investmentAmount: '',
         dailyProfit: '',
         duration: '',
@@ -61,7 +62,7 @@ const AddPlans = () => {
     useEffect(() => { fetchPlans(); }, []);
 
     const resetForm = () => {
-        setForm({ planTitle: '', investmentAmount: '', dailyProfit: '', duration: '', purchaseLimit: '', countdownHours: '', image: null });
+        setForm({ planTitle: '', category: 'Premium Plan', investmentAmount: '', dailyProfit: '', duration: '', purchaseLimit: '', countdownHours: '', image: null });
         setEditingId(null);
     };
 
@@ -71,6 +72,7 @@ const AddPlans = () => {
         
         const formData = new FormData();
         formData.append('name', form.planTitle);
+        formData.append('category', form.category);
         formData.append('investment_amount', form.investmentAmount);
         formData.append('daily_profit', form.dailyProfit);
         formData.append('duration_days', form.duration);
@@ -159,6 +161,7 @@ const AddPlans = () => {
         setEditingId(plan._id);
         setForm({
             planTitle: plan.name || '',
+            category: plan.category || 'Premium Plan',
             investmentAmount: plan.investment_amount || '',
             dailyProfit: plan.daily_profit || '',
             duration: plan.duration_days || '',
@@ -212,6 +215,24 @@ const AddPlans = () => {
                                     placeholder="Enter Plan Title"
                                     required
                                 />
+                            </div>
+
+                            <div className="input-group">
+                                <label>
+                                    Plan Category <span style={{ color: 'red' }}>*</span>
+                                </label>
+                                <select
+                                    name="category"
+                                    value={form.category}
+                                    onChange={onChange}
+                                    required
+                                >
+                                    <option value="Premium Plan">Preimum Plan</option>
+                                    <option value="Special Plan">Specical Plan</option>
+                                    <option value="Elite Plan">Elite Plan</option>
+                                    <option value="Starter Plan">Starter Plan</option>
+                                    <option value="Business Plan">Business Plan</option>
+                                </select>
                             </div>
 
                             <div className="input-group">
@@ -365,6 +386,10 @@ const AddPlans = () => {
                                 <span className="percentage-badge" style={{ color: plan.status === 'active' ? 'green' : 'red' }}>
                                     {plan.status}
                                 </span>
+                            </div>
+
+                            <div className="plan-duration" style={{ marginBottom: '6px' }}>
+                                Category: {plan.category || 'Premium Plan'}
                             </div>
 
                             <div className="plan-duration">

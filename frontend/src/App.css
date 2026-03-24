@@ -24,7 +24,7 @@ body {
   background: #000000;
   overflow-x: hidden;
   position: relative;
-  box-shadow: 0 0 0 1px rgba(132, 170, 204, 0.3), 0 28px 56px rgba(19, 69, 112, 0.22);
+  box-shadow: 0 0 0 1px #ff914d, 0 28px 56px #ffde59;
 }
 
 .app-splash-screen {
@@ -32,11 +32,80 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(170deg, #0557b4 0%, #3f4ae5 100%);
+  background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
+}
+.app-splash-service-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(105deg, #ff914d 0%, #ffde59 100%);
+  padding: 22px 14px 18px;
+}
+
+.app-splash-service-hero::before {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  left: -100px;
+  top: -110px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
+  opacity: 0.55;
+}
+
+.app-splash-orb {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
+  box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.55), 0 10px 22px rgba(249, 115, 22, 0.24);
+  animation: splashOrbFloat 5.6s ease-in-out infinite;
+}
+
+.app-splash-orb-1 {
+  width: 38px;
+  height: 38px;
+  left: 26px;
+  top: 90px;
+  animation-delay: 0s;
+}
+
+.app-splash-orb-2 {
+  width: 22px;
+  height: 22px;
+  right: 50px;
+  top: 86px;
+  animation-delay: 0.8s;
+}
+
+.app-splash-orb-3 {
+  width: 46px;
+  height: 46px;
+  right: 22px;
+  bottom: 120px;
+  animation-delay: 1.5s;
+}
+
+.app-splash-orb-4 {
+  width: 28px;
+  height: 28px;
+  left: 44px;
+  bottom: 96px;
+  animation-delay: 2.1s;
+}
+
+.app-splash-orb-5 {
+  width: 16px;
+  height: 16px;
+  left: 48%;
+  top: 74px;
+  animation-delay: 2.8s;
 }
 
 .app-splash-content {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -50,7 +119,7 @@ body {
   width: 170px;
   height: 170px;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(64, 154, 229, 0.26) 0%, rgba(64, 154, 229, 0) 70%);
+  background: radial-gradient(circle, #ffde59 0%, #ff914d79 70%);
   animation: splashHaloPulse 3s ease-in-out both;
 }
 
@@ -61,7 +130,7 @@ body {
   height: 140px;
   object-fit: contain;
   filter: drop-shadow(0 8px 20px rgba(21, 101, 192, 0.22));
-  animation: splashLogoEntrance 10s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: splashLogoEntrance 100s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 .app-splash-brand {
@@ -81,9 +150,12 @@ body {
   line-height: 1.08;
   font-weight: 900;
   color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.753);
 }
 
 .app-splash-tagline {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+
   margin: 0;
   font-size: 14px;
   line-height: 1;
@@ -147,6 +219,28 @@ body {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes splashOrbFloat {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+    opacity: 0.78;
+  }
+
+  35% {
+    transform: translate3d(10px, -14px, 0) scale(1.08);
+    opacity: 1;
+  }
+
+  70% {
+    transform: translate3d(-8px, -8px, 0) scale(0.92);
+    opacity: 0.88;
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+    opacity: 0.78;
   }
 }
 

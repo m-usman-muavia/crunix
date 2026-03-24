@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faExclamationTriangle, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import './css/errormodal.css';
 
 const ErrorModal = ({ isOpen, message, onClose, autoClose = true, closeDuration = 3000 }) => {
@@ -21,6 +21,10 @@ const ErrorModal = ({ isOpen, message, onClose, autoClose = true, closeDuration 
 
   if (!isVisible) return null;
 
+  const normalizedMessage = (message || '').toLowerCase();
+  const isSuccess = normalizedMessage.includes('added to cart') || normalizedMessage.includes('success');
+  const headingText = isSuccess ? 'Added to Cart' : 'Notice';
+
   const handleClose = () => {
     setIsVisible(false);
     onClose();
@@ -28,16 +32,16 @@ const ErrorModal = ({ isOpen, message, onClose, autoClose = true, closeDuration 
 
   return (
     <div className="error-modal-overlay" onClick={handleClose}>
-      <div className="error-modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className={`error-modal-content ${isSuccess ? 'error-modal-content-success' : ''}`} onClick={(e) => e.stopPropagation()}>
         <button className="error-modal-close" onClick={handleClose}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
 
-        <div className="error-modal-header">
+        <div className={`error-modal-header ${isSuccess ? 'error-modal-header-success' : ''}`}>
           <div className="error-modal-icon">
-            <FontAwesomeIcon icon={faExclamationTriangle} />
+            <FontAwesomeIcon icon={isSuccess ? faCircleCheck : faExclamationTriangle} />
           </div>
-            <h2>Error</h2>
+            <h2>{headingText}</h2>
         </div>
 
         <div className="error-modal-body">

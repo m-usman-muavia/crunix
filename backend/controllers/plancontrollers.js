@@ -29,7 +29,8 @@ exports.createPlan = async (req, res) => {
       duration_days,
       status,
       purchase_limit,
-      countdown_hours
+      countdown_hours,
+      category
     } = req.body;
 
     const total_profit = daily_profit * duration_days;
@@ -55,6 +56,7 @@ exports.createPlan = async (req, res) => {
       total_profit,
       roi_percentage,
       status,
+      category: category || 'Premium Plan',
       image_path: imagePath,
       image_public_id: imagePublicId,
       purchase_limit: purchase_limit || 0
@@ -96,7 +98,8 @@ exports.updatePlan = async (req, res) => {
       duration_days,
       status,
       purchase_limit,
-      countdown_hours
+      countdown_hours,
+      category
     } = req.body;
 
     const plan = await Plan.findById(id);
@@ -113,6 +116,7 @@ exports.updatePlan = async (req, res) => {
     if (daily_profit) plan.daily_profit = daily_profit;
     if (duration_days) plan.duration_days = duration_days;
     if (status) plan.status = status;
+    if (category) plan.category = category;
     if (purchase_limit !== undefined) plan.purchase_limit = purchase_limit;
     
     // Handle countdown timer

@@ -30,6 +30,11 @@ const planSchema = new mongoose.Schema({
     enum: ['active', 'inactive'], 
     default: 'inactive' 
   },
+  category: {
+    type: String,
+    enum: ['Premium Plan', 'Special Plan', 'Elite Plan', 'Starter Plan', 'Business Plan'],
+    default: 'Premium Plan'
+  },
   image_path: {
     type: String,
     default: ''

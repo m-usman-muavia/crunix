@@ -3,8 +3,8 @@
 * { box-sizing: border-box; }
 
 :root {
-  --auth-main: #0557b4c7;
-  --auth-main-solid: #0557b4c7;
+  --auth-main: #ff914d;
+  --auth-main-solid: #ffde59;
 }
 
 /* ─── Full-page wrapper ─────────────────────── */
@@ -19,7 +19,7 @@
 /* ─── Header / hero ─────────────────────────── */
 .ref-header {
   flex-shrink: 0;
-  background: #0557b4c7;
+background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   padding: 56px 28px 36px;
   text-align: center;
   color: #ffffff;
@@ -30,9 +30,12 @@
   font-size: 36px;
   font-weight: 800;
   letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .ref-header-desc {
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+
   margin: 12px 0 0;
   font-size: 14px;
   line-height: 1.5;
@@ -72,8 +75,8 @@
 }
 
 .ref-tab-active {
-  color: var(--auth-main-solid);
-  border-bottom-color: var(--auth-main-solid);
+  color: var(--auth-main);
+  border-bottom-color: var(--auth-main);
 }
 
 .ref-tab:not(.ref-tab-active):hover {
@@ -136,7 +139,7 @@
 
 .ref-inp:focus {
   background: #ffffff;
-  border-color: var(--auth-main-solid);
+  border-color: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   box-shadow: 0 0 0 4px rgba(5, 87, 180, 0.14);
 }
 
@@ -200,7 +203,7 @@
 }
 
 .ref-forgot-link {
-  color: var(--auth-main-solid);
+  color: var(--auth-main);
   text-decoration: none;
   font-weight: 600;
   white-space: nowrap;
@@ -216,20 +219,20 @@
   height: 52px;
   border: none;
   border-radius: 50%;
-  background: var(--auth-main-solid);
+  background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   color: #ffffff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 8px auto 0;
-  box-shadow: 0 8px 20px rgba(5, 87, 180, 0.3);
+  box-shadow: 0 8px 20px #ff914d33;
   transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 
 .ref-btn-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(5, 87, 180, 0.4);
+  box-shadow: 0 12px 28px #ff914d33;
 }
 
 .ref-btn-submit:active:not(:disabled) {
@@ -308,7 +311,8 @@
   display: inline-flex;
   margin-bottom: 12px;
   font-size: 13px;
-  color: var(--auth-main-solid);
+  color: var(--auth-main
+  );
   text-decoration: none;
   font-weight: 600;
 }

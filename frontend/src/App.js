@@ -34,9 +34,15 @@ import Notifications from './components/notifications';
 import CRXDigital from './components/CRXDigital';
 import CompletePlans from './components/CompletePlans';
 import AddToCart from './components/addtocart';
+import Checkout from './components/checkout';
 
 const SplashScreen = () => (
-  <div className="app-splash-screen" aria-label="Loading screen">
+  <div className="app-splash-screen app-splash-service-hero" aria-label="Loading screen">
+    <span className="app-splash-orb app-splash-orb-1" aria-hidden="true" />
+    <span className="app-splash-orb app-splash-orb-2" aria-hidden="true" />
+    <span className="app-splash-orb app-splash-orb-3" aria-hidden="true" />
+    <span className="app-splash-orb app-splash-orb-4" aria-hidden="true" />
+    <span className="app-splash-orb app-splash-orb-5" aria-hidden="true" />
     <div className="app-splash-content">
       <div className="app-splash-halo" />
       <img src="/Logo5120.png" alt="Crunix" className="app-splash-logo" />
@@ -77,6 +83,7 @@ function App() {
             <Route path="/active-plans" element={<ProtectedRoute><ActivePlans /></ProtectedRoute>} />
             <Route path="/complete-plans" element={<ProtectedRoute><CompletePlans /></ProtectedRoute>} />
             <Route path="/add-to-cart" element={<ProtectedRoute><AddToCart /></ProtectedRoute>} />
+            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             <Route path="/collect-income" element={<ProtectedRoute><CollectIncome /></ProtectedRoute>} />
             <Route path="/crx-digital" element={<ProtectedRoute><CRXDigital /></ProtectedRoute>} />
             <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />

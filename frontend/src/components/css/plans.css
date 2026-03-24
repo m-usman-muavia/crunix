@@ -68,6 +68,433 @@
   }
 }
 
+.plan-slider-content {
+  padding-top: 12px;
+}
+
+.plans-slider-section-wrap {
+  
+  margin-bottom: 16px;
+}
+
+
+
+
+
+.plans-slider-head {
+  padding: 0 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.plans-cart-badge {
+  position: absolute;
+  right: -6px;
+  top: -4px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+.plans-slider-title {
+  margin: 0;
+  font-family: 'Sora', 'Segoe UI', sans-serif;
+  font-size: 28px;
+  line-height: 1;
+  color: #141414;
+}
+
+.plans-slider-sub {
+  text-align: left;
+  margin: 2px 0 0;
+  color: #323232;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.plans-slider-controls {
+  padding-right: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.plans-arrow-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 7px;
+  background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.plans-slider-viewport {
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.plans-slider-track {
+  display: flex;
+  transition: transform 0.28s ease;
+}
+
+.plan-card-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(130deg, #ffffff 0%, #fff8ef 100%);
+  border-radius: 16px;
+  padding: 12px;
+  border: 1px solid rgba(249, 115, 22, 0.18);
+  box-shadow: 0 10px 22px rgba(249, 115, 22, 0.15);
+  display: grid;
+  grid-template-columns: 46% 54%;
+  gap: 12px;
+}
+
+.plan-slide-image-wrap {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 126px;
+  background: #f4f5f7;
+}
+
+.plan-slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.plan-slide-duration-badge {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 3px 8px;
+  font-size: 10px;
+  color: #111827;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.plan-slide-countdown-badge {
+  position: absolute;
+  left: 7px;
+  bottom: 7px;
+  background: rgba(17, 24, 39, 0.86);
+  color: #fff;
+  border-radius: 10px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.plan-slide-content {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-slide-title {
+  margin: 0;
+  font-size: 22px;
+  font-family: 'Sora', 'Segoe UI', sans-serif;
+  line-height: 1;
+  color: #1f1f1f;
+}
+
+.plan-slide-desc {
+  margin: 6px 0 8px;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #666;
+  min-height: 42px;
+}
+
+.plan-slide-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.plan-slide-price {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #ef2d19;
+  font-family: 'Sora', 'Segoe UI', sans-serif;
+}
+
+.plan-slide-buy {
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  border-radius: 10px;
+  background: #fff;
+  color: #0f172a;
+  padding: 3px;
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.plan-slide-buy-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plan-slide-buy-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.plan-slide-buy-count {
+  min-width: 24px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.plan-slide-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.plan-slide-add-cart,
+.plan-slide-invest {
+  flex: 1;
+  border: none;
+  border-radius: 9px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.plan-slide-add-cart {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #fff;
+}
+
+.plan-slide-invest {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  color: #fff;
+}
+
+.plan-slide-add-cart:disabled,
+.plan-slide-invest:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.plans-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.plans-slider-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: #f5bb51;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.plans-slider-dot-active {
+  opacity: 1;
+  background: #e88904;
+}
+
+.plan-detail-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.plan-detail-modal-card {
+  width: min(360px, 100%);
+  border-radius: 16px;
+  background: linear-gradient(150deg, #fffaf3 0%, #ffffff 100%);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  box-shadow: 0 22px 42px rgba(15, 23, 42, 0.2);
+  overflow: hidden;
+}
+
+.plan-detail-modal-header {
+  background: linear-gradient(120deg, #ff914d 0%, #ffde59 100%);
+  color: #1f2937;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-detail-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-family: 'Sora', 'Segoe UI', sans-serif;
+}
+
+.plan-detail-close {
+  border: none;
+  background: rgba(255, 255, 255, 0.8);
+  color: #374151;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.plan-detail-grid {
+  padding: 12px 14px 2px;
+}
+
+.plan-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.5);
+}
+
+.plan-detail-row span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.plan-detail-row strong {
+  color: #0f172a;
+  text-align: right;
+  font-size: 13px;
+}
+
+.plan-detail-actions {
+  padding: 12px 14px 4px;
+  display: flex;
+  gap: 10px;
+}
+
+.plan-detail-qty-wrap {
+  padding: 6px 14px 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.plan-detail-qty-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.plan-detail-buy {
+  width: fit-content;
+}
+
+.plan-detail-btn {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.plan-detail-btn-secondary {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.plan-detail-btn-primary {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  color: #fff;
+}
+
+.plan-detail-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.plans-slider-divider {
+  border: 1px dashed #f97316;
+  margin: 20px 0px;
+}
+
+
+@media (max-width: 500px) {
+  .plans-slider-title {
+    font-size: 24px;
+  }
+
+  .plan-card-slide {
+    grid-template-columns: 48% 52%;
+    padding: 8px;
+  }
+
+  .plan-slide-title {
+    font-size: 20px;
+  }
+
+  .plan-slide-price {
+    font-size: 16px;
+  }
+
+  .plan-slide-desc {
+    font-size: 11px;
+    min-height: 40px;
+  }
+
+  .plan-slide-actions {
+    flex-direction: column;
+  }
+}
+
 .plan-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid #e2e8f0;
