@@ -34,6 +34,7 @@ import Notifications from './components/notifications';
 import CRXDigital from './components/CRXDigital';
 import CompletePlans from './components/CompletePlans_NEW';
 import AddToCart from './components/addtocart';
+import Bonus from './components/bonus';
 
 const SplashScreen = () => (
   <div className="app-splash-screen app-splash-service-hero" aria-label="Loading screen">
@@ -84,6 +85,7 @@ function App() {
             <Route path="/add-to-cart" element={<ProtectedRoute><AddToCart /></ProtectedRoute>} />
             <Route path="/collect-income" element={<ProtectedRoute><CollectIncome /></ProtectedRoute>} />
             <Route path="/crx-digital" element={<ProtectedRoute><CRXDigital /></ProtectedRoute>} />
+            <Route path="/bonus" element={<ProtectedRoute><Bonus /></ProtectedRoute>} />
             <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
             <Route path="/depositconfirm" element={<ProtectedRoute><DepositConfirm /></ProtectedRoute>} />
             <Route path="/withdrawal" element={<ProtectedRoute><Withdrawal /></ProtectedRoute>} />

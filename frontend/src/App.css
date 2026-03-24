@@ -130,7 +130,7 @@ background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   height: 140px;
   object-fit: contain;
   filter: drop-shadow(0 8px 20px rgba(21, 101, 192, 0.22));
-  animation: splashLogoEntrance 100s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: splashLogoEntrance 1000s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 .app-splash-brand {

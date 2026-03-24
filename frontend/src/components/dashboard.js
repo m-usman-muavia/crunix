@@ -556,7 +556,7 @@ const Dashboard = () => {
         <section className="dashboard-showcase">
           <div className="dashboard-section-head">
             <h3>Special Offers</h3>
-            <Link to="/active-plans">See all</Link>
+            <Link to="/active-plans" className="dashboard-modern-edit-link2">See all</Link>
           </div>
           <div className="dashboard-special-row">
             <Link to="/active-plans" className="dashboard-special-card dashboard-special-card-image">
@@ -587,6 +587,10 @@ const Dashboard = () => {
           <div className="dashboard-categories-row">
             <Link to="/plans" className="dashboard-category-item">
               <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartLine} /></span>
+              <span>Plans</span>
+            </Link>
+            <Link to="/bonus" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartLine} /></span>
               <span>Bonus</span>
             </Link>
             <Link to="/deposit" className="dashboard-category-item">
@@ -597,10 +601,6 @@ const Dashboard = () => {
               <span className="dashboard-category-icon"><FontAwesomeIcon icon={faArrowUp} /></span>
               <span>Withdrawal</span>
             </Link>
-            <Link to="/withdrawalhistory" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faClipboardList} /></span>
-              <span>recieve</span>
-            </Link>
           </div>
         </section>
 
@@ -610,7 +610,7 @@ const Dashboard = () => {
               <h3>Transation History</h3>
               <p className="dashboard-section-sub">See All Transations</p>
             </div>
-            <Link to="/transactions" className="dashboard-modern-edit-link">View</Link>
+            <Link to="/transactions" className="dashboard-modern-edit-link2">View</Link>
           </div>
           <div className="dashboard-transactions-list">
             {transactionItems.map((tx) => (

@@ -1,0 +1,164 @@
+.bonus-status-overview {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bonus-redeem-section,
+.bonus-history-section {
+  padding-top: 8px;
+}
+
+.bonus-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #ececec;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  padding: 16px;
+}
+
+.bonus-card-head h3 {
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.bonus-redeem-form {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.bonus-code-input {
+  height: 46px;
+  border-radius: 10px;
+  border: 1px solid #d6d6d6;
+  padding: 0 14px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  text-align: center;
+  color: #111827;
+}
+
+.bonus-code-input:focus {
+  outline: none;
+  border-color: #ff914d;
+  box-shadow: 0 0 0 3px rgba(255, 145, 77, 0.2);
+}
+
+.bonus-submit-btn {
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(105deg, #ff914d 0%, #ffde59 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.bonus-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.bonus-history-list {
+  margin-top: 8px;
+  display: grid;
+  gap: 10px;
+}
+
+.bonus-history-item {
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.bonus-history-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.bonus-history-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff1e8;
+  color: #ff914d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bonus-history-left h4,
+.bonus-history-right h4 {
+  margin: 0;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.bonus-history-left p,
+.bonus-history-right p {
+  margin: 2px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.bonus-history-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.bonus-empty-history {
+  background: #ffffff;
+  border: 1px dashed #d4d4d4;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.bonus-empty-history p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .bonus-status-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .bonus-history-item {
+    align-items: flex-start;
+  }
+
+  .bonus-history-right h4 {
+    font-size: 13px;
+  }
+
+  .bonus-code-input {
+    font-size: 18px;
+    letter-spacing: 4px;
+  }
+}
