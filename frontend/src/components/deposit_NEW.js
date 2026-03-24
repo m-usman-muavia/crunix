@@ -1,0 +1,416 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHistory, faMobileAlt, faCheckCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import './css/deposit-new.css';
+import API_BASE_URL from '../config/api';
+import ErrorModal from './ErrorModal';
+import BottomNav from './BottomNav';
+
+const Deposit = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    amount: '',
+    transactionId: '',
+    screenshot: null,
+    screenshotName: '',
+    senderMobile: ''
+  });
+  
+  const [wallet, setWallet] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [totalDeposit, setTotalDeposit] = useState(0);
+  const [pendingDeposit, setPendingDeposit] = useState(0);
+  const [rejectedDeposit, setRejectedDeposit] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+
+  useEffect(() => {
+    fetchDepositData();
+  }, []);
+
+  const fetchDepositData = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      
+      // Fetch wallet info
+      const walletRes = await fetch(`${API_BASE_URL}/api/wallet`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (walletRes.ok) {
+        const walletData = await walletRes.json();
+        setWallet(walletData);
+      }
+
+      // Fetch active account (QR code, Till ID)
+      const accountRes = await fetch(`${API_BASE_URL}/api/accounts/active`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (accountRes.ok) {
+        const accountData = await accountRes.json();
+        setAccount(accountData);
+      }
+
+      // Fetch deposit stats (total, pending, rejected)
+      const depositsRes = await fetch(`${API_BASE_URL}/api/deposits/user`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (depositsRes.ok) {
+        const depositsData = await depositsRes.json();
+        const deposits = Array.isArray(depositsData) ? depositsData : depositsData.data || [];
+        
+        const total = deposits.reduce((sum, d) => sum + Number(d.amount || 0), 0);
+        const pending = deposits.filter(d => d.status === 'pending').reduce((sum, d) => sum + Number(d.amount || 0), 0);
+        const rejected = deposits.filter(d => d.status === 'rejected').reduce((sum, d) => sum + Number(d.amount || 0), 0);
+        
+        setTotalDeposit(total);
+        setPendingDeposit(pending);
+        setRejectedDeposit(rejected);
+      }
+
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching deposit data:', err);
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        screenshot: file,
+        screenshotName: file.name
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    if (!formData.amount || parseFloat(formData.amount) < 5) {
+      setErrorMessage('Minimum deposit amount is AED 5');
+      setShowErrorModal(true);
+      return false;
+    }
+
+    if (!formData.transactionId || formData.transactionId.trim() === '') {
+      setErrorMessage('Transaction ID is required');
+      setShowErrorModal(true);
+      return false;
+    }
+
+    if (!formData.screenshot) {
+      setErrorMessage('Screenshot is required');
+      setShowErrorModal(true);
+      return false;
+    }
+
+    if (!formData.senderMobile || formData.senderMobile.trim() === '') {
+      setErrorMessage('Sender mobile number is required');
+      setShowErrorModal(true);
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    setSubmitLoading(true);
+
+    try {
+      const token = localStorage.getItem('authToken');
+      const formDataObj = new FormData();
+      formDataObj.append('deposit_amount', formData.amount);
+      formDataObj.append('transaction_id', formData.transactionId);
+      formDataObj.append('screenshot', formData.screenshot);
+      formDataObj.append('sender_mobile', formData.senderMobile);
+
+      const response = await fetch(`${API_BASE_URL}/api/deposits/create`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formDataObj
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to submit deposit');
+      }
+
+      setErrorMessage('Deposit submitted successfully! Your deposit is pending approval.');
+      setShowErrorModal(true);
+
+      // Reset form
+      setFormData({
+        amount: '',
+        transactionId: '',
+        screenshot: null,
+        screenshotName: '',
+        senderMobile: ''
+      });
+
+      // Refresh data
+      setTimeout(() => {
+        fetchDepositData();
+      }, 2000);
+    } catch (err) {
+      console.error('Error submitting deposit:', err);
+      setErrorMessage(err.message);
+      setShowErrorModal(true);
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const resolveImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+      return imagePath;
+    }
+    const normalized = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+    return `${API_BASE_URL}/${normalized}`;
+  };
+
+  const aedAmount = parseFloat(formData.amount) || 0;
+  const rupeesAmount = aedAmount * 75;
+
+  return (
+    <div className="main-wrapper dom-wrapper">
+      <div className="main-container dom-container">
+        {/* SECTION 1: Hero with Stats - Matching Dashboard Design */}
+        <div className="dashboard-modern-hero dashboard-service-hero">
+          <div className="dashboard-modern-hero-top">
+            <div>
+              <p className="dashboard-service-label">Add Funds</p>
+              <h1 className="dashboard-modern-title">Deposit</h1>
+            </div>
+            <div className="dashboard-header-actions">
+              <button 
+                className="dashboard-header-icon"
+                onClick={() => navigate('/deposithistory')}
+                aria-label="Deposit history"
+              >
+                <FontAwesomeIcon icon={faHistory} />
+              </button>
+            </div>
+          </div>
+
+          {/* Stats Overview - Using Plans Status Card Style */}
+          <div className="deposit-status-overview">
+            <div className="plans-status-card">
+              <p className="plans-status-label">Total Deposited</p>
+              <h3 className="plans-status-value">AED {totalDeposit.toFixed(2)}</h3>
+            </div>
+            <div className="plans-status-card">
+              <p className="plans-status-label">Pending Amount</p>
+              <h3 className="plans-status-value">{pendingDeposit > 0 ? `AED ${pendingDeposit.toFixed(2)}` : '—'}</h3>
+            </div>
+            <div className="plans-status-card">
+              <p className="plans-status-label">Rejected Amount</p>
+              <h3 className="plans-status-value">{rejectedDeposit > 0 ? `AED ${rejectedDeposit.toFixed(2)}` : '—'}</h3>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 2: QR Code & Till ID */}
+        {account && (
+          <div className="deposit-payment-section">
+            <h2 className="section-title">Payment Details</h2>
+            
+            <div className="payment-content">
+              {/* QR Code */}
+              <div className="payment-qr-box">
+                <p className="qr-label">Scan to Pay</p>
+                {account.qrImagePath ? (
+                  <img 
+                    src={resolveImageUrl(account.qrImagePath)} 
+                    alt="QR Code" 
+                    className="qr-image"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                ) : (
+                  <div className="qr-placeholder">📱 QR Code</div>
+                )}
+              </div>
+
+              {/* Till ID */}
+              <div className="till-id-box">
+                <p className="till-label">Or Transfer To</p>
+                <div className="till-value">{account.till_id || account.tillId || 'N/A'}</div>
+                <button 
+                  className="copy-btn"
+                  onClick={() => {
+                    navigator.clipboard.writeText(account.till_id || account.tillId || '');
+                    alert('Till ID copied to clipboard');
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* SECTION 3: Deposit Form */}
+        <div className="deposit-form-section">
+          <h2 className="section-title">Deposit Information</h2>
+
+          {/* Important Instructions */}
+          <div className="instructions-box">
+            <div className="instruction-header">
+              <FontAwesomeIcon icon={faExclamationTriangle} />
+              <span>Important Instructions</span>
+            </div>
+            <ul className="instructions-list">
+              <li><strong>Currency Conversion:</strong> AED 1.00 ≈ Rs 75</li>
+              <li><strong>Minimum Deposit:</strong> AED 5.00 minimum</li>
+              <li><strong>Exact Amount:</strong> Transfer the exact amount shown - do not round up or down</li>
+              <li><strong>Use Till ID:</strong> Use provided Till ID or scan QR code for payment</li>
+              <li><strong>Screenshot Required:</strong> Upload proof of payment transfer</li>
+              <li><strong>Processing Time:</strong> Deposits are verified within 2-4 hours</li>
+              <li><strong>Mobile Number:</strong> Use the mobile number from which you're sending payment</li>
+              <li><strong>Transaction Reference:</strong> Keep your transaction ID for support inquiries</li>
+            </ul>
+          </div>
+
+          {/* Deposit Form */}
+          <form className="deposit-form" onSubmit={handleSubmit}>
+            {/* Deposit Amount */}
+            <div className="form-group">
+              <label className="form-label">
+                Deposit Amount (AED) <span className="required">*</span>
+              </label>
+              <div className="amount-input-wrapper">
+                <span className="currency-symbol">AED</span>
+                <input
+                  type="number"
+                  name="amount"
+                  value={formData.amount}
+                  onChange={handleInputChange}
+                  placeholder="Enter amount (min: 5)"
+                  min="5"
+                  step="0.01"
+                  className="form-input"
+                  required
+                />
+              </div>
+              {aedAmount > 0 && (
+                <p className="conversion-info">≈ Rs {rupeesAmount.toFixed(2)}</p>
+              )}
+            </div>
+
+            {/* Transaction ID */}
+            <div className="form-group">
+              <label className="form-label">
+                Transaction ID / Reference Number <span className="required">*</span>
+              </label>
+              <input
+                type="text"
+                name="transactionId"
+                value={formData.transactionId}
+                onChange={handleInputChange}
+                placeholder="Enter transaction ID (e.g., T123456789)"
+                className="form-input"
+                required
+              />
+              <p className="form-hint">Find this in your payment receipt or bank statement</p>
+            </div>
+
+            {/* Screenshot Upload */}
+            <div className="form-group">
+              <label className="form-label">
+                Upload Screenshot (Payment Proof) <span className="required">*</span>
+              </label>
+              <div className="file-upload-wrapper">
+                <input
+                  type="file"
+                  id="screenshot"
+                  name="screenshot"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="file-input"
+                  required
+                />
+                <label htmlFor="screenshot" className="file-upload-label">
+                  <span className="upload-icon">📸</span>
+                  <span className="upload-text">
+                    {formData.screenshotName || 'Click to upload screenshot'}
+                  </span>
+                </label>
+              </div>
+              <p className="form-hint">Upload clear screenshot showing transaction details</p>
+            </div>
+
+            {/* Sender Mobile Number */}
+            <div className="form-group">
+              <label className="form-label">
+                Sender Mobile Number <span className="required">*</span>
+              </label>
+              <div className="phone-input-wrapper">
+                <span className="phone-prefix">
+                  <FontAwesomeIcon icon={faMobileAlt} />
+                </span>
+                <input
+                  type="tel"
+                  name="senderMobile"
+                  value={formData.senderMobile}
+                  onChange={handleInputChange}
+                  placeholder="Enter mobile number (with country code)"
+                  className="form-input"
+                  required
+                />
+              </div>
+              <p className="form-hint">Use the same mobile number used for payment transfer</p>
+            </div>
+
+            {/* Submit Button */}
+            <button 
+              type="submit" 
+              className="submit-btn"
+              disabled={submitLoading}
+            >
+              {submitLoading ? (
+                <>
+                  <span className="spinner"></span> Processing...
+                </>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faCheckCircle} /> Submit Deposit
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+
+        <BottomNav />
+
+        {/* Error Modal */}
+        {showErrorModal && (
+          <ErrorModal
+            message={errorMessage}
+            onClose={() => setShowErrorModal(false)}
+            closeDuration={3000}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Deposit;

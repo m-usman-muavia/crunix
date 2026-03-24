@@ -1,14 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faCirclePlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './css/dashboard.css';
 import './css/style.css';
 import './css/plans.css';
 import BottomNav from './BottomNav';
+import ErrorModal from './ErrorModal';
+import API_BASE_URL from '../config/api';
 
 const AddToCart = () => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const current = JSON.parse(localStorage.getItem('planCart') || '[]');
@@ -51,6 +57,95 @@ const AddToCart = () => {
     () => cartItems.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 0)), 0),
     [cartItems]
   );
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) {
+      setErrorMessage('Your cart is empty');
+      setIsErrorModalOpen(true);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // First, validate all plans have sufficient balance
+      for (const item of cartItems) {
+        const validateResponse = await fetch(`${API_BASE_URL}/api/plans/invest-now`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify({
+            planId: item.planId,
+            confirm: false
+          })
+        });
+
+        const validateData = await validateResponse.json();
+
+        if (!validateResponse.ok) {
+          setErrorMessage(validateData.message || 'Validation failed');
+          setIsErrorModalOpen(true);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // All validations passed, now activate all plans
+      let successCount = 0;
+      let failureError = null;
+
+      for (const item of cartItems) {
+        // Activate plan for each quantity
+        for (let i = 0; i < Number(item.quantity || 1); i++) {
+          const investResponse = await fetch(`${API_BASE_URL}/api/plans/invest-now`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({
+              planId: item.planId,
+              confirm: true
+            })
+          });
+
+          const investData = await investResponse.json();
+
+          if (!investResponse.ok) {
+            failureError = investData.message || 'Failed to activate plan';
+            break;
+          }
+
+          successCount += 1;
+        }
+
+        if (failureError) break;
+      }
+
+      if (failureError) {
+        setErrorMessage(failureError);
+        setIsErrorModalOpen(true);
+      } else {
+        // Success - clear cart and show success message
+        localStorage.removeItem('planCart');
+        setCartItems([]);
+        setErrorMessage(`Successfully activated ${successCount} ${successCount === 1 ? 'plan' : 'plans'}! Redirecting to dashboard...`);
+        setIsErrorModalOpen(true);
+        
+        // Redirect after brief delay
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
+      }
+    } catch (error) {
+      setErrorMessage(error.message || 'An error occurred during checkout');
+      setIsErrorModalOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="main-wrapper dom-wrapper">
@@ -136,14 +231,15 @@ const AddToCart = () => {
                   <span className="detail-value-new">AED {totalAmount.toFixed(2)}</span>
                 </div>
                 <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center' }}>
-                  <Link
-                    to="/checkout"
-                    state={{ amount: totalAmount }}
+                  <button
+                    type="button"
+                    onClick={handleCheckout}
+                    disabled={isLoading}
                     className="dashboard-modern-edit-link"
-                    style={{ minWidth: '160px', textAlign: 'center' }}
+                    style={{ minWidth: '160px', textAlign: 'center', cursor: isLoading ? 'not-allowed' : 'pointer', opacity: isLoading ? 0.6 : 1 }}
                   >
-                    CHECKOUT
-                  </Link>
+                    {isLoading ? 'PROCESSING...' : 'CHECKOUT'}
+                  </button>
                 </div>
               </div>
             </>
@@ -151,6 +247,14 @@ const AddToCart = () => {
         </div>
 
         <BottomNav />
+
+        {isErrorModalOpen && (
+          <ErrorModal
+            message={errorMessage}
+            onClose={() => setIsErrorModalOpen(false)}
+            closeDuration={errorMessage.includes('Successfully activated') ? 3000 : 2500}
+          />
+        )}
       </div>
     </div>
   );

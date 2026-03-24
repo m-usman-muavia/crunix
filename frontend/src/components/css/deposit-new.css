@@ -1,0 +1,562 @@
+/* Deposit Page - Modern Design */
+
+.deposit-modern-hero {
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  border: 2px solid #f0e5d8;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08);
+}
+
+.deposit-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.deposit-label {
+  font-size: 12px;
+  color: #999;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 4px 0;
+}
+
+.deposit-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.deposit-title svg {
+  color: #f97316;
+  font-size: 28px;
+}
+
+.deposit-history-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+}
+
+.deposit-history-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
+}
+
+.deposit-history-btn:active {
+  transform: translateY(0);
+}
+
+/* Stats Overview */
+.deposit-stats-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.deposit-stat-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 250, 245, 0.6) 100%);
+  border: 2px solid rgba(249, 115, 22, 0.15);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.deposit-stat-card:hover {
+  border-color: rgba(249, 115, 22, 0.3);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 0 0 6px 0;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f97316;
+  margin: 0;
+}
+
+.stat-value.pending {
+  color: #f59e0b;
+}
+
+/* SECTION 2: Payment Details */
+.deposit-payment-section {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 14px 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(180deg, #f97316 0%, #ffde59 100%);
+  border-radius: 2px;
+}
+
+.payment-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* QR Code Box */
+.payment-qr-box {
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  border: 2px dashed #f0e5d8;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  transition: all 0.3s ease;
+}
+
+.payment-qr-box:hover {
+  border-color: #f97316;
+  background: linear-gradient(135deg, #fffbf5 0%, #fff5f0 100%);
+}
+
+.qr-label {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.5px;
+}
+
+.qr-image {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.qr-placeholder {
+  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f0e5d8;
+}
+
+/* Till ID Box */
+.till-id-box {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.2);
+}
+
+.till-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.5px;
+}
+
+.till-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  word-break: break-all;
+  margin-bottom: 12px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.copy-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
+}
+
+/* SECTION 3: Deposit Form */
+.deposit-form-section {
+  margin-bottom: 24px;
+}
+
+/* Instructions Box */
+.instructions-box {
+  background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+  border-left: 4px solid #f59e0b;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.instruction-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.instruction-header svg {
+  font-size: 16px;
+}
+
+.instructions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.instructions-list li {
+  font-size: 12px;
+  color: #78350f;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.instructions-list li:before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  color: #f59e0b;
+}
+
+.instructions-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Form Styling */
+.deposit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+/* Amount Input */
+.amount-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 2px solid #f0e5d8;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.amount-input-wrapper:focus-within {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.currency-symbol {
+  padding: 12px 14px;
+  font-weight: 700;
+  color: #f97316;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: #ccc;
+}
+
+.conversion-info {
+  font-size: 12px;
+  color: #f97316;
+  font-weight: 600;
+  margin: 0;
+  margin-top: 4px;
+}
+
+/* Transaction ID Input */
+.form-input {
+  border: 2px solid #f0e5d8;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  color: #1f2937;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  outline: none;
+}
+
+.form-hint {
+  font-size: 11px;
+  color: #999;
+  margin: 0;
+  margin-top: 4px;
+}
+
+/* File Upload */
+.file-upload-wrapper {
+  position: relative;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 14px;
+  border: 2px dashed #f0e5d8;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.file-upload-label:hover {
+  border-color: #f97316;
+  background: linear-gradient(135deg, #fffbf5 0%, #fff5f0 100%);
+}
+
+.upload-icon {
+  font-size: 24px;
+}
+
+.upload-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f97316;
+  word-break: break-word;
+}
+
+/* Phone Input */
+.phone-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 2px solid #f0e5d8;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.phone-input-wrapper:focus-within {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.phone-prefix {
+  padding: 12px 14px;
+  color: #f97316;
+  font-size: 16px;
+}
+
+.phone-input-wrapper .form-input {
+  border: none;
+  background: transparent;
+  flex: 1;
+}
+
+/* Submit Button */
+.submit-btn {
+  padding: 14px;
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.25);
+  margin-top: 10px;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .deposit-modern-hero {
+    padding: 16px;
+  }
+
+  .deposit-hero-top {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .deposit-title {
+    font-size: 24px;
+  }
+
+  .deposit-history-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .deposit-stats-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-content {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-qr-box,
+  .till-id-box {
+    min-height: 180px;
+  }
+
+  .till-value {
+    font-size: 18px;
+  }
+
+  .form-label {
+    font-size: 12px;
+  }
+
+  .submit-btn {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .instructions-list li {
+    font-size: 11px;
+  }
+}

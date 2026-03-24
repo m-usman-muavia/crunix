@@ -1,0 +1,355 @@
+/* Hybrid Card Styles for Active and Complete Plans */
+
+.active-plans-hybrid-card,
+.complete-plans-hybrid-card {
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  border: 2px solid #f0e5d8;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08);
+  transition: all 0.3s ease;
+}
+
+.active-plans-hybrid-card:hover,
+.complete-plans-hybrid-card:hover {
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.12);
+  border-color: #f97316;
+}
+
+/* Card Header */
+.hybrid-card-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.hybrid-card-header:hover {
+  background-color: rgba(249, 115, 22, 0.04);
+}
+
+/* Main Content in Header */
+.hybrid-card-main {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
+/* Card Image */
+.hybrid-card-image {
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f97316 0%, #ffde59 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+}
+
+.hybrid-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hybrid-card-image-fallback {
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card Info */
+.hybrid-card-info {
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hybrid-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  word-break: break-word;
+}
+
+.hybrid-card-meta {
+  font-size: 12px;
+  color: #999;
+  margin: 4px 0 0 0;
+}
+
+/* Status Badge */
+.hybrid-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hybrid-status-badge svg {
+  font-size: 10px;
+}
+
+/* Achievement Badge */
+.achievement-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.achievement-badge svg {
+  font-size: 12px;
+}
+
+/* Amount Section */
+.hybrid-card-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-width: 80px;
+}
+
+.hybrid-card-amount p {
+  margin: 0;
+  font-size: 11px;
+  color: #999;
+  text-align: right;
+}
+
+.hybrid-card-amount h4 {
+  margin: 4px 0 0 0;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Chevron Icon */
+.hybrid-card-amount svg {
+  font-size: 16px;
+}
+
+/* Details Section (Collapsible) */
+.hybrid-card-details {
+  padding: 16px;
+  background: rgba(249, 115, 22, 0.02);
+  border-top: 1px solid rgba(249, 115, 22, 0.1);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+/* Details Grid */
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-label {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Action Buttons */
+.hybrid-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(249, 115, 22, 0.1);
+}
+
+.action-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pause-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: white;
+}
+
+.pause-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.resume-btn {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  color: white;
+}
+
+.resume-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Collect Button Styles */
+.collect-btn {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  color: white;
+}
+
+.collect-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+}
+
+.collect-btn:active {
+  transform: translateY(0);
+}
+
+/* Collection Timer */
+.collection-timer {
+  flex: 1;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(255, 222, 89, 0.05) 100%);
+  border: 2px solid rgba(249, 115, 22, 0.2);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f97316;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: pulse-timer 1s ease-in-out infinite;
+}
+
+.collection-timer svg {
+  font-size: 14px;
+  animation: rotate-icon 2s linear infinite;
+}
+
+@keyframes pulse-timer {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes rotate-icon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty State Improvements */
+.empty-state-container {
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  border: 2px dashed #f0e5d8;
+  border-radius: 16px;
+  margin: 20px;
+}
+
+.empty-state-text {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  margin-bottom: 12px;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  text-align: center;
+  padding: 40px 20px;
+  color: #f97316;
+  font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hybrid-card-header {
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .hybrid-card-amount {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-width: auto;
+    margin-top: 10px;
+  }
+
+  .hybrid-card-amount h4 {
+    text-align: left;
+  }
+
+  .hybrid-card-actions {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faPause, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faPause, faChevronDown, faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import './css/dashboard.css';
 import './css/plans.css';
@@ -8,6 +8,7 @@ import './css/style.css';
 import './css/profile.css';
 import API_BASE_URL from '../config/api';
 import BottomNav from './BottomNav';
+import ErrorModal from './ErrorModal';
 
 const ActivePlans = () => {
     const [activePlans, setActivePlans] = useState([]);

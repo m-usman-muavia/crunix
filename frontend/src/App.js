@@ -5,7 +5,7 @@ import Login from './components/login';
 import Registration from './components/registration'; // Make sure this file exists
 import Dashboard from './components/dashboard';
 import Plan from './components/plans';
-import Deposit  from './components/deposit';
+import Deposit  from './components/deposit_NEW';
 import DepositConfirm from './components/depositconfirm';
 import Withdrawal from './components/withdrawal';
 import WithdrawConfirm from './components/withdrawconfirm';
@@ -28,13 +28,12 @@ import BonusGenerator from './components/admin/bonus';
 import DashboardImage from './components/admin/dashboardimage';
 import CrxSettings from './components/admin/crxsettings';
 import BroadcastNotification from './components/admin/broadcastnotification';
-import ActivePlans from './components/ActivePlans';
+import ActivePlans from './components/ActivePlans_NEW';
 import CollectIncome from './components/CollectIncome';
 import Notifications from './components/notifications';
 import CRXDigital from './components/CRXDigital';
-import CompletePlans from './components/CompletePlans';
+import CompletePlans from './components/CompletePlans_NEW';
 import AddToCart from './components/addtocart';
-import Checkout from './components/checkout';
 
 const SplashScreen = () => (
   <div className="app-splash-screen app-splash-service-hero" aria-label="Loading screen">
@@ -83,7 +82,6 @@ function App() {
             <Route path="/active-plans" element={<ProtectedRoute><ActivePlans /></ProtectedRoute>} />
             <Route path="/complete-plans" element={<ProtectedRoute><CompletePlans /></ProtectedRoute>} />
             <Route path="/add-to-cart" element={<ProtectedRoute><AddToCart /></ProtectedRoute>} />
-            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             <Route path="/collect-income" element={<ProtectedRoute><CollectIncome /></ProtectedRoute>} />
             <Route path="/crx-digital" element={<ProtectedRoute><CRXDigital /></ProtectedRoute>} />
             <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
