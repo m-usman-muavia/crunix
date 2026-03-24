@@ -45,7 +45,7 @@
 
 .plans-status-label {
   margin: 0;
-  font-size: 11px;
+  font-size: 14px;
   color: #64748b;
   font-weight: 700;
 }
@@ -62,11 +62,7 @@
   display: inline-block;
 }
 
-@media (max-width: 420px) {
-  .plans-status-overview {
-    grid-template-columns: 1fr;
-  }
-}
+
 
 .plan-slider-content {
   padding-top: 12px;
@@ -162,7 +158,7 @@
   box-shadow: 0 10px 22px rgba(249, 115, 22, 0.15);
   display: grid;
   grid-template-columns: 46% 54%;
-  gap: 12px;
+  gap: 8px;
 }
 
 .plan-slide-image-wrap {
@@ -174,6 +170,7 @@
 }
 
 .plan-slide-image {
+  background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -285,7 +282,7 @@
 .plan-slide-actions {
   margin-top: 8px;
   display: flex;
-  gap: 8px;
+  gap: 5px;
 }
 
 .plan-slide-add-cart,
@@ -490,9 +487,6 @@
     min-height: 40px;
   }
 
-  .plan-slide-actions {
-    flex-direction: column;
-  }
 }
 
 .plan-card {
