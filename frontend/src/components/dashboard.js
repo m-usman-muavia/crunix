@@ -587,11 +587,11 @@ const Dashboard = () => {
           <div className="dashboard-categories-row">
             <Link to="/plans" className="dashboard-category-item">
               <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartLine} /></span>
-              <span>Plans</span>
+              <span>Bonus</span>
             </Link>
             <Link to="/deposit" className="dashboard-category-item">
               <span className="dashboard-category-icon"><FontAwesomeIcon icon={faArrowDown} /></span>
-              <span>Deposit</span>
+              <span>Refferals</span>
             </Link>
             <Link to="/withdrawal" className="dashboard-category-item">
               <span className="dashboard-category-icon"><FontAwesomeIcon icon={faArrowUp} /></span>

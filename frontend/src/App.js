@@ -32,6 +32,8 @@ import ActivePlans from './components/ActivePlans';
 import CollectIncome from './components/CollectIncome';
 import Notifications from './components/notifications';
 import CRXDigital from './components/CRXDigital';
+import CompletePlans from './components/CompletePlans';
+import AddToCart from './components/addtocart';
 
 const SplashScreen = () => (
   <div className="app-splash-screen" aria-label="Loading screen">
@@ -73,6 +75,8 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/plans" element={<ProtectedRoute><Plan /></ProtectedRoute>} />
             <Route path="/active-plans" element={<ProtectedRoute><ActivePlans /></ProtectedRoute>} />
+            <Route path="/complete-plans" element={<ProtectedRoute><CompletePlans /></ProtectedRoute>} />
+            <Route path="/add-to-cart" element={<ProtectedRoute><AddToCart /></ProtectedRoute>} />
             <Route path="/collect-income" element={<ProtectedRoute><CollectIncome /></ProtectedRoute>} />
             <Route path="/crx-digital" element={<ProtectedRoute><CRXDigital /></ProtectedRoute>} />
             <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faChartLine,faBell } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { faClock, faChartLine, faArrowDown, faArrowUp, faClipboardList, faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 import InvestModal from './InvestModal';
 import ErrorModal from './ErrorModal';
 import './css/dashboard.css';
@@ -11,13 +11,14 @@ import API_BASE_URL from '../config/api';
 import BottomNav from './BottomNav';
 
 const Plans = () => {
-  const navigate = useNavigate();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [balance, setBalance] = useState(0);
+  const [activePlanCount, setActivePlanCount] = useState(0);
+  const [completedPlanCount, setCompletedPlanCount] = useState(0);
   const [loadingInvest, setLoadingInvest] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -38,6 +39,7 @@ const Plans = () => {
 
   useEffect(() => {
     fetchPlans();
+    fetchUserPlanSummary();
     fetchBalance();
   }, []);
 
@@ -99,6 +101,31 @@ const Plans = () => {
     }
   };
 
+  const fetchUserPlanSummary = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/plans/user/active`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch plan summary');
+      }
+
+      const data = await response.json();
+      const userPlans = Array.isArray(data) ? data : data.data || [];
+      const activeCount = userPlans.filter((plan) => plan.status === 'active' || plan.status === 'paused').length;
+      const completedCount = userPlans.filter((plan) => plan.status === 'completed').length;
+      setActivePlanCount(activeCount);
+      setCompletedPlanCount(completedCount);
+    } catch (err) {
+      console.error('Error fetching plan summary:', err);
+      setActivePlanCount(0);
+      setCompletedPlanCount(0);
+    }
+  };
+
   const fetchBalance = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/wallet`, {
@@ -106,17 +133,16 @@ const Plans = () => {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch balance');
       }
-      
+
       const data = await response.json();
       const main = data.main_balance || 0;
       const referral = data.referral_balance || 0;
       const bonus = data.bonus_balance || 0;
-      const totalBalance = main + referral + bonus;
-      setBalance(totalBalance);
+      setBalance(main + referral + bonus);
     } catch (err) {
       console.error('Error fetching balance:', err);
       setBalance(0);
@@ -170,8 +196,9 @@ const Plans = () => {
   };
 
   const handleInvestmentConfirmed = async () => {
-    // Refresh balance after successful investment
     await fetchBalance();
+    // Refresh user plan counts after successful investment
+    await fetchUserPlanSummary();
     // Refresh plans after successful investment to update purchase counts
     await fetchPlans();
   };
@@ -204,13 +231,9 @@ const Plans = () => {
     }
   };
 
-  const handleNotificationClick = () => {
-    navigate('/profile', { state: { activeTab: 'notification' } });
-  };
-
   return (
-    <div className="main-wrapper">
-      <div className="main-container">
+    <div className="main-wrapper dom-wrapper">
+      <div className="main-container dom-container">
         {/* Error Modal */}
         <ErrorModal
           isOpen={errorModalOpen}
@@ -220,119 +243,35 @@ const Plans = () => {
           closeDuration={3000}
         />
 
-        {/* Top Header Section */}
-        <div className="deposit-header" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div>Investment Plans</div>
-          {/* <button
-            type="button"
-            className="helpcenter-button"
-            aria-label="Notifications"
-            onClick={handleNotificationClick}
-            style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)' }}
-          >
-            <FontAwesomeIcon style={{fontSize:'20px'}} icon={faBell} />
-          </button> */}
-        </div>
-        
-        <div className="plan-image">
-          <img 
-            src="/planimage.webp" 
-            alt="Investment Plans" 
-            style={{ 
-              width: '100%', 
-              height: '200px', 
-              objectFit: 'cover',
-              borderRadius: '0px 0px 15px 15px',
-              borderBottom: '2px solid #000000',
-            }} 
-          />
-        </div>
-        
+        <div className="dashboard-modern-hero dashboard-service-hero">
+          <div className="dashboard-modern-hero-top">
+            <div>
+              <p className="dashboard-service-label">Explore</p>
+              <h1 className="dashboard-modern-title">Investment Plans</h1>
+            </div>
+            <div className="dashboard-header-actions">
+              <Link to="/add-to-cart" className="dashboard-header-icon" aria-label="Add to cart">
+                <FontAwesomeIcon icon={faCartShopping} />
+              </Link>
+            </div>
+          </div>
 
-        <div className="plan-content">
-          {loading ? (
-            <p>Loading plans...</p>
-          ) : error ? (
-            <p>Error: {error}</p>
-          ) : plans.length === 0 ? (
-            <p>No active plans available</p>
-          ) : (
-            plans.map((plan, index) => (
-              <div className="plan-card-new" key={plan._id || index}>
-                {/* Limited Badge - Show Countdown if Available */}
-                {plan.countdown_end_time && countdowns[plan._id] && (
-                  <div className="limited-badge">
-                    ⏱️ {countdowns[plan._id]}
-                  </div>
-                )}
-                
-                {/* Top Section with Image and Details */}
-                <div className="plan-card-top">
-                  {/* Product Image */}
-                  <div className="plan-product-image">
-                    {plan.image_path ? (
-                      <>
-                        <img 
-                          src={resolveImageUrl(plan.image_path)} 
-                          alt={plan.name}
-                          onError={(e) => { e.target.style.display = 'none'; }}
-                        />
-                        {/* Purchase count badge on image */}
-                        {plan.purchase_limit > 0 && (
-                          <div className="image-badge">
-                             Limit {(plan.user_purchase_count || 0)}/{plan.purchase_limit}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="no-image">No Image</div>
-                    )}
-                  </div>
-                  
-                  {/* Product Info */}
-                  <div className="plan-product-info">
-                    <h3 className="product-title">{plan.name}</h3>
-                    
-                    <div className="product-details">
-                      <div className="detail-item">
-                        <span className="detail-label-new">Price:</span>
-                        <span className="detail-value-new">$ {plan.investment_amount}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label-new">Daily income:</span>
-                        <span className="detail-value-new">$ {plan.daily_profit}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label-new">Total income:</span>
-                        <span className="detail-value-new">$ {plan.total_profit}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label-new">Duration</span>
-                        <span className="detail-value-new">{plan.duration_days || plan.duration} Days</span>
-                      </div>
-                    </div>
-
-                    <button 
-                  className="buy-now-btn"
-                  onClick={() => handleInvestClick(plan)}
-                  disabled={loadingInvest || (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit)}
-                  style={{
-                    opacity: (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 0.5 : 1,
-                    cursor: (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'not-allowed' : 'pointer'
-                  }}
-                >
-                  {loadingInvest ? 'Loading...' : 
-                   (plan.purchase_limit > 0 && (plan.user_purchase_count || 0) >= plan.purchase_limit) ? 'LIMIT REACHED' : 
-                   'BUY NOW'}
-                </button>
-                  </div>
-                </div>
-              
-              
-              </div>
-            ))
-          )}
+          <div className="plans-status-overview">
+            <div className="plans-status-card">
+              <p className="plans-status-label">Active Plans</p>
+              <h3 className="plans-status-value">{activePlanCount}</h3>
+              <Link to="/active-plans" className="dashboard-modern-edit-link">VIEW ACTIVE</Link>
+            </div>
+            <div className="plans-status-card">
+              <p className="plans-status-label">Complete Plans</p>
+              <h3 className="plans-status-value">{completedPlanCount}</h3>
+              <Link to="/complete-plans" className="dashboard-modern-edit-link">VIEW COMPLETE</Link>
+            </div>
+          </div>
         </div>
+
+
+       
 
         {/* Bottom Navigation */}
         <BottomNav />
