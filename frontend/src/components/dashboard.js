@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faArrowUp, faChartLine, faClipboardList, faUser, faCoins, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faChartLine, faClipboardList, faUser, faBell } from '@fortawesome/free-solid-svg-icons';
 import './css/dashboard.css';
 import './css/plans.css';
 import { Link } from 'react-router-dom';
@@ -178,6 +178,15 @@ const Dashboard = () => {
 
   const fetchRecentTransactions = async () => {
     try {
+      const getSafeTimestamp = (value) => {
+        if (!value) {
+          return Number.NaN;
+        }
+
+        const time = new Date(value).getTime();
+        return Number.isFinite(time) && time > 0 ? time : Number.NaN;
+      };
+
       const authToken = localStorage.getItem('authToken');
       const [depositsRes, withdrawalsRes] = await Promise.all([
         fetch(`${API_BASE_URL}/api/deposits/my-deposits`, {
@@ -189,31 +198,83 @@ const Dashboard = () => {
       ]);
 
       let merged = [];
+      let latestDeposit = null;
+      let latestWithdrawal = null;
 
       if (depositsRes.ok) {
         const depositsData = await depositsRes.json();
         const deposits = Array.isArray(depositsData) ? depositsData : (depositsData.data || []);
-        merged = merged.concat(deposits.map((d) => ({
+        const mappedDeposits = deposits.map((d) => ({
           _id: d._id,
           type: 'Deposit',
           amount: Number(d.deposit_amount ?? d.amount ?? 0),
-          date: d.createdAt
-        })));
+          date: d.created_at || d.createdAt || d.updated_at || d.updatedAt || d.date || ''
+        }));
+
+        mappedDeposits.sort((a, b) => {
+          const aTime = getSafeTimestamp(a.date);
+          const bTime = getSafeTimestamp(b.date);
+          return (Number.isNaN(bTime) ? 0 : bTime) - (Number.isNaN(aTime) ? 0 : aTime);
+        });
+
+        latestDeposit = mappedDeposits[0] || null;
+        merged = merged.concat(mappedDeposits);
       }
 
       if (withdrawalsRes.ok) {
         const withdrawalsData = await withdrawalsRes.json();
         const withdrawals = Array.isArray(withdrawalsData) ? withdrawalsData : (withdrawalsData.data || []);
-        merged = merged.concat(withdrawals.map((w) => ({
+        const mappedWithdrawals = withdrawals.map((w) => ({
           _id: w._id,
           type: 'Withdrawal',
           amount: Number(w.withdrawal_amount ?? w.amount ?? 0),
-          date: w.createdAt
-        })));
+          date: w.created_at || w.createdAt || w.updated_at || w.updatedAt || w.date || ''
+        }));
+
+        mappedWithdrawals.sort((a, b) => {
+          const aTime = getSafeTimestamp(a.date);
+          const bTime = getSafeTimestamp(b.date);
+          return (Number.isNaN(bTime) ? 0 : bTime) - (Number.isNaN(aTime) ? 0 : aTime);
+        });
+
+        latestWithdrawal = mappedWithdrawals[0] || null;
+        merged = merged.concat(mappedWithdrawals);
       }
 
-      merged.sort((a, b) => new Date(b.date) - new Date(a.date));
-      setRecentTransactions(merged.slice(0, 3));
+      merged.sort((a, b) => {
+        const aTime = getSafeTimestamp(a.date);
+        const bTime = getSafeTimestamp(b.date);
+        return (Number.isNaN(bTime) ? 0 : bTime) - (Number.isNaN(aTime) ? 0 : aTime);
+      });
+
+      const picked = [];
+      const usedIds = new Set();
+
+      [latestDeposit, latestWithdrawal].forEach((item) => {
+        if (item && !usedIds.has(item._id)) {
+          picked.push(item);
+          usedIds.add(item._id);
+        }
+      });
+
+      for (const item of merged) {
+        if (picked.length >= 3) {
+          break;
+        }
+
+        if (!usedIds.has(item._id)) {
+          picked.push(item);
+          usedIds.add(item._id);
+        }
+      }
+
+      picked.sort((a, b) => {
+        const aTime = getSafeTimestamp(a.date);
+        const bTime = getSafeTimestamp(b.date);
+        return (Number.isNaN(bTime) ? 0 : bTime) - (Number.isNaN(aTime) ? 0 : aTime);
+      });
+
+      setRecentTransactions(picked.slice(0, 3));
     } catch (err) {
       console.error('Error fetching recent transactions:', err);
       setRecentTransactions([]);
@@ -478,41 +539,31 @@ const Dashboard = () => {
   const currentSlide = sliderImages[activeSlideIndex] || null;
   const currentSlideSrc = resolveImageUrl(currentSlide?.image_path || '');
   const isCurrentSlideBroken = !!imageErrorMap[activeSlideIndex];
-  const fallbackTransactions = [
-    { _id: 'f-1', amount: 10, date: new Date(), type: 'Deposit' },
-    { _id: 'f-2', amount: 5, date: new Date(), type: 'Withdrawal' },
-    { _id: 'f-3', amount: 2.2, date: new Date(), type: 'Withdrawal' }
-  ];
-  const transactionItems = recentTransactions.length > 0 ? recentTransactions : fallbackTransactions;
+  const transactionItems = recentTransactions.slice(0, 3);
 
   const formatTxTime = (value) => {
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-      return 'Today, 5:00 PM';
+    if (!value) {
+      return 'N/A';
     }
 
-    const now = new Date();
-    const isToday =
-      date.getFullYear() === now.getFullYear() &&
-      date.getMonth() === now.getMonth() &&
-      date.getDate() === now.getDate();
+    const date = new Date(value);
+    const timestamp = date.getTime();
+    if (Number.isNaN(timestamp) || timestamp <= 0) {
+      return 'N/A';
+    }
 
-    const timePart = date.toLocaleTimeString('en-US', {
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
       hour12: true
     });
+  };
 
-    if (isToday) {
-      return `Today, ${timePart}`;
-    }
-
-    const datePart = date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
-    });
-
-    return `${datePart}, ${timePart}`;
+  const getTransactionIcon = (txType) => {
+    return String(txType).toLowerCase() === 'withdrawal' ? faArrowUp : faArrowDown;
   };
 
   return (
@@ -553,7 +604,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <section className="dashboard-showcase">
+        {/* <section className="dashboard-showcase">
           <div className="dashboard-section-head">
             <h3>Special Offers</h3>
             <Link to="/active-plans" className="dashboard-modern-edit-link2">See all</Link>
@@ -581,7 +632,7 @@ const Dashboard = () => {
               ))}
             </div>
           )}
-        </section>
+        </section> */}
 
         <section className="dashboard-showcase dashboard-quick-section">
           <div className="dashboard-categories-row">
@@ -613,23 +664,33 @@ const Dashboard = () => {
             <Link to="/transactions" className="dashboard-modern-edit-link2">View</Link>
           </div>
           <div className="dashboard-transactions-list">
-            {transactionItems.map((tx) => (
-              <div key={tx._id} className="dashboard-transaction-card">
-                <div className="dashboard-transaction-left">
-                  <div className="dashboard-transaction-icon">
-                    <FontAwesomeIcon icon={faCoins} />
+            {transactionItems.length > 0 ? (
+              transactionItems.map((tx) => (
+                <div key={tx._id} className="dashboard-transaction-card">
+                  <div className="dashboard-transaction-left">
+                    <div className="dashboard-transaction-icon">
+                      <FontAwesomeIcon icon={getTransactionIcon(tx.type)} />
+                    </div>
+                    <div>
+                      <h4>{tx.type}</h4>
+                      <p>{formatTxTime(tx.date)}</p>
+                    </div>
                   </div>
-                  <div>
+                  <div className="dashboard-transaction-right">
                     <h4>AED {Number(tx.amount || 0).toFixed(2)}</h4>
-                    <p>{formatTxTime(tx.date)}</p>
                   </div>
                 </div>
-                <div className="dashboard-transaction-right">
-                  <h4>AED {Number(tx.amount || 0).toFixed(2)}</h4>
-                  <p>{tx.type}</p>
+              ))
+            ) : (
+              <div className="dashboard-transaction-card">
+                <div className="dashboard-transaction-left">
+                  <div>
+                    <h4>No transactions yet</h4>
+                    <p>Your latest deposit/withdrawal records will appear here.</p>
+                  </div>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </section>
 
@@ -642,204 +703,6 @@ const Dashboard = () => {
           autoClose={true}
           closeDuration={3000}
         />
-
-
-            
-
-
-        {/* Top Header Section */}
-
-
-
-        {/* All Sections One Item Start Here */}
-        {/* <div className="section">
-          <div className="withdrawal-card">
-            <h2 style={{ margin: '0px' }}>Get A Free Bonus</h2>
-            <form onSubmit={handleRedeemBonusCode} className="deposit-form">
-              {bonusMessage && (
-                <div style={{
-                  padding: '0px 5px',
-                  marginBottom: '10px',
-                  borderRadius: '5px',
-                  backgroundColor: bonusMessage.type === 'error' ? '#fee' : '#efe',
-                  color: bonusMessage.type === 'error' ? '#c00' : '#060',
-                  border: `1px solid ${bonusMessage.type === 'error' ? '#fcc' : '#0f0'}`
-                }}>
-                  {bonusMessage.text}
-                </div>
-              )}
-              <div className="deposit-amount" style={{ marginTop: '10px' }}>
-                <label className="deposit-label">Bonus Code *</label>
-                <input
-                  type="text"
-                  value={bonusCode}
-                  onChange={(e) => setBonusCode(e.target.value.toUpperCase())}
-                  placeholder="Enter Bonus Code"
-                  className="deposit-input"
-                  disabled={redeemingBonus}
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={redeemingBonus}
-                  className="section-button"
-                  style={{
-                    background: redeemingBonus ? '#ccc' : "linear-gradient(135deg, #22d3ee, #16a34a)",
-                    color: "white",
-                    cursor: redeemingBonus ? 'not-allowed' : 'pointer'
-                  }}
-                >
-                  {redeemingBonus ? 'Processing...' : 'Get Now'}
-                </button>
-              </div>
-            </form>
-          </div>
-
-        </div> */}
-
-        {/* <div className="section">
-          <div className="dashboard-plans-header">
-            <h2>Investment Plans</h2>
-            <Link to="/plans" className="section-button" style={{ background: "linear-gradient(135deg, #22d3ee, #16a34a)", color: "white" }}>View All</Link>
-          </div>
-          {plans.length > 0 ? (
-            plans.map((plan) => (
-              <div className="plan-card" key={plan._id}>
-                <div className="plan-card-header">
-                  <h3 className="plan-title">{plan.name}</h3>
-                  <span className="percentage-badge">{plan.roi_percentage}%</span>
-                </div>
-
-                <div className="plan-duration">
-                  <FontAwesomeIcon icon={faClock} className="clock-icon" /> {plan.duration_days} Days
-                </div>
-
-                <div className="plan-details-grid">
-                  <div className="detail-row">
-                    <span className="detail-label">Investment</span>
-                    <span className="detail-value text-bold">${plan.investment_amount}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="detail-label">Daily Income</span>
-                    <span className="detail-value text-purple">${plan.daily_profit}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="detail-label">Total Return</span>
-                    <span className="detail-value text-green">${plan.total_profit}</span>
-                  </div>
-                </div>
-
-              </div>
-            ))
-          ) : (
-            <div className="plan-card">
-              <p style={{ textAlign: 'center', padding: '20px' }}>No plans available</p>
-            </div>
-          )}
-        </div> */}
-
-        {/* <div className="section">
-          <div className="dashboard-plans-header">
-            <h2>Deposit Now</h2>
-            <Link to="/deposit" className="section-button" style={{ background: "linear-gradient(135deg, #22d3ee, #16a34a)", color: "white" }}>View All</Link>
-          </div>
-          <div className="dashboard-payment-details-section">
-            <div className="payment-details">
-              <h3 className="payment-details-title">Send Payment To:</h3>
-              <Link to="/refferrals" className="link-bold nav-link-col">
-                <FontAwesomeIcon icon={faUsers} />
-              </Link>
-            </div>
-            {loading ? (
-              <div className="payment-details-card">
-                <p>Loading account details...</p>
-              </div>
-            ) : error ? (
-              <div className="payment-details-card">
-                <p>Error: {error}</p>
-              </div>
-            ) : account ? (
-              <div className="payment-details-card">
-                <div className="detail-item">
-                  <span className="detail-label">Bank Name:</span>
-                  <span className="detail-value">{account.bankName}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Account Number:</span>
-                  <span className="detail-value copy-value">
-                    <button
-                      className="copy-btn"
-                      onClick={handleCopyAccountNumber}
-                      title="Copy to clipboard"
-                    >
-                      <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                      {copied ? ' Copied' : ' Copy'}
-                    </button>
-                    {account.accountNumber}
-                  </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Account Name:</span>
-                  <span className="detail-value">{account.accountName}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Account Type:</span>
-                  <span className="detail-value">{account.accountType}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="payment-details-card">
-                <p>No account details available</p>
-              </div>
-            )}
-          </div>
-
-        </div> */}
-
-        {/* <div className="section">
-          <div className="dashboard-plans-header">
-            <h2>Referral Now</h2>
-            <Link to="/refferrals" className="section-button" style={{ background: "linear-gradient(135deg, #22d3ee, #16a34a)", color: "white" }}>View All</Link>
-          </div>
-          <div className="dashboard-payment-details-section">
-            <div className="refferrals-card">
-              <div className="refferrals-links">
-                <h5 className="refferrals-header" style={{ fontSize: '18px' }}>Referral Code</h5>
-                <button
-                  className="refferrals-link-btn"
-                  onClick={handleCopyReferralCode}
-                  disabled={referralCode === 'N/A'}
-                >
-                  <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
-                  {copied ? ' Copied!' : ' Copy'}
-                </button>
-              </div>
-              <div className="refferrals-info">
-                <div className="refferrals-info-stats">
-                  <h4>👨‍👦‍👦 Total Referrals</h4>
-                  <p>{totalReferrals}</p>
-                </div>
-                <div className="refferrals-info-stats">
-                  <h4>🙋🏻‍♂️ Active Referrals</h4>
-                  <p>{activeReferrals}</p>
-                </div>
-                <div className="refferrals-info-stats">
-                  <h4>🤑 Earnings</h4>
-                  <p>${referralEarnings}</p>
-                </div>
-                <div className="refferrals-info-stats">
-                  <h4>💸 Commission Rate</h4>
-                  <p>10%</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div> */}
-
-
-        {/* All Sections One Item End Here */}
-
 
 
         {/* Bottom Navigation */}

@@ -328,7 +328,7 @@ background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
   padding: 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  text-align: left;
 }
 
 .dashboard-transaction-left {
@@ -359,7 +359,7 @@ background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
 .dashboard-transaction-right p {
   margin: 2px 0 0;
   font-size: 11px;
-  color: #6b7280;
+  color: #ffffff;
 }
 
 .dashboard-transaction-right {

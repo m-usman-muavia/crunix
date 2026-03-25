@@ -320,7 +320,7 @@ background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   position: relative;
   overflow: hidden;
   background: linear-gradient(105deg, #ff914d 0%, #ffde59 100%);
-  padding: 22px 14px 18px;
+  padding: 48px 28px 30px;
 }
 
 .login-service-hero::before {
