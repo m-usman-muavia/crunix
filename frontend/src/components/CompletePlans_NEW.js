@@ -108,10 +108,6 @@ const CompletePlans = () => {
               <h3 className="plans-status-value">{completedPlans.length}</h3>
             </div>
             <div className="plans-status-card">
-              <p className="plans-status-label">Total Invested</p>
-              <h3 className="plans-status-value">${formatAmount(totalInvested)}</h3>
-            </div>
-            <div className="plans-status-card">
               <p className="plans-status-label">Total Earned</p>
               <h3 className="plans-status-value">${formatAmount(totalEarnings)}</h3>
             </div>

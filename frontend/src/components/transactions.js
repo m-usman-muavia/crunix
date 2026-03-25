@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faCheckCircle, faClock, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import './css/style.css';
-import './css/refferrals.css';
+import './css/dashboard.css';
+import './css/plans.css';
 import './css/transactions.css';
 import API_BASE_URL from '../config/api';
 import BottomNav from './BottomNav';
@@ -11,7 +12,7 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('deposits');
+  const [activeFilter, setActiveFilter] = useState('all');
 
   useEffect(() => {
     fetchTransactions();
@@ -45,7 +46,7 @@ const Transactions = () => {
           type: 'deposit',
           amount: Number(dep.deposit_amount ?? dep.amount ?? 0),
           status: dep.status,
-          date: dep.createdAt,
+          date: dep.createdAt || dep.created_at || dep.approved_at,
           sender_mobile: dep.sender_mobile,
           transaction_id: dep.transaction_id
         }));
@@ -63,7 +64,7 @@ const Transactions = () => {
           type: 'withdrawal',
           amount: Number(wit.withdrawal_amount ?? wit.amount ?? 0),
           status: wit.status,
-          date: wit.createdAt,
+          date: wit.createdAt || wit.created_at || wit.approved_at,
           wallet_address: wit.wallet_address
         }));
         allTransactions = [...allTransactions, ...formattedWithdrawals];
@@ -80,26 +81,63 @@ const Transactions = () => {
     }
   };
 
+  // Calculate stats
+  const stats = useMemo(() => {
+    const total = transactions.length;
+    const pending = transactions.filter(tx => tx.status?.toLowerCase() === 'pending').length;
+    const accepted = transactions.filter(tx => 
+      tx.status?.toLowerCase() === 'approved' || 
+      tx.status?.toLowerCase() === 'accept' ||
+      tx.status?.toLowerCase() === 'accepted'
+    ).length;
+    const rejected = transactions.filter(tx => 
+      tx.status?.toLowerCase() === 'rejected' || 
+      tx.status?.toLowerCase() === 'reject'
+    ).length;
+
+    return { total, pending, accepted, rejected };
+  }, [transactions]);
+
+  // Filter transactions based on active filter
+  const filteredTransactions = useMemo(() => {
+    if (activeFilter === 'all') return transactions;
+    if (activeFilter === 'deposits') return transactions.filter(tx => tx.type === 'deposit');
+    if (activeFilter === 'withdrawals') return transactions.filter(tx => tx.type === 'withdrawal');
+    if (activeFilter === 'pending') return transactions.filter(tx => tx.status?.toLowerCase() === 'pending');
+    if (activeFilter === 'accepted') return transactions.filter(tx => 
+      tx.status?.toLowerCase() === 'approved' || 
+      tx.status?.toLowerCase() === 'accept' ||
+      tx.status?.toLowerCase() === 'accepted'
+    );
+    if (activeFilter === 'rejected') return transactions.filter(tx => 
+      tx.status?.toLowerCase() === 'rejected' || 
+      tx.status?.toLowerCase() === 'reject'
+    );
+    return transactions;
+  }, [transactions, activeFilter]);
+
   const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'approved':
-      case 'accept':
-        return '#27ae60';
-      case 'rejected':
-      case 'reject':
-        return '#e74c3c';
-      case 'pending':
-        return '#f39c12';
-      default:
-        return '#7f8c8d';
-    }
+    const lowerStatus = status?.toLowerCase();
+    if (lowerStatus === 'pending') return '#f59e0b';
+    if (lowerStatus === 'approved' || lowerStatus === 'accept' || lowerStatus === 'accepted') return '#10b981';
+    if (lowerStatus === 'rejected' || lowerStatus === 'reject') return '#ef4444';
+    return '#6b7280';
+  };
+
+  const getStatusIcon = (status) => {
+    const lowerStatus = status?.toLowerCase();
+    if (lowerStatus === 'pending') return faClock;
+    if (lowerStatus === 'approved' || lowerStatus === 'accept' || lowerStatus === 'accepted') return faCheckCircle;
+    if (lowerStatus === 'rejected' || lowerStatus === 'reject') return faTimesCircle;
+    return faCheckCircle;
   };
 
   const getStatusText = (status) => {
+    const lowerStatus = status?.toLowerCase();
+    if (lowerStatus === 'approve' || lowerStatus === 'accept') return 'Accepted';
+    if (lowerStatus === 'reject') return 'Rejected';
     return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
   };
-
-  const filteredTransactions = transactions.filter(tx => tx.type === activeTab.slice(0, -1));
 
   const formatAmount = (value) => {
     const num = Number(value);
@@ -107,10 +145,25 @@ const Transactions = () => {
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
+    if (Number.isNaN(date.getTime())) {
+      const parsed = Date.parse(String(dateString));
+      if (Number.isNaN(parsed)) return 'N/A';
+      const fallbackDate = new Date(parsed);
+      return fallbackDate.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -120,53 +173,100 @@ const Transactions = () => {
   return (
     <div className="main-wrapper">
       <div className="main-container">
-        {/* Top Header Section */}
-                <div className="deposit-header">Transaction History</div>
+        <div className="dashboard-modern-hero dashboard-service-hero">
+          <div className="dashboard-modern-hero-top">
+            <div>
+              <p className="dashboard-service-label">History</p>
+              <h1 className="dashboard-modern-title">Transactions</h1>
+            </div>
+            <div className="dashboard-header-actions">
+            
+            </div>
+          </div>
+        </div>
 
 
-       
-       
+        {/* Filter Chips */}
+        <div className="notifications-filter-wrap">
+          <button
+            className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('all')}
+          >
+            All
+          </button>
+          <button
+            className={`filter-btn ${activeFilter === 'deposits' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('deposits')}
+          >
+            Deposits
+          </button>
+          <button
+            className={`filter-btn ${activeFilter === 'withdrawals' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('withdrawals')}
+          >
+            Withdrawals
+          </button>
+        </div>
 
         {/* Transactions List Section */}
-        <div className="plan-content">
+        <div className="transactions-content">
           {loading ? (
-            <p className="tx-message">Loading transactions...</p>
+            <div className="transactions-empty">
+              <p className="transactions-empty-text">Loading transactions...</p>
+            </div>
           ) : error ? (
-            <p className="tx-message tx-error">Error: {error}</p>
+            <div className="transactions-empty">
+              <p className="transactions-empty-text" style={{ color: '#ef4444' }}>Error: {error}</p>
+            </div>
           ) : filteredTransactions.length === 0 ? (
-            <p className="tx-message">No transactions found</p>
+            <div className="transactions-empty">
+              <p className="transactions-empty-text">No transactions found</p>
+              <p className="transactions-empty-subtext">Your transactions will appear here</p>
+            </div>
           ) : (
             <div className="transactions-list">
               {filteredTransactions.map((tx) => (
                 <div 
                   key={tx._id}
-                  className={`tx-card ${tx.type === 'deposit' ? 'tx-deposit' : 'tx-withdrawal'}`}
-                  style={{ borderLeftColor: getStatusColor(tx.status) }}
+                  className={`modern-transaction-card modern-transaction-${tx.type}`}
                 >
-                  <div className="tx-main">
-                    <div className="tx-header">
-                      {/* <FontAwesomeIcon 
-                        icon={tx.type === 'deposit' ? faArrowDown : faArrowUp}
-                        className="tx-icon"
-                      /> */}
-                      <span className="tx-type">{tx.type}</span>
-                      <span className="tx-status" style={{ backgroundColor: getStatusColor(tx.status) }}>
-                        {getStatusText(tx.status)}
-                      </span>
-                    </div>
-
-                    <div className="tx-details">
-                      {tx.type === 'deposit' && (
-                        <>
-                        </>
-                      )}
-                      
+                  <div className="transaction-icon-wrap">
+                    <div className={`transaction-icon transaction-icon-${tx.type}`}>
+                      <FontAwesomeIcon icon={tx.type === 'deposit' ? faArrowDown : faArrowUp} />
                     </div>
                   </div>
 
-                  <div className="tx-amount">
-                    <div className={tx.type === 'deposit' ? 'tx-amount-deposit' : 'tx-amount-withdrawal'}>
-                      {tx.type === 'deposit' ? '+' : '-'}$ {formatAmount(tx.amount)}
+                  <div className="transaction-info">
+                    <div className="transaction-header">
+                      <h3 className="transaction-type">{tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</h3>
+                      <p className="transaction-date">
+                        {formatDate(tx.date)}
+                      </p>
+                    </div>
+
+                    <div className="transaction-details">
+                      {tx.type === 'withdrawal' && (
+                        <>
+                          {tx.wallet_address && (
+                            <p className="transaction-detail">
+                              <span className="detail-label">Address:</span>
+                              <span className="detail-value">{tx.wallet_address}</span>
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                      <span 
+                        className="transaction-status"
+                        style={{ color: getStatusColor(tx.status) }}
+                      >
+                        <FontAwesomeIcon icon={getStatusIcon(tx.status)} style={{ marginRight: '4px', fontSize: '12px' }} />
+                        {getStatusText(tx.status)}
+                      </span>
+                  <div className="transaction-amount-wrap">
+                    <div className={`transaction-amount transaction-amount-${tx.type}`}>
+                      {tx.type === 'deposit' ? '+' : '-'} AED {formatAmount(tx.amount)}
                     </div>
                   </div>
                 </div>
