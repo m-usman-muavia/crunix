@@ -190,7 +190,7 @@ background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: var(--auth-main-solid);
+  accent-color: var(--auth-main);
 }
 
 /* ─── Row between ───────────────────────────── */

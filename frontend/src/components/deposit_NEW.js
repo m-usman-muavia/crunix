@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHistory, faMobileAlt, faCheckCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faHistory, faMobileAlt, faCheckCircle, faExclamationTriangle, faQrcode, faBuildingColumns, faCopy } from '@fortawesome/free-solid-svg-icons';
+import './css/dashboard.css';
+import './css/plans.css';
 import './css/deposit-new.css';
 import API_BASE_URL from '../config/api';
 import ErrorModal from './ErrorModal';
@@ -16,7 +18,7 @@ const Deposit = () => {
     screenshotName: '',
     senderMobile: ''
   });
-  
+
   const [wallet, setWallet] = useState(null);
   const [account, setAccount] = useState(null);
   const [totalDeposit, setTotalDeposit] = useState(0);
@@ -26,6 +28,7 @@ const Deposit = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [copiedTill, setCopiedTill] = useState(false);
 
   useEffect(() => {
     fetchDepositData();
@@ -34,7 +37,7 @@ const Deposit = () => {
   const fetchDepositData = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      
+
       // Fetch wallet info
       const walletRes = await fetch(`${API_BASE_URL}/api/wallet`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -60,11 +63,11 @@ const Deposit = () => {
       if (depositsRes.ok) {
         const depositsData = await depositsRes.json();
         const deposits = Array.isArray(depositsData) ? depositsData : depositsData.data || [];
-        
-        const total = deposits.reduce((sum, d) => sum + Number(d.amount || 0), 0);
-        const pending = deposits.filter(d => d.status === 'pending').reduce((sum, d) => sum + Number(d.amount || 0), 0);
-        const rejected = deposits.filter(d => d.status === 'rejected').reduce((sum, d) => sum + Number(d.amount || 0), 0);
-        
+
+        const total = deposits.reduce((sum, d) => sum + Number(d.deposit_amount ?? d.amount ?? 0), 0);
+        const pending = deposits.filter(d => d.status === 'pending').reduce((sum, d) => sum + Number(d.deposit_amount ?? d.amount ?? 0), 0);
+        const rejected = deposits.filter(d => d.status === 'rejected').reduce((sum, d) => sum + Number(d.deposit_amount ?? d.amount ?? 0), 0);
+
         setTotalDeposit(total);
         setPendingDeposit(pending);
         setRejectedDeposit(rejected);
@@ -189,109 +192,89 @@ const Deposit = () => {
 
   const aedAmount = parseFloat(formData.amount) || 0;
   const rupeesAmount = aedAmount * 75;
+  const totalBalance =
+    Number(wallet?.main_balance || 0) +
+    Number(wallet?.referral_balance || 0) +
+    Number(wallet?.bonus_balance || 0);
 
   return (
     <div className="main-wrapper dom-wrapper">
       <div className="main-container dom-container">
-        {/* SECTION 1: Hero with Stats - Matching Dashboard Design */}
-        <div className="dashboard-modern-hero dashboard-service-hero">
-          <div className="dashboard-modern-hero-top">
-            <div>
-              <p className="dashboard-service-label">Add Funds</p>
-              <h1 className="dashboard-modern-title">Deposit</h1>
-            </div>
-            <div className="dashboard-header-actions">
-              <button 
-                className="dashboard-header-icon"
-                onClick={() => navigate('/deposithistory')}
-                aria-label="Deposit history"
-              >
-                <FontAwesomeIcon icon={faHistory} />
-              </button>
-            </div>
-          </div>
+       
 
-          {/* Stats Overview - Using Plans Status Card Style */}
-          <div className="deposit-status-overview">
-            <div className="plans-status-card">
-              <p className="plans-status-label">Total Deposited</p>
-              <h3 className="plans-status-value">AED {totalDeposit.toFixed(2)}</h3>
-            </div>
-            <div className="plans-status-card">
-              <p className="plans-status-label">Pending Amount</p>
-              <h3 className="plans-status-value">{pendingDeposit > 0 ? `AED ${pendingDeposit.toFixed(2)}` : '—'}</h3>
-            </div>
-            <div className="plans-status-card">
-              <p className="plans-status-label">Rejected Amount</p>
-              <h3 className="plans-status-value">{rejectedDeposit > 0 ? `AED ${rejectedDeposit.toFixed(2)}` : '—'}</h3>
-            </div>
-          </div>
-        </div>
+        <section className="dashboard-modern-hero dashboard-service-hero">
+                  <div className="dashboard-modern-hero-top">
+                    <div>
+                      <p className="dashboard-service-label">Add Funds</p>
+                      <h1 className="dashboard-modern-title">Deposit</h1>
+                    </div>
+                    <div className="dashboard-header-actions">
+                      <button
+                        className="dashboard-header-icon"
+                        onClick={() => navigate('/deposithistory')}
+                        aria-label="Deposit history"
+                        type="button"
+                      >
+                        <FontAwesomeIcon icon={faHistory} />
+                      </button>
+                    </div>
+                  </div>
+        
+                  <div className="withdraw-status-overview">
+                    <div className="withdraw-status-card">
+                      <p>Balance</p>
+                      <h3>AED {totalBalance.toFixed(2)}</h3>
+                    </div>
+                    <div className="withdraw-status-card">
+                      <p>Price </p>
+                      <h3>1 AED: Rs 75</h3>
+                    </div>
+                    <div className="withdraw-status-card">
+                      <p>Process Time</p>
+                      <h3>2-24 Hours</h3>
+                    </div>
+                  </div>
+                </section>
 
-        {/* SECTION 2: QR Code & Till ID */}
         {account && (
-          <div className="deposit-payment-section">
+          <section className="deposit-payment-section deposit-panel">
             <h2 className="section-title">Payment Details</h2>
-            
+
             <div className="payment-content">
-              {/* QR Code */}
               <div className="payment-qr-box">
-                <p className="qr-label">Scan to Pay</p>
+                <p className="qr-label"><FontAwesomeIcon icon={faQrcode} /> Scan to Pay || Till ID</p>
                 {account.qrImagePath ? (
-                  <img 
-                    src={resolveImageUrl(account.qrImagePath)} 
-                    alt="QR Code" 
+                  <img
+                    src={resolveImageUrl(account.qrImagePath)}
+                    alt="QR Code"
                     className="qr-image"
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
                 ) : (
-                  <div className="qr-placeholder">📱 QR Code</div>
+                  <div className="qr-placeholder">No QR Uploaded</div>
                 )}
-              </div>
-
-              {/* Till ID */}
-              <div className="till-id-box">
-                <p className="till-label">Or Transfer To</p>
-                <div className="till-value">{account.till_id || account.tillId || 'N/A'}</div>
-                <button 
-                  className="copy-btn"
+                {/* <div className="till-value">{account.till_id || account.tillId || 'N/A'}</div> */}
+                <button
+                  className="profile-logout-btn"
                   onClick={() => {
                     navigator.clipboard.writeText(account.till_id || account.tillId || '');
-                    alert('Till ID copied to clipboard');
+                    setCopiedTill(true);
+                    setTimeout(() => setCopiedTill(false), 1800);
                   }}
                 >
-                  📋 Copy
+                  <FontAwesomeIcon icon={faCopy} /> {copiedTill ? 'Copied' : 'Copy Till ID'}
                 </button>
               </div>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* SECTION 3: Deposit Form */}
-        <div className="deposit-form-section">
+        <section className="deposit-form-section deposit-panel">
           <h2 className="section-title">Deposit Information</h2>
 
-          {/* Important Instructions */}
-          <div className="instructions-box">
-            <div className="instruction-header">
-              <FontAwesomeIcon icon={faExclamationTriangle} />
-              <span>Important Instructions</span>
-            </div>
-            <ul className="instructions-list">
-              <li><strong>Currency Conversion:</strong> AED 1.00 ≈ Rs 75</li>
-              <li><strong>Minimum Deposit:</strong> AED 5.00 minimum</li>
-              <li><strong>Exact Amount:</strong> Transfer the exact amount shown - do not round up or down</li>
-              <li><strong>Use Till ID:</strong> Use provided Till ID or scan QR code for payment</li>
-              <li><strong>Screenshot Required:</strong> Upload proof of payment transfer</li>
-              <li><strong>Processing Time:</strong> Deposits are verified within 2-4 hours</li>
-              <li><strong>Mobile Number:</strong> Use the mobile number from which you're sending payment</li>
-              <li><strong>Transaction Reference:</strong> Keep your transaction ID for support inquiries</li>
-            </ul>
-          </div>
+          
 
-          {/* Deposit Form */}
           <form className="deposit-form" onSubmit={handleSubmit}>
-            {/* Deposit Amount */}
             <div className="form-group">
               <label className="form-label">
                 Deposit Amount (AED) <span className="required">*</span>
@@ -315,7 +298,6 @@ const Deposit = () => {
               )}
             </div>
 
-            {/* Transaction ID */}
             <div className="form-group">
               <label className="form-label">
                 Transaction ID / Reference Number <span className="required">*</span>
@@ -332,7 +314,6 @@ const Deposit = () => {
               <p className="form-hint">Find this in your payment receipt or bank statement</p>
             </div>
 
-            {/* Screenshot Upload */}
             <div className="form-group">
               <label className="form-label">
                 Upload Screenshot (Payment Proof) <span className="required">*</span>
@@ -357,7 +338,6 @@ const Deposit = () => {
               <p className="form-hint">Upload clear screenshot showing transaction details</p>
             </div>
 
-            {/* Sender Mobile Number */}
             <div className="form-group">
               <label className="form-label">
                 Sender Mobile Number <span className="required">*</span>
@@ -379,9 +359,8 @@ const Deposit = () => {
               <p className="form-hint">Use the same mobile number used for payment transfer</p>
             </div>
 
-            {/* Submit Button */}
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="submit-btn"
               disabled={submitLoading}
             >
@@ -396,8 +375,25 @@ const Deposit = () => {
               )}
             </button>
           </form>
-        </div>
-
+        </section>
+        <section className="deposit-instructions-section">
+          <div className="instructions-box">
+            <div className="instruction-header">
+              <FontAwesomeIcon icon={faExclamationTriangle} />
+              <span>Important Instructions</span>
+            </div>
+            <ul className="instructions-list">
+              <li><strong>Currency Conversion:</strong> AED 1.00 ≈ Rs 75</li>
+              <li><strong>Minimum Deposit:</strong> AED 5.00 minimum</li>
+              <li><strong>Exact Amount:</strong> Transfer the exact amount shown - do not round up or down</li>
+              <li><strong>Use Till ID:</strong> Use provided Till ID or scan QR code for payment</li>
+              <li><strong>Screenshot Required:</strong> Upload proof of payment transfer</li>
+              <li><strong>Processing Time:</strong> Deposits are verified within 2-4 hours</li>
+              <li><strong>Mobile Number:</strong> Use the mobile number from which you're sending payment</li>
+              <li><strong>Transaction Reference:</strong> Keep your transaction ID for support inquiries</li>
+            </ul>
+          </div>
+        </section>
         <BottomNav />
 
         {/* Error Modal */}

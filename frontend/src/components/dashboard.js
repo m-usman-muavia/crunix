@@ -162,12 +162,12 @@ const Dashboard = () => {
       if (response.ok) {
         const data = await response.json();
         const withdrawals = Array.isArray(data) ? data : (data.data || []);
-        
+
         // Calculate total for approved withdrawals only
         const total = withdrawals
           .filter(w => w.status === 'approved' || w.status === 'accept')
           .reduce((sum, w) => sum + (Number(w.withdrawal_amount || w.amount || 0)), 0);
-        
+
         setTotalWithdrawn(total);
       }
     } catch (err) {
@@ -393,7 +393,7 @@ const Dashboard = () => {
 
     setLoadingInvest(true);
     setSelectedPlan(plan);
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/investments/invest-now`, {
         method: 'POST',
@@ -405,7 +405,7 @@ const Dashboard = () => {
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         setErrorMessage(data.message);
         setErrorModalOpen(true);
@@ -444,7 +444,7 @@ const Dashboard = () => {
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         setErrorMessage(data.message);
         setErrorModalOpen(true);
@@ -658,6 +658,43 @@ const Dashboard = () => {
         <section className="dashboard-showcase">
           <div className="dashboard-section-head dashboard-transaction-header">
             <div>
+              <h3>Bonus</h3>
+              <p className="dashboard-section-sub">Collect All Bonuses</p>
+            </div>
+            <Link to="/bonuses" className="dashboard-modern-edit-link2">Collect</Link>
+          </div>
+          <div className="dashboard-bonus-row">
+            <form className="dashboard-bonus-form" onSubmit={handleRedeemBonusCode}>
+              <div className="dashboard-bonus-input-wrap">
+                <input
+                  type="text"
+                  className="dashboard-bonus-input"
+                  placeholder="ENTER BONUS CODE"
+                  value={bonusCode}
+                  onChange={(e) => setBonusCode(e.target.value.toUpperCase())}
+                  maxLength={14}
+                />
+                <button
+                  type="submit"
+                  className="dashboard-bonus-submit"
+                  disabled={redeemingBonus || !bonusCode.trim()}
+                >
+                  {redeemingBonus ? 'COLLECTING...' : 'COLLECT'}
+                </button>
+              </div>
+              {bonusMessage?.text ? (
+                <p className={`dashboard-bonus-message ${bonusMessage.type === 'error' ? 'dashboard-bonus-message-error' : 'dashboard-bonus-message-success'}`}>
+                  {bonusMessage.text}
+                </p>
+              ) : null}
+            </form>
+          </div>
+
+          
+        </section>
+        <section className="dashboard-showcase">
+          <div className="dashboard-section-head dashboard-transaction-header">
+            <div>
               <h3>Transation History</h3>
               <p className="dashboard-section-sub">See All Transations</p>
             </div>
@@ -694,7 +731,6 @@ const Dashboard = () => {
           </div>
         </section>
 
-       
         {/* Error Modal */}
         <ErrorModal
           isOpen={errorModalOpen}
@@ -710,8 +746,8 @@ const Dashboard = () => {
 
       </div>
 
-      <InvestModal 
-        isOpen={isModalOpen} 
+      <InvestModal
+        isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         plan={selectedPlan}
         balance={balance}

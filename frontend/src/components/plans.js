@@ -616,11 +616,11 @@ const Plans = () => {
                 </div>
                 <div className="plan-detail-row">
                   <span>Investment Amount (Rs)</span>
-                  <strong>Rs {Number(detailPlan.investment_amount || 0).toFixed(2)}</strong>
+                  <strong>AED {Number(detailPlan.investment_amount || 0).toFixed(2)}</strong>
                 </div>
                 <div className="plan-detail-row">
                   <span>Daily Profit (Rs)</span>
-                  <strong>Rs {Number(detailPlan.daily_profit || 0).toFixed(2)}</strong>
+                  <strong> AED {Number(detailPlan.daily_profit || 0).toFixed(2)}</strong>
                 </div>
                 <div className="plan-detail-row">
                   <span>Duration (Days)</span>
@@ -634,17 +634,10 @@ const Plans = () => {
                       : 'Unlimited'}
                   </strong>
                 </div>
-              </div>
-
-              <div className="plan-detail-actions">
-                <button type="button" className="plan-detail-btn plan-detail-btn-secondary" onClick={handleCloseDetails}>
-                  Close
-                </button>
-              </div>
-
-              <div className="plan-detail-qty-wrap">
-                <p className="plan-detail-qty-title">Quantity</p>
-                <div className="plan-slide-buy plan-detail-buy" aria-label="Detail quantity controls">
+                <div className="plan-detail-row">
+                  <span>Quantity</span>
+                  <strong>
+                    <div className="plan-slide-buy plan-detail-buy" aria-label="Detail quantity controls">
                   <button
                     type="button"
                     className="plan-slide-buy-btn"
@@ -664,6 +657,16 @@ const Plans = () => {
                     <FontAwesomeIcon icon={faCirclePlus} />
                   </button>
                 </div>
+                  </strong>
+                </div>
+              </div>
+
+              
+
+              <div className="plan-detail-qty-wrap">
+                <button type="button" className="plan-detail-btn plan-detail-btn-secondary" onClick={handleCloseDetails}>
+                  Close
+                </button>
                 <button
                   type="button"
                   className="plan-detail-btn plan-detail-btn-primary"

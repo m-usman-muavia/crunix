@@ -1,0 +1,137 @@
+.withdraw-status-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.withdraw-status-card {
+  background: #ffffff;
+  border: 1px solid #ebebeb;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.withdraw-status-card p {
+  margin: 0;
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.withdraw-status-card h3 {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #111827;
+  font-weight: 900;
+}
+
+.withdraw-panel {
+  margin: 10px 20px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #efe7db;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.withdraw-form-section {
+  margin-bottom: 24px;
+}
+
+.withdraw-instructions {
+  margin-bottom: 18px;
+}
+
+.withdraw-section-head h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.withdraw-section-head p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.withdraw-form {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.withdraw-input-wrap {
+  border: 2px solid #f0e5d8;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+}
+
+.withdraw-select-wrap {
+  border: 2px solid #f0e5d8;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+}
+
+.withdraw-input-wrap .form-input,
+.withdraw-select-wrap .form-input {
+  border: none;
+  background: transparent;
+}
+
+.withdraw-quick-buttons {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.withdraw-quick-buttons button {
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: #fff1e8;
+  color: #f97316;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.withdraw-instructions ul {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.withdraw-instructions li {
+  font-size: 12px;
+  color: #374151;
+  font-weight: 700;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.withdraw-instructions li svg {
+  color: #f97316;
+  margin-top: 2px;
+}
+
+@media (max-width: 520px) {
+  .withdraw-status-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .withdraw-panel {
+    margin-left: 14px;
+    margin-right: 14px;
+  }
+
+  .withdraw-quick-buttons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
