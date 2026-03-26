@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHistory, faMobileAlt, faCheckCircle, faExclamationTriangle, faQrcode, faBuildingColumns, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { faHistory,faCircleExclamation, faMobileAlt, faCheckCircle, faExclamationTriangle, faQrcode, faBuildingColumns, faCopy } from '@fortawesome/free-solid-svg-icons';
 import './css/dashboard.css';
 import './css/plans.css';
 import './css/deposit-new.css';
@@ -200,41 +200,41 @@ const Deposit = () => {
   return (
     <div className="main-wrapper dom-wrapper">
       <div className="main-container dom-container">
-       
+
 
         <section className="dashboard-modern-hero dashboard-service-hero">
-                  <div className="dashboard-modern-hero-top">
-                    <div>
-                      <p className="dashboard-service-label">Add Funds</p>
-                      <h1 className="dashboard-modern-title">Deposit</h1>
-                    </div>
-                    <div className="dashboard-header-actions">
-                      <button
-                        className="dashboard-header-icon"
-                        onClick={() => navigate('/deposithistory')}
-                        aria-label="Deposit history"
-                        type="button"
-                      >
-                        <FontAwesomeIcon icon={faHistory} />
-                      </button>
-                    </div>
-                  </div>
-        
-                  <div className="withdraw-status-overview">
-                    <div className="withdraw-status-card">
-                      <p>Balance</p>
-                      <h3>AED {totalBalance.toFixed(2)}</h3>
-                    </div>
-                    <div className="withdraw-status-card">
-                      <p>Price </p>
-                      <h3>1 AED: Rs 75</h3>
-                    </div>
-                    <div className="withdraw-status-card">
-                      <p>Process Time</p>
-                      <h3>2-24 Hours</h3>
-                    </div>
-                  </div>
-                </section>
+          <div className="dashboard-modern-hero-top">
+            <div>
+              <p className="dashboard-service-label">Add Funds</p>
+              <h1 className="dashboard-modern-title">Deposit</h1>
+            </div>
+            <div className="dashboard-header-actions">
+              <button
+                className="dashboard-header-icon"
+                onClick={() => navigate('/deposithistory')}
+                aria-label="Deposit history"
+                type="button"
+              >
+                <FontAwesomeIcon icon={faHistory} />
+              </button>
+            </div>
+          </div>
+
+          <div className="withdraw-status-overview">
+            <div className="withdraw-status-card">
+              <p>Balance</p>
+              <h3>AED {totalBalance.toFixed(2)}</h3>
+            </div>
+            <div className="withdraw-status-card">
+              <p>Price </p>
+              <h3>1 AED: Rs 75</h3>
+            </div>
+            <div className="withdraw-status-card">
+              <p>Process Time</p>
+              <h3>2-24 Hours</h3>
+            </div>
+          </div>
+        </section>
 
         {account && (
           <section className="deposit-payment-section deposit-panel">
@@ -272,7 +272,7 @@ const Deposit = () => {
         <section className="deposit-form-section deposit-panel">
           <h2 className="section-title">Deposit Information</h2>
 
-          
+
 
           <form className="deposit-form" onSubmit={handleSubmit}>
             <div className="form-group">
@@ -376,24 +376,19 @@ const Deposit = () => {
             </button>
           </form>
         </section>
-        <section className="deposit-instructions-section">
-          <div className="instructions-box">
-            <div className="instruction-header">
-              <FontAwesomeIcon icon={faExclamationTriangle} />
-              <span>Important Instructions</span>
-            </div>
-            <ul className="instructions-list">
-              <li><strong>Currency Conversion:</strong> AED 1.00 ≈ Rs 75</li>
-              <li><strong>Minimum Deposit:</strong> AED 5.00 minimum</li>
-              <li><strong>Exact Amount:</strong> Transfer the exact amount shown - do not round up or down</li>
-              <li><strong>Use Till ID:</strong> Use provided Till ID or scan QR code for payment</li>
-              <li><strong>Screenshot Required:</strong> Upload proof of payment transfer</li>
-              <li><strong>Processing Time:</strong> Deposits are verified within 2-4 hours</li>
-              <li><strong>Mobile Number:</strong> Use the mobile number from which you're sending payment</li>
-              <li><strong>Transaction Reference:</strong> Keep your transaction ID for support inquiries</li>
-            </ul>
+        <section className="withdraw-instructions withdraw-panel">
+          <div className="withdraw-section-head">
+            <h3>Important Instructions</h3>
           </div>
+          <ul>
+            <li><FontAwesomeIcon icon={faCircleExclamation} />AED 1.00 is equivalent to Rs 75.</li>
+            <li><FontAwesomeIcon icon={faCircleExclamation} /> Minimum withdrawal amount is AED 3.00.</li>
+            <li><FontAwesomeIcon icon={faCircleExclamation} /> Use provided Till ID or scan QR code for payment.</li>
+            <li><FontAwesomeIcon icon={faCircleExclamation} /> Screenshot Image Must Be Clear and Legible.</li>
+            <li><FontAwesomeIcon icon={faCircleExclamation} /> Deposits are verified within 2-4 hours.</li>
+          </ul>
         </section>
+
         <BottomNav />
 
         {/* Error Modal */}
