@@ -122,9 +122,7 @@
 }
 
 @media (max-width: 520px) {
-  .withdraw-status-overview {
-    grid-template-columns: 1fr;
-  }
+
 
   .withdraw-panel {
     margin-left: 14px;

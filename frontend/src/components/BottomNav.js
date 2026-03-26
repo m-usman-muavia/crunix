@@ -36,8 +36,8 @@ const BottomNav = () => {
       </Link>
 
       <Link 
-        to="/withdrawalhistory" 
-        className={`nav-item-modern nav-icon-only ${isActive('/withdrawalhistory') ? 'active' : ''}`}
+        to="/withdrawal" 
+        className={`nav-item-modern nav-icon-only ${isActive('/withdrawal') ? 'active' : ''}`}
         aria-label="Received"
       >
         <FontAwesomeIcon icon={faInbox} />
