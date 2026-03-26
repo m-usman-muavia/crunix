@@ -292,10 +292,9 @@ const Deposit = () => {
                   className="form-input"
                   required
                 />
+                <span className="currency-symbol">Rs{rupeesAmount.toFixed(2)}</span>
               </div>
-              {aedAmount > 0 && (
-                <p className="conversion-info">≈ Rs {rupeesAmount.toFixed(2)}</p>
-              )}
+              
             </div>
 
             <div className="form-group">
@@ -385,7 +384,7 @@ const Deposit = () => {
             <li><FontAwesomeIcon icon={faCircleExclamation} /> Minimum withdrawal amount is AED 3.00.</li>
             <li><FontAwesomeIcon icon={faCircleExclamation} /> Use provided Till ID or scan QR code for payment.</li>
             <li><FontAwesomeIcon icon={faCircleExclamation} /> Screenshot Image Must Be Clear and Legible.</li>
-            <li><FontAwesomeIcon icon={faCircleExclamation} /> Deposits are verified within 2-4 hours.</li>
+            <li><FontAwesomeIcon icon={faCircleExclamation} /> Deposits are verified within 2-4 hours .</li>
           </ul>
         </section>
 
