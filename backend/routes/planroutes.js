@@ -68,19 +68,43 @@ router.post('/invest-now', verifyToken, async (req, res) => {
       return res.status(404).json({ message: 'Wallet not found' });
     }
 
-    // Check if user has sufficient balance
-    if (wallet.main_balance < plan.investment_amount) {
+    const totalAvailableBalance =
+      Number(wallet.main_balance || 0) +
+      Number(wallet.referral_balance || 0) +
+      Number(wallet.bonus_balance || 0);
+
+    // Check if user has sufficient total balance
+    if (totalAvailableBalance < plan.investment_amount) {
       return res.status(400).json({ 
         message: 'Insufficient balance',
         required: plan.investment_amount,
-        available: wallet.main_balance
+        available: totalAvailableBalance
       });
     }
 
     // If confirm is true, create the investment
     if (confirm) {
-      // Deduct from wallet
-      wallet.main_balance -= plan.investment_amount;
+      // Deduct from total balances in priority order: main -> referral -> bonus
+      let remainingAmount = Number(plan.investment_amount || 0);
+
+      if (remainingAmount > 0) {
+        const mainDeduction = Math.min(Number(wallet.main_balance || 0), remainingAmount);
+        wallet.main_balance = Number(wallet.main_balance || 0) - mainDeduction;
+        remainingAmount -= mainDeduction;
+      }
+
+      if (remainingAmount > 0) {
+        const referralDeduction = Math.min(Number(wallet.referral_balance || 0), remainingAmount);
+        wallet.referral_balance = Number(wallet.referral_balance || 0) - referralDeduction;
+        remainingAmount -= referralDeduction;
+      }
+
+      if (remainingAmount > 0) {
+        const bonusDeduction = Math.min(Number(wallet.bonus_balance || 0), remainingAmount);
+        wallet.bonus_balance = Number(wallet.bonus_balance || 0) - bonusDeduction;
+        remainingAmount -= bonusDeduction;
+      }
+
       await wallet.save();
 
       // Calculate end date
@@ -141,7 +165,10 @@ router.post('/invest-now', verifyToken, async (req, res) => {
       return res.status(201).json({
         message: 'Investment successful',
         investment: userPlan,
-        newBalance: wallet.main_balance
+        newBalance:
+          Number(wallet.main_balance || 0) +
+          Number(wallet.referral_balance || 0) +
+          Number(wallet.bonus_balance || 0)
       });
     }
 
@@ -156,7 +183,7 @@ router.post('/invest-now', verifyToken, async (req, res) => {
         total_profit: plan.total_profit,
         duration_days: plan.duration_days
       },
-      balance: wallet.main_balance
+      balance: totalAvailableBalance
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

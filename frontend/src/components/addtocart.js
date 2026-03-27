@@ -15,6 +15,7 @@ const AddToCart = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [checkoutSuccess, setCheckoutSuccess] = useState(null);
 
   useEffect(() => {
     const current = JSON.parse(localStorage.getItem('planCart') || '[]');
@@ -65,7 +66,17 @@ const AddToCart = () => {
       return;
     }
 
+    setCheckoutSuccess(null);
     setIsLoading(true);
+
+    const parseJsonSafe = async (response) => {
+      const text = await response.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        return { message: text || `Request failed (HTTP ${response.status})` };
+      }
+    };
 
     try {
       // First, validate all plans have sufficient balance
@@ -82,7 +93,7 @@ const AddToCart = () => {
           })
         });
 
-        const validateData = await validateResponse.json();
+        const validateData = await parseJsonSafe(validateResponse);
 
         if (!validateResponse.ok) {
           setErrorMessage(validateData.message || 'Validation failed');
@@ -111,7 +122,7 @@ const AddToCart = () => {
             })
           });
 
-          const investData = await investResponse.json();
+          const investData = await parseJsonSafe(investResponse);
 
           if (!investResponse.ok) {
             failureError = investData.message || 'Failed to activate plan';
@@ -128,16 +139,13 @@ const AddToCart = () => {
         setErrorMessage(failureError);
         setIsErrorModalOpen(true);
       } else {
-        // Success - clear cart and show success message
+        // Success - clear cart and show success card
         localStorage.removeItem('planCart');
         setCartItems([]);
-        setErrorMessage(`Successfully activated ${successCount} ${successCount === 1 ? 'plan' : 'plans'}! Redirecting to dashboard...`);
-        setIsErrorModalOpen(true);
-        
-        // Redirect after brief delay
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 2000);
+        setCheckoutSuccess({
+          count: successCount,
+          amount: totalAmount
+        });
       }
     } catch (error) {
       setErrorMessage(error.message || 'An error occurred during checkout');
@@ -173,6 +181,23 @@ const AddToCart = () => {
         </div>
 
         <div className="plan-content" style={{ paddingTop: '14px' }}>
+          {checkoutSuccess && (
+            <div className="checkout-success-card" role="status" aria-live="polite">
+              <h3>Checkout Successful</h3>
+              <p>
+                Activated {checkoutSuccess.count} {checkoutSuccess.count === 1 ? 'plan' : 'plans'} for AED {Number(checkoutSuccess.amount || 0).toFixed(2)}.
+              </p>
+              <div className="checkout-success-actions">
+                <button type="button" className="dashboard-modern-edit-link" onClick={() => navigate('/dashboard')}>
+                  GO TO DASHBOARD
+                </button>
+                <button type="button" className="checkout-success-secondary" onClick={() => navigate('/plans')}>
+                  BROWSE MORE PLANS
+                </button>
+              </div>
+            </div>
+          )}
+
           {cartItems.length === 0 ? (
             <div className="plan-card-new" style={{ textAlign: 'center' }}>
               <h3 className="product-title" style={{ marginBottom: '8px' }}>Your cart is empty</h3>
@@ -252,7 +277,7 @@ const AddToCart = () => {
           <ErrorModal
             message={errorMessage}
             onClose={() => setIsErrorModalOpen(false)}
-            closeDuration={errorMessage.includes('Successfully activated') ? 3000 : 2500}
+            closeDuration={2500}
           />
         )}
       </div>

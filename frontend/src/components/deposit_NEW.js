@@ -333,9 +333,9 @@ const Deposit = () => {
                   className="form-input"
                   required
                 />
-                {/* <span className="currency-symbol">Rs{rupeesAmount.toFixed(2)}</span> */}
               </div>
-              
+                              <span className="currency-symbol">Rs{rupeesAmount.toFixed(2)}</span>
+
             </div>
 
             <div className="form-group">

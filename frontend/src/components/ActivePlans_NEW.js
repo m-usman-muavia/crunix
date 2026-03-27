@@ -101,7 +101,7 @@ const ActivePlans = () => {
     const handleCollectEarnings = async (planId) => {
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`${API_BASE_URL}/api/plans/${planId}/collect`, {
+            const response = await fetch(`${API_BASE_URL}/api/plans/${planId}/collect-income`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -110,11 +110,20 @@ const ActivePlans = () => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to collect earnings');
+                let errorMessage = 'Failed to collect earnings';
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorMessage;
+                } catch (parseError) {
+                    const rawText = await response.text();
+                    if (rawText) {
+                        errorMessage = rawText.slice(0, 180);
+                    }
+                }
+                throw new Error(errorMessage);
             }
 
-            const data = await response.json();
+            await response.json();
             setErrorMessage('Daily earnings collected successfully!');
             setShowErrorModal(true);
             

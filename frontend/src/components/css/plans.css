@@ -465,6 +465,48 @@
   margin: 20px 0px;
 }
 
+.checkout-success-card {
+  border: 1px solid #bbf7d0;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12);
+}
+
+.checkout-success-card h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: #065f46;
+}
+
+.checkout-success-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #065f46;
+  font-weight: 600;
+}
+
+.checkout-success-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.checkout-success-secondary {
+  border: 1px solid #10b981;
+  background: #ffffff;
+  color: #047857;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
 
 @media (max-width: 500px) {
   .plans-slider-title {

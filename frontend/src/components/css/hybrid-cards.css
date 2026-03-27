@@ -323,12 +323,10 @@
 
 /* Responsive Design */
 @media (max-width: 480px) {
-  .details-grid {
-    grid-template-columns: 1fr;
-  }
+
 
   .hybrid-card-header {
-    flex-direction: column;
+    /* flex-direction: column; */
     padding: 12px;
   }
 
