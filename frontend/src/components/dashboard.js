@@ -661,7 +661,7 @@ const Dashboard = () => {
               <h3>Bonus</h3>
               <p className="dashboard-section-sub">Collect All Bonuses</p>
             </div>
-            <Link to="/bonuses" className="dashboard-modern-edit-link2">Collect</Link>
+            <Link to="/bonus" className="dashboard-modern-edit-link2">Collect</Link>
           </div>
           <div className="dashboard-bonus-row">
             <form className="dashboard-bonus-form" onSubmit={handleRedeemBonusCode}>

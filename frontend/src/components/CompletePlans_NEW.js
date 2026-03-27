@@ -163,18 +163,18 @@ const CompletePlans = () => {
                         <p className="hybrid-card-meta">Completed on {formatDate(plan.endDate || plan.updatedAt || plan.createdAt)}</p>
                         
                         {/* Achievement Badge */}
-                        <div style={{ marginTop: '10px' }}>
+                        {/* <div style={{ marginTop: '10px' }}>
                           <span className="achievement-badge">
                             <FontAwesomeIcon icon={faTrophy} /> Mission Accomplished
                           </span>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
                     <div className="hybrid-card-amount">
                       <p style={{ fontSize: '12px', color: '#999' }}>Total Earned</p>
                       <h4 style={{ fontSize: '20px', fontWeight: '700', color: '#10b981' }}>
-                        ${formatAmount(earned)}
+                        AED{formatAmount(earned)}
                       </h4>
                       <FontAwesomeIcon 
                         icon={faChevronDown} 
@@ -194,15 +194,15 @@ const CompletePlans = () => {
                       <div className="details-grid">
                         <div className="detail-item">
                           <span className="detail-label">Initial Investment</span>
-                          <span className="detail-value">${formatAmount(invested)}</span>
+                          <span className="detail-value">AED{formatAmount(invested)}</span>
                         </div>
                         <div className="detail-item">
                           <span className="detail-label">Total Earnings</span>
-                          <span className="detail-value">${formatAmount(earned)}</span>
+                          <span className="detail-value">AED{formatAmount(earned)}</span>
                         </div>
                         <div className="detail-item">
                           <span className="detail-label">Net Profit</span>
-                          <span className="detail-value" style={{ color: '#10b981' }}>${formatAmount(Math.max(0, earned - invested))}</span>
+                          <span className="detail-value" style={{ color: '#10b981' }}>AED{formatAmount(Math.max(0, earned - invested))}</span>
                         </div>
                         <div className="detail-item">
                           <span className="detail-label">Return Rate</span>
