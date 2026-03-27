@@ -26,6 +26,7 @@ router.get('/active', verifyToken, async (req, res) => {
       return {
         _id: plan._id,
         name: plan.name,
+        description: plan.description,
         category: plan.category,
         plan_category: plan.category,
         roi_percentage: plan.roi_percentage,

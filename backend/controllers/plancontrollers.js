@@ -7,6 +7,13 @@ const toNumber = (value) => {
   return Number.isFinite(num) ? num : NaN;
 };
 
+const hasCloudinaryCredentials = () =>
+  Boolean(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET
+  );
+
 // 👉 GET ALL PLANS
 exports.getPlans = async (req, res) => {
   try {
@@ -29,6 +36,7 @@ exports.createPlan = async (req, res) => {
   try {
     const {
       name,
+      description,
       investment_amount,
       daily_profit,
       duration_days,
@@ -73,17 +81,23 @@ exports.createPlan = async (req, res) => {
 
     let imagePath = '';
     let imagePublicId = '';
+    let imageUploadSkipped = false;
 
     if (req.file) {
-      const uploadResult = await uploadBuffer(req.file.buffer, {
-        folder: 'plans'
-      });
-      imagePath = uploadResult.secure_url || '';
-      imagePublicId = uploadResult.public_id || '';
+      if (hasCloudinaryCredentials()) {
+        const uploadResult = await uploadBuffer(req.file.buffer, {
+          folder: 'plans'
+        });
+        imagePath = uploadResult.secure_url || '';
+        imagePublicId = uploadResult.public_id || '';
+      } else {
+        imageUploadSkipped = true;
+      }
     }
 
     const planData = {
       name,
+      description: description || '',
       investment_amount: investmentAmountNum,
       daily_profit: dailyProfitNum,
       duration_days: durationDaysNum,
@@ -109,7 +123,9 @@ exports.createPlan = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'Plan created successfully',
+      message: imageUploadSkipped
+        ? 'Plan created successfully. Image upload skipped because Cloudinary is not configured on server.'
+        : 'Plan created successfully',
       data: newPlan
     });
   } catch (error) {
@@ -128,6 +144,7 @@ exports.updatePlan = async (req, res) => {
     const { id } = req.params;
     const {
       name,
+      description,
       investment_amount,
       daily_profit,
       duration_days,
@@ -147,6 +164,7 @@ exports.updatePlan = async (req, res) => {
 
     // Update fields if provided
     if (name) plan.name = name;
+    if (description !== undefined) plan.description = description;
     if (investment_amount !== undefined) {
       const investmentAmountNum = toNumber(investment_amount);
       if (!Number.isFinite(investmentAmountNum) || investmentAmountNum <= 0) {
@@ -201,19 +219,24 @@ exports.updatePlan = async (req, res) => {
     }
     
     // Handle image update
+    let imageUploadSkipped = false;
     if (req.file) {
-      if (plan.image_public_id) {
-        await deleteByPublicId(plan.image_public_id);
-      } else if (plan.image_path && fs.existsSync(plan.image_path)) {
-        fs.unlinkSync(plan.image_path);
+      if (hasCloudinaryCredentials()) {
+        if (plan.image_public_id) {
+          await deleteByPublicId(plan.image_public_id);
+        } else if (plan.image_path && fs.existsSync(plan.image_path)) {
+          fs.unlinkSync(plan.image_path);
+        }
+
+        const uploadResult = await uploadBuffer(req.file.buffer, {
+          folder: 'plans'
+        });
+
+        plan.image_path = uploadResult.secure_url || '';
+        plan.image_public_id = uploadResult.public_id || '';
+      } else {
+        imageUploadSkipped = true;
       }
-
-      const uploadResult = await uploadBuffer(req.file.buffer, {
-        folder: 'plans'
-      });
-
-      plan.image_path = uploadResult.secure_url || '';
-      plan.image_public_id = uploadResult.public_id || '';
     }
 
     // Recalculate total profit and ROI if amounts or duration changed
@@ -226,7 +249,9 @@ exports.updatePlan = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: 'Plan updated successfully',
+      message: imageUploadSkipped
+        ? 'Plan updated successfully. Image upload skipped because Cloudinary is not configured on server.'
+        : 'Plan updated successfully',
       data: plan
     });
   } catch (error) {

@@ -5,6 +5,10 @@ const planSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
+  description: {
+    type: String,
+    default: ''
+  },
   investment_amount: { 
     type: Number, 
     required: true 

@@ -15,6 +15,7 @@ const AddPlans = () => {
     const [showInactive, setShowInactive] = useState(false);
     const [form, setForm] = useState({
         planTitle: '',
+        description: '',
         category: 'Premium Plan',
         investmentAmount: '',
         dailyProfit: '',
@@ -62,7 +63,7 @@ const AddPlans = () => {
     useEffect(() => { fetchPlans(); }, []);
 
     const resetForm = () => {
-        setForm({ planTitle: '', category: 'Premium Plan', investmentAmount: '', dailyProfit: '', duration: '', purchaseLimit: '', countdownHours: '', image: null });
+        setForm({ planTitle: '', description: '', category: 'Premium Plan', investmentAmount: '', dailyProfit: '', duration: '', purchaseLimit: '', countdownHours: '', image: null });
         setEditingId(null);
     };
 
@@ -72,6 +73,7 @@ const AddPlans = () => {
         
         const formData = new FormData();
         formData.append('name', form.planTitle);
+        formData.append('description', form.description || '');
         formData.append('category', form.category);
         formData.append('investment_amount', form.investmentAmount);
         formData.append('daily_profit', form.dailyProfit);
@@ -161,6 +163,7 @@ const AddPlans = () => {
         setEditingId(plan._id);
         setForm({
             planTitle: plan.name || '',
+            description: plan.description || '',
             category: plan.category || 'Premium Plan',
             investmentAmount: plan.investment_amount || '',
             dailyProfit: plan.daily_profit || '',
@@ -233,6 +236,29 @@ const AddPlans = () => {
                                     <option value="Starter Plan">Starter Plan</option>
                                     <option value="Business Plan">Business Plan</option>
                                 </select>
+                            </div>
+
+                            <div className="input-group">
+                                <label>
+                                    Plan Description <span style={{ color: 'red' }}>*</span>
+                                </label>
+                                <textarea
+                                    name="description"
+                                    value={form.description}
+                                    onChange={onChange}
+                                    placeholder="Enter plan description shown on user plans page"
+                                    rows={3}
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '8px',
+                                        fontSize: '14px',
+                                        fontFamily: 'inherit',
+                                        resize: 'vertical'
+                                    }}
+                                />
                             </div>
 
                             <div className="input-group">

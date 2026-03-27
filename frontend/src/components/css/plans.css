@@ -473,7 +473,7 @@
 
   .plan-card-slide {
     grid-template-columns: 48% 52%;
-    padding: 8px;
+    padding: 6px;
   }
 
   .plan-slide-title {
@@ -481,7 +481,7 @@
   }
 
   .plan-slide-price {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .plan-slide-desc {
