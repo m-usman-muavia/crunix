@@ -109,7 +109,7 @@ const CompletePlans = () => {
             </div>
             <div className="plans-status-card">
               <p className="plans-status-label">Total Earned</p>
-              <h3 className="plans-status-value">${formatAmount(totalEarnings)}</h3>
+              <h3 className="plans-status-value">AED{formatAmount(totalEarnings)}</h3>
             </div>
           </div>
         </div>
