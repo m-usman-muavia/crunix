@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faArrowUp, faChartLine, faClipboardList, faUser, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faChartGantt, faHandHoldingDollar,faUsersViewfinder,faClipboardUser, faUser, faBell } from '@fortawesome/free-solid-svg-icons';
 import './css/dashboard.css';
 import './css/plans.css';
 import { Link } from 'react-router-dom';
@@ -637,20 +637,20 @@ const Dashboard = () => {
         <section className="dashboard-showcase dashboard-quick-section">
           <div className="dashboard-categories-row">
             <Link to="/plans" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartLine} /></span>
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartGantt} /></span>
               <span>Plans</span>
             </Link>
             <Link to="/bonus" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartLine} /></span>
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faHandHoldingDollar} /></span>
               <span>Bonus</span>
             </Link>
-            <Link to="/deposit" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faArrowDown} /></span>
-              <span>Refferals</span>
+            <Link to="/refferrals" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faUsersViewfinder} /></span>
+              <span>Referrals</span>
             </Link>
-            <Link to="/withdrawal" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faArrowUp} /></span>
-              <span>Withdrawal</span>
+            <Link to="/profile" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faClipboardUser} /></span>
+              <span>Profile</span>
             </Link>
           </div>
         </section>

@@ -211,7 +211,7 @@ const Deposit = () => {
             <div className="dashboard-header-actions">
               <button
                 className="dashboard-header-icon"
-                onClick={() => navigate('/deposithistory')}
+                onClick={() => navigate('/transactions')}
                 aria-label="Deposit history"
                 type="button"
               >

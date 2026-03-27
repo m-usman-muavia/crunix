@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox, faPaperPlane, faInbox } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faChartGantt, faArrowDownShortWide, faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import './css/BottomNav.css';
 
 const BottomNav = () => {
@@ -24,7 +24,7 @@ const BottomNav = () => {
         className={`nav-item-modern nav-icon-only ${isActive('/plans') ? 'active' : ''}`}
         aria-label="Plan"
       >
-        <FontAwesomeIcon icon={faBox} />
+        <FontAwesomeIcon icon={faChartGantt} />
       </Link>
 
       <Link 
@@ -32,7 +32,7 @@ const BottomNav = () => {
         className={`nav-item-modern nav-icon-only ${isActive('/deposit') ? 'active' : ''}`}
         aria-label="Send"
       >
-        <FontAwesomeIcon icon={faPaperPlane} />
+        <FontAwesomeIcon icon={faArrowUpFromBracket} />
       </Link>
 
       <Link 
@@ -40,7 +40,7 @@ const BottomNav = () => {
         className={`nav-item-modern nav-icon-only ${isActive('/withdrawal') ? 'active' : ''}`}
         aria-label="Received"
       >
-        <FontAwesomeIcon icon={faInbox} />
+        <FontAwesomeIcon icon={faArrowDownShortWide} />
       </Link>
     </nav>
   );

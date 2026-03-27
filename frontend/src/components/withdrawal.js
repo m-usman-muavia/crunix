@@ -182,7 +182,7 @@ const Withdrawal = () => {
             <div className="dashboard-header-actions">
               <button
                 className="dashboard-header-icon"
-                onClick={() => navigate('/withdrawal')}
+                onClick={() => navigate('/transactions')}
                 aria-label="Withdrawal history"
                 type="button"
               >
