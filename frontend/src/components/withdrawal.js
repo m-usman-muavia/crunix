@@ -21,6 +21,8 @@ const Withdrawal = () => {
   const [balance, setBalance] = useState(0);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [isSundayBlockModal, setIsSundayBlockModal] = useState(false);
   const [countdownText, setCountdownText] = useState('');
 
@@ -110,8 +112,20 @@ const Withdrawal = () => {
     }));
   };
 
-  const handleWithdraw = (e) => {
+  const parseResponseBody = async (response) => {
+    const rawText = await response.text();
+    if (!rawText) return {};
+
+    try {
+      return JSON.parse(rawText);
+    } catch {
+      return { message: rawText };
+    }
+  };
+
+  const handleWithdraw = async (e) => {
     e.preventDefault();
+    setSuccessMessage('');
 
     const today = new Date();
     if (today.getDay() === 0) {
@@ -147,15 +161,44 @@ const Withdrawal = () => {
       return;
     }
 
-    navigate('/withdrawconfirm', {
-      state: {
-        amount: formData.amount,
-        channel: formData.method,
-        accountNumber: formData.accountNumber,
-        accountName: formData.accountName,
-        mobileNumber: formData.mobileNumber
+    setSubmitLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/withdrawals/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+          amount: Number(formData.amount),
+          method: formData.method,
+          account_number: formData.accountNumber,
+          mobile_number: formData.mobileNumber
+        })
+      });
+
+      const data = await parseResponseBody(response);
+
+      if (!response.ok) {
+        throw new Error(data?.message || data?.error || `Failed to create withdrawal (HTTP ${response.status})`);
       }
-    });
+
+      setSuccessMessage('Withdrawal request submitted successfully!');
+      setFormData((prev) => ({
+        ...prev,
+        amount: '',
+        accountNumber: '',
+        accountName: '',
+        mobileNumber: ''
+      }));
+      fetchWallet();
+    } catch (err) {
+      setErrorMessage(err.message || 'Error submitting withdrawal request');
+      setErrorModalOpen(true);
+    } finally {
+      setSubmitLoading(false);
+    }
   };
 
   return (
@@ -209,6 +252,12 @@ const Withdrawal = () => {
 
         <section className="withdraw-form-section withdraw-panel">
           <h2 className="section-title">Withdrawal Information</h2>
+
+          {successMessage && (
+            <div className="withdraw-success-message" role="status" aria-live="polite">
+              {successMessage}
+            </div>
+          )}
 
           <form className="deposit-form" onSubmit={handleWithdraw}>
             <div className="form-group">
@@ -290,7 +339,9 @@ const Withdrawal = () => {
               <p className="form-hint">Add your emergency contact number</p>
             </div>
 
-            <button className="submit-btn" type="submit">Continue</button>
+            <button className="submit-btn" type="submit" disabled={submitLoading}>
+              {submitLoading ? 'Processing...' : 'Apply for Withdrawal'}
+            </button>
           </form>
         </section>
 

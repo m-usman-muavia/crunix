@@ -190,6 +190,7 @@
 }
 
 .transaction-info {
+  
   flex: 1;
   /* min-width: 200px; */
 }
@@ -210,6 +211,7 @@
 }
 
 .transaction-status {
+  justify-content: flex-end;
   
   border-radius: 8px;
   font-size: 11px;
@@ -320,7 +322,7 @@
 
   .transaction-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 6px;
   }
 
@@ -356,7 +358,7 @@
   }
 
   .modern-transaction-card {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: flex-start;
     gap: 10px;
   }

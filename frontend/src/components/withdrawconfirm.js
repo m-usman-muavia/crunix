@@ -69,6 +69,27 @@ const Withdrawal = () => {
     }));
   };
 
+  const parseResponseBody = async (response) => {
+    const rawText = await response.text();
+    if (!rawText) return {};
+
+    try {
+      return JSON.parse(rawText);
+    } catch {
+      return { message: rawText };
+    }
+  };
+
+  const normalizeApiError = (payload, fallbackMessage) => {
+    const apiMessage =
+      (typeof payload === 'string' && payload) ||
+      payload?.message ||
+      payload?.error ||
+      fallbackMessage;
+
+    return apiMessage || fallbackMessage;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -122,10 +143,12 @@ const Withdrawal = () => {
         })
       });
 
-      const data = await response.json();
+      const data = await parseResponseBody(response);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to create withdrawal');
+        throw new Error(
+          normalizeApiError(data, `Failed to create withdrawal (HTTP ${response.status})`)
+        );
       }
 
       setMessage('Withdrawal request submitted successfully! Admin will review it shortly.');
@@ -176,6 +199,12 @@ const Withdrawal = () => {
         <div className="refferrals-section">
           <div className="withdrawal-card">
             <h3 className="refferrals-header">Apply for Withdraw</h3>
+
+            {messageType === 'success' && message && (
+              <div className="success-message" role="status" aria-live="polite">
+                {message}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="deposit-form">
               {/* Withdrawal Amount */}

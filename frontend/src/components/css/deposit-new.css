@@ -279,6 +279,17 @@
   margin-bottom: 24px;
 }
 
+.deposit-success-message {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 8px 0 14px;
+}
+
 /* Instructions Box */
 .instructions-box {
   margin: 10px 20px;

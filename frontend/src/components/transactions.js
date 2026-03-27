@@ -242,10 +242,11 @@ const Transactions = () => {
                       <p className="transaction-date">
                         {formatDate(tx.date)}
                       </p>
-                    </div>
-
-                    <div className="transaction-details">
-                      {tx.type === 'withdrawal' && (
+                    </div>        
+                  </div>
+                  <div className="transaction-info">
+                  <div className="transaction-header">
+                     {tx.type === 'withdrawal' && (
                         <>
                           {tx.wallet_address && (
                             <p className="transaction-detail">
@@ -255,8 +256,6 @@ const Transactions = () => {
                           )}
                         </>
                       )}
-                    </div>
-                  </div>
                       <span 
                         className="transaction-status"
                         style={{ color: getStatusColor(tx.status) }}
@@ -264,11 +263,15 @@ const Transactions = () => {
                         <FontAwesomeIcon icon={getStatusIcon(tx.status)} style={{ marginRight: '4px', fontSize: '12px' }} />
                         {getStatusText(tx.status)}
                       </span>
-                  <div className="transaction-amount-wrap">
+                      <div className="transaction-amount-wrap">
                     <div className={`transaction-amount transaction-amount-${tx.type}`}>
                       {tx.type === 'deposit' ? '+' : '-'} AED {formatAmount(tx.amount)}
                     </div>
                   </div>
+                    </div>
+                  </div>
+                    
+                  
                 </div>
               ))}
             </div>

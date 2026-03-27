@@ -26,6 +26,7 @@ const Deposit = () => {
   const [rejectedDeposit, setRejectedDeposit] = useState(0);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [copiedTill, setCopiedTill] = useState(false);
@@ -127,8 +128,41 @@ const Deposit = () => {
     return true;
   };
 
+  const parseResponseBody = async (response) => {
+    const rawText = await response.text();
+    if (!rawText) return {};
+
+    try {
+      return JSON.parse(rawText);
+    } catch {
+      return { message: rawText };
+    }
+  };
+
+  const normalizeApiError = (payload, fallbackMessage) => {
+    const apiMessage =
+      (typeof payload === 'string' && payload) ||
+      payload?.message ||
+      payload?.error ||
+      fallbackMessage;
+
+    const lowered = String(apiMessage || '').toLowerCase();
+
+    if (
+      lowered.includes('already in process') ||
+      lowered.includes('duplicate') ||
+      lowered.includes('transaction_id') ||
+      lowered.includes('transaction id')
+    ) {
+      return 'Duplicate Transaction ID / Reference Number. Please enter a unique transaction ID.';
+    }
+
+    return apiMessage || fallbackMessage;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccessMessage('');
 
     if (!validateForm()) return;
 
@@ -150,14 +184,15 @@ const Deposit = () => {
         body: formDataObj
       });
 
-      const data = await response.json();
+      const data = await parseResponseBody(response);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to submit deposit');
+        throw new Error(
+          normalizeApiError(data, `Failed to submit deposit (HTTP ${response.status})`)
+        );
       }
 
-      setErrorMessage('Deposit submitted successfully! Your deposit is pending approval.');
-      setShowErrorModal(true);
+      setSuccessMessage('Deposit submitted successfully! Your deposit is pending approval.');
 
       // Reset form
       setFormData({
@@ -271,6 +306,12 @@ const Deposit = () => {
 
         <section className="deposit-form-section deposit-panel">
           <h2 className="section-title">Deposit Information</h2>
+
+          {successMessage && (
+            <div className="deposit-success-message" role="status" aria-live="polite">
+              {successMessage}
+            </div>
+          )}
 
 
 

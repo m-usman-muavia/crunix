@@ -2,6 +2,11 @@ const Plan = require('../models/plan.js');
 const fs = require('fs');
 const { uploadBuffer, deleteByPublicId } = require('../config/cloudinary');
 
+const toNumber = (value) => {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : NaN;
+};
+
 // 👉 GET ALL PLANS
 exports.getPlans = async (req, res) => {
   try {
@@ -33,9 +38,38 @@ exports.createPlan = async (req, res) => {
       category
     } = req.body;
 
-    const total_profit = daily_profit * duration_days;
-    const roi_percentage =
-      Math.floor((total_profit / investment_amount) * 100 - 100);
+    const investmentAmountNum = toNumber(investment_amount);
+    const dailyProfitNum = toNumber(daily_profit);
+    const durationDaysNum = toNumber(duration_days);
+    const purchaseLimitNum = purchase_limit === undefined || purchase_limit === '' ? 0 : toNumber(purchase_limit);
+    const countdownHoursNum = countdown_hours === undefined || countdown_hours === '' ? null : toNumber(countdown_hours);
+
+    if (!name || !category) {
+      return res.status(400).json({ success: false, message: 'Name and category are required' });
+    }
+
+    if (!Number.isFinite(investmentAmountNum) || investmentAmountNum <= 0) {
+      return res.status(400).json({ success: false, message: 'Valid investment amount is required' });
+    }
+
+    if (!Number.isFinite(dailyProfitNum) || dailyProfitNum <= 0) {
+      return res.status(400).json({ success: false, message: 'Valid daily profit is required' });
+    }
+
+    if (!Number.isFinite(durationDaysNum) || durationDaysNum <= 0) {
+      return res.status(400).json({ success: false, message: 'Valid duration days is required' });
+    }
+
+    if (!Number.isFinite(purchaseLimitNum) || purchaseLimitNum < 0) {
+      return res.status(400).json({ success: false, message: 'Purchase limit must be 0 or greater' });
+    }
+
+    if (countdownHoursNum !== null && (!Number.isFinite(countdownHoursNum) || countdownHoursNum < 0)) {
+      return res.status(400).json({ success: false, message: 'Countdown hours must be 0 or greater' });
+    }
+
+    const total_profit = dailyProfitNum * durationDaysNum;
+    const roi_percentage = Math.floor((total_profit / investmentAmountNum) * 100 - 100);
 
     let imagePath = '';
     let imagePublicId = '';
@@ -50,24 +84,24 @@ exports.createPlan = async (req, res) => {
 
     const planData = {
       name,
-      investment_amount,
-      daily_profit,
-      duration_days,
+      investment_amount: investmentAmountNum,
+      daily_profit: dailyProfitNum,
+      duration_days: durationDaysNum,
       total_profit,
       roi_percentage,
       status,
       category: category || 'Premium Plan',
       image_path: imagePath,
       image_public_id: imagePublicId,
-      purchase_limit: purchase_limit || 0
+      purchase_limit: purchaseLimitNum
     };
 
     // Handle countdown timer
-    if (countdown_hours && countdown_hours > 0) {
+    if (countdownHoursNum && countdownHoursNum > 0) {
       const now = new Date();
-      planData.countdown_hours = countdown_hours;
+      planData.countdown_hours = countdownHoursNum;
       planData.countdown_start_time = now;
-      planData.countdown_end_time = new Date(now.getTime() + countdown_hours * 60 * 60 * 1000);
+      planData.countdown_end_time = new Date(now.getTime() + countdownHoursNum * 60 * 60 * 1000);
     }
 
     const newPlan = new Plan(planData);
@@ -79,9 +113,10 @@ exports.createPlan = async (req, res) => {
       data: newPlan
     });
   } catch (error) {
-    res.status(500).json({
+    const statusCode = error.name === 'ValidationError' || error.name === 'CastError' ? 400 : 500;
+    res.status(statusCode).json({
       success: false,
-      message: 'Server error',
+      message: error.message || 'Server error',
       error: error.message
     });
   }
@@ -112,20 +147,51 @@ exports.updatePlan = async (req, res) => {
 
     // Update fields if provided
     if (name) plan.name = name;
-    if (investment_amount) plan.investment_amount = investment_amount;
-    if (daily_profit) plan.daily_profit = daily_profit;
-    if (duration_days) plan.duration_days = duration_days;
+    if (investment_amount !== undefined) {
+      const investmentAmountNum = toNumber(investment_amount);
+      if (!Number.isFinite(investmentAmountNum) || investmentAmountNum <= 0) {
+        return res.status(400).json({ success: false, message: 'Valid investment amount is required' });
+      }
+      plan.investment_amount = investmentAmountNum;
+    }
+
+    if (daily_profit !== undefined) {
+      const dailyProfitNum = toNumber(daily_profit);
+      if (!Number.isFinite(dailyProfitNum) || dailyProfitNum <= 0) {
+        return res.status(400).json({ success: false, message: 'Valid daily profit is required' });
+      }
+      plan.daily_profit = dailyProfitNum;
+    }
+
+    if (duration_days !== undefined) {
+      const durationDaysNum = toNumber(duration_days);
+      if (!Number.isFinite(durationDaysNum) || durationDaysNum <= 0) {
+        return res.status(400).json({ success: false, message: 'Valid duration days is required' });
+      }
+      plan.duration_days = durationDaysNum;
+    }
     if (status) plan.status = status;
     if (category) plan.category = category;
-    if (purchase_limit !== undefined) plan.purchase_limit = purchase_limit;
+    if (purchase_limit !== undefined) {
+      const purchaseLimitNum = toNumber(purchase_limit);
+      if (!Number.isFinite(purchaseLimitNum) || purchaseLimitNum < 0) {
+        return res.status(400).json({ success: false, message: 'Purchase limit must be 0 or greater' });
+      }
+      plan.purchase_limit = purchaseLimitNum;
+    }
     
     // Handle countdown timer
     if (countdown_hours !== undefined) {
-      if (countdown_hours && countdown_hours > 0) {
+      const countdownHoursNum = toNumber(countdown_hours);
+      if (!Number.isFinite(countdownHoursNum) || countdownHoursNum < 0) {
+        return res.status(400).json({ success: false, message: 'Countdown hours must be 0 or greater' });
+      }
+
+      if (countdownHoursNum > 0) {
         const now = new Date();
-        plan.countdown_hours = countdown_hours;
+        plan.countdown_hours = countdownHoursNum;
         plan.countdown_start_time = now;
-        plan.countdown_end_time = new Date(now.getTime() + countdown_hours * 60 * 60 * 1000);
+        plan.countdown_end_time = new Date(now.getTime() + countdownHoursNum * 60 * 60 * 1000);
       } else {
         // Clear countdown if 0 or empty
         plan.countdown_hours = null;
@@ -164,9 +230,10 @@ exports.updatePlan = async (req, res) => {
       data: plan
     });
   } catch (error) {
-    res.status(500).json({
+    const statusCode = error.name === 'ValidationError' || error.name === 'CastError' ? 400 : 500;
+    res.status(statusCode).json({
       success: false,
-      message: 'Server error',
+      message: error.message || 'Server error',
       error: error.message
     });
   }
