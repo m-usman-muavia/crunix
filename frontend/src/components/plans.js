@@ -387,9 +387,26 @@ const Plans = () => {
     const cartKey = 'planCart';
     const existing = JSON.parse(localStorage.getItem(cartKey) || '[]');
     const index = existing.findIndex((item) => item.planId === plan._id);
+    const purchasedCount = Number(plan.user_purchase_count || 0);
+    const purchaseLimit = Number(plan.purchase_limit || 0);
+
+    if (purchaseLimit > 0 && (purchasedCount + qty) > purchaseLimit) {
+      setErrorMessage(`Plan limit exceed for ${plan.name}. Limit is ${purchaseLimit}, already purchased ${purchasedCount}, and trying to add ${qty}.`);
+      setErrorModalOpen(true);
+      return;
+    }
 
     if (index >= 0) {
-      existing[index].quantity += qty;
+      const nextQty = Number(existing[index].quantity || 0) + qty;
+      if (purchaseLimit > 0 && (purchasedCount + nextQty) > purchaseLimit) {
+        setErrorMessage(`Plan limit exceed for ${plan.name}. Limit is ${purchaseLimit}, already purchased ${purchasedCount}, and trying to add total ${nextQty}.`);
+        setErrorModalOpen(true);
+        return;
+      }
+
+      existing[index].quantity = nextQty;
+      existing[index].user_purchase_count = purchasedCount;
+      existing[index].purchase_limit = purchaseLimit;
     } else {
       existing.push({
         planId: plan._id,
@@ -398,7 +415,8 @@ const Plans = () => {
         image_path: resolveImageUrl(plan.image_path || ''),
         duration_days: plan.duration_days || plan.duration || 0,
         quantity: qty,
-        purchase_limit: Number(plan.purchase_limit || 0)
+        purchase_limit: purchaseLimit,
+        user_purchase_count: purchasedCount
       });
     }
 

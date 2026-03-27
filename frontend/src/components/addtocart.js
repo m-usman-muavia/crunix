@@ -31,7 +31,9 @@ const AddToCart = () => {
     const next = cartItems.map((item) => {
       if (item.planId !== planId) return item;
       const limit = Number(item.purchase_limit || 0);
-      const nextQty = limit > 0 ? Math.min(limit, item.quantity + 1) : item.quantity + 1;
+      const purchasedCount = Number(item.user_purchase_count || 0);
+      const remainingLimit = Math.max(0, limit - purchasedCount);
+      const nextQty = limit > 0 ? Math.min(remainingLimit, item.quantity + 1) : item.quantity + 1;
       return { ...item, quantity: nextQty };
     });
     saveCart(next);
@@ -79,13 +81,90 @@ const AddToCart = () => {
     };
 
     try {
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        setErrorMessage('Please login first to continue checkout');
+        setIsErrorModalOpen(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // Validate available wallet balance against checkout total.
+      const walletResponse = await fetch(`${API_BASE_URL}/api/wallet`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const walletData = await parseJsonSafe(walletResponse);
+      if (!walletResponse.ok) {
+        setErrorMessage(walletData.message || 'Unable to validate wallet balance');
+        setIsErrorModalOpen(true);
+        setIsLoading(false);
+        return;
+      }
+
+      const availableBalance = Number(
+        walletData.total_balance ??
+        ((Number(walletData.main_balance || 0) + Number(walletData.referral_balance || 0) + Number(walletData.bonus_balance || 0)))
+      );
+
+      if (totalAmount > availableBalance) {
+        setErrorMessage(`Insufficient balance. Available AED ${availableBalance.toFixed(2)}, but checkout total is AED ${totalAmount.toFixed(2)}.`);
+        setIsErrorModalOpen(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // Validate plan purchase limits with latest server data.
+      const plansResponse = await fetch(`${API_BASE_URL}/api/plans/active`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const plansData = await parseJsonSafe(plansResponse);
+      if (!plansResponse.ok) {
+        setErrorMessage(plansData.message || 'Unable to validate plan limits');
+        setIsErrorModalOpen(true);
+        setIsLoading(false);
+        return;
+      }
+
+      const planMap = new Map((Array.isArray(plansData) ? plansData : []).map((plan) => [String(plan._id), plan]));
+
+      for (const item of cartItems) {
+        const quantity = Number(item.quantity || 0);
+        if (quantity <= 0) {
+          setErrorMessage(`Invalid quantity for ${item.name || 'plan'}.`);
+          setIsErrorModalOpen(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const serverPlan = planMap.get(String(item.planId));
+        const purchaseLimit = Number(serverPlan?.purchase_limit ?? item.purchase_limit ?? 0);
+        const purchasedCount = Number(serverPlan?.user_purchase_count ?? item.user_purchase_count ?? 0);
+
+        if (purchaseLimit > 0 && (purchasedCount + quantity) > purchaseLimit) {
+          setErrorMessage(`Plan limit exceed for ${item.name}. Limit is ${purchaseLimit}, already purchased ${purchasedCount}, but trying to checkout ${quantity}.`);
+          setIsErrorModalOpen(true);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       // First, validate all plans have sufficient balance
       for (const item of cartItems) {
         const validateResponse = await fetch(`${API_BASE_URL}/api/plans/invest-now`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Authorization': `Bearer ${authToken}`
           },
           body: JSON.stringify({
             planId: item.planId,
@@ -114,7 +193,7 @@ const AddToCart = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+              'Authorization': `Bearer ${authToken}`
             },
             body: JSON.stringify({
               planId: item.planId,
@@ -273,13 +352,12 @@ const AddToCart = () => {
 
         <BottomNav />
 
-        {isErrorModalOpen && (
-          <ErrorModal
-            message={errorMessage}
-            onClose={() => setIsErrorModalOpen(false)}
-            closeDuration={2500}
-          />
-        )}
+        <ErrorModal
+          isOpen={isErrorModalOpen}
+          message={errorMessage}
+          onClose={() => setIsErrorModalOpen(false)}
+          closeDuration={2500}
+        />
       </div>
     </div>
   );
