@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faCheck, faBox, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faCheck,faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import './css/dashboard.css';
 import './css/style.css';
 import './css/refferrals.css';
 import API_BASE_URL from '../config/api';
@@ -217,76 +218,55 @@ const Refferrals = () => {
   };
 
   const milestones = [
-    { target: 10, bonus: 3, current: activeReferrals, status: getMilestoneStatus(10) },
-    { target: 25, bonus: 8, current: activeReferrals, status: getMilestoneStatus(25) },
-    { target: 50, bonus: 20, current: activeReferrals, status: getMilestoneStatus(50) },
-    { target: 100, bonus: 50, current: activeReferrals, status: getMilestoneStatus(100) },
-    { target: 200, bonus: 110, current: activeReferrals, status: getMilestoneStatus(200) }
+    { target: 10, bonus: 5, current: activeReferrals, status: getMilestoneStatus(10) },
+    { target: 25, bonus: 10, current: activeReferrals, status: getMilestoneStatus(25) },
+    { target: 50, bonus: 30, current: activeReferrals, status: getMilestoneStatus(50) },
+    { target: 100, bonus: 80, current: activeReferrals, status: getMilestoneStatus(100) },
+    { target: 200, bonus: 220, current: activeReferrals, status: getMilestoneStatus(200) }
   ];
+
+  const referralShareLink =
+    referralCode && referralCode !== 'N/A'
+      ? `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/registration?code=${encodeURIComponent(referralCode)}`
+      : 'Referral code not available';
+
   return (
-    <div className="main-wrapper">
-      <div className="main-container">
-        {/* Top Header Section */}
-                        <div className="deposit-header">Referrals</div>
-          <div className="plan-image">
-          <img 
-            src="/image2.webp" 
-            alt="Investment Plans" 
-            style={{ 
-              width: '100%', 
-              height: '200px', 
-              objectFit: 'cover',
-              borderRadius: '0px 0px 15px 15px',
-              borderBottom: '2px solid #000000',
-            }} 
-          />
-        </div>
-
-        <div className="withdrawal-balance-card">
-          <div className="withdrawal-main-balance">
-            <p className="withdrawal-main-balance-label">Total Earned <br /> <span style={{fontSize: '12px'}}>Total Earning from Refferals</span></p>
-            <h2 className="withdrawal-main-balance-amount">${referralEarnings}</h2>
-          </div>
-        </div>
-       
-
-        <div className="refferrals-section refferrals-section-new">
-          <div className="referral-panel">
-              <div className="referral-hero-text">
-                <h3>Invite & Earn</h3>
-                <p>Build your team and earn passive income.</p>
-              </div>
-  
-            
-
-            <div className="referral-stats-grid">
-              <div className="referral-stat-card">
-                <span className="referral-stat-label">Total Referrals</span>
-                <span className="referral-stat-value">{totalReferrals}</span>
-              </div>
-              <div className="referral-stat-card">
-                <span className="referral-stat-label">Active Referrals</span>
-                <span className="referral-stat-value">{activeReferrals}</span>
-              </div>
-              <div className="referral-stat-card referral-stat-accent">
-                <span className="referral-stat-label">Commission Earned</span>
-                <span className="referral-stat-value">$ {referralEarnings}</span>
-              </div>
+    <div className="main-wrapper dom-wrapper">
+      <div className="main-container dom-container">
+        <section className="dashboard-modern-hero dashboard-service-hero referral-hero-shell">
+          <div className="dashboard-modern-hero-top">
+            <div>
+              <p className="dashboard-service-label">Grow your network</p>
+              <h1 className="dashboard-modern-title">Referrals</h1>
             </div>
+          </div>
 
+          <div className="referral-hero-stats">
+            <div className="referral-hero-stat-item">
+              <p>Total Earned</p>
+              <h3>AED {Number(referralEarnings || 0).toFixed(2)}</h3>
+            </div>
+            <div className="referral-hero-stat-item">
+              <p>Team Size</p>
+              <h3>{referralList.length}</h3>
+            </div>
+              <div className="referral-hero-stat-item">
+              <p>Team Active</p>
+              <h3>{activeReferrals}</h3>
+            </div>
+          </div>
+        </section>
+
+        <section className="refferrals-section refferrals-section-new refferrals-milestones-section">
+          <div className="referral-panel1">
             <div className="referral-link-card">
               <div className="referral-link-header">
                 <h4>Referral Code</h4>
                 <span className="referral-code-pill">{referralCode || 'N/A'}</span>
               </div>
               <div className="referral-link-row">
-                <div className="referral-link-input">
-                  {referralCode && referralCode !== 'N/A'
-                    ? `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/registration?code=${encodeURIComponent(referralCode)}`
-                    : 'Referral code not available'}
-                </div>
                 <button
-                  className="referral-copy-btn"
+                  className="profile-logout-btn"
                   onClick={handleCopyReferralCode}
                   disabled={loading || referralCode === 'N/A'}
                 >
@@ -294,113 +274,10 @@ const Refferrals = () => {
                   {copied ? ' Copied' : ' Copy Link'}
                 </button>
               </div>
-              <div className="referral-info-banner">
-                <strong>Multi-Level System:</strong>
-                <ul style={{ margin: '8px 0 0 0', paddingLeft: '16px' }}>
-                  <li>Level 1 (Direct): 10% on their daily income</li>
-                  <li>Level 2: 3% on indirect referrals' daily income</li>
-                  <li>Level 3: 1% on 3rd tier referrals' daily income</li>
-                </ul>
-              </div>
             </div>
           </div>
-        </div>
 
-        {/* Referral List Section */}
-        {/* {referralList.length > 0 && (
-          <div className="refferrals-section">
-            <div className="refferrals-card">
-              <h3 className="refferrals-header">Your Referrals</h3>
-              <div className="referrals-table">
-                {referralList.map((referral) => (
-                  <div key={referral._id} className="referral-item" style={{
-                    padding: '12px',
-                    marginBottom: '8px',
-                    borderRadius: '8px',
-                    backgroundColor: '#f8f9fa',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    border: '1px solid #e0e0e0'
-                  }}>
-                    <div>
-                      <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{referral.name}</div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>{referral.email}</div>
-                      <div style={{ fontSize: '11px', color: '#999', marginTop: '4px' }}>
-                        Joined: {new Date(referral.joinedDate).toLocaleDateString()}
-                      </div>
-                    </div>
-                    <div style={{
-                      padding: '6px 12px',
-                      borderRadius: '20px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      backgroundColor: referral.status === 'activated' ? '#d4edda' : '#fff3cd',
-                      color: referral.status === 'activated' ? '#155724' : '#856404',
-                      border: `1px solid ${referral.status === 'activated' ? '#c3e6cb' : '#ffeeba'}`
-                    }}>
-                      {referral.status === 'activated' ? '✅ Active' : '⏳ Registered'}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )} */}
-
-        <div className="refferrals-milestones-section">
-          <h3 className="milestone-main-title">Bonus Milestones</h3>
-
-          {/* Per-Active-Referral Collection Card */}
-          <div className="refferrals-milestones-cards" style={{ marginBottom: '20px' }}>
-            <div className="milestone-card milestone-card-dark" style={{background: '#eaf4ff', border: '2px solid #0055A4', borderRadius: '8px' }} >
-              <div className="milestone-row" style={{ marginBottom: '12px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
-                  <span className="milestone-target" style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                    Active Referral Bonus
-                  </span>
-                  <span style={{ 
-                fontSize: '12px'
-              }}>Bonus: Get $0.8 for each active referral (one-time when they purchase a plan)</span>
-                </div>
-                <button
-                  onClick={handleCollectBonus}
-                  disabled={collecting || collectibleBonuses.count === 0}
-                  style={{
-                    padding: '10px 20px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: collectibleBonuses.count > 0 ? '#10b981' : '#6b7280',
-                    color: 'white',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    cursor: collectibleBonuses.count > 0 ? 'pointer' : 'not-allowed',
-                    opacity: collecting ? 0.7 : 1,
-                    transition: 'all 0.3s ease',
-                    boxShadow: collectibleBonuses.count > 0 ? '0 4px 6px rgba(0, 51, 102, 0.3)' : 'none'
-                  }}
-                >
-                  {collecting ? 'Collecting...' : collectibleBonuses.count > 0 ? `Collect $${collectibleBonuses.totalAmount.toFixed(2)}` : 'Locked  '}
-                </button>
-              </div>
-              
-              {collectMessage && (
-                <div style={{
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  background: collectMessage.includes('✅') ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                  color: 'white',
-                  fontSize: '13px',
-                  marginTop: '10px',
-                  border: `1px solid ${collectMessage.includes('✅') ? 'rgba(16, 185, 129, 0.5)' : 'rgba(239, 68, 68, 0.5)'}`
-                }}>
-                  {collectMessage}
-                </div>
-              )}
-
-            </div>
-          </div>
-          <h3 className="milestone-main-title" style={{ marginTop: '30px' }}>Team Growth Rewards</h3>
+          <h3 className="milestone-main-title milestone-subtitle">Team Growth Rewards</h3>
           <div className="refferrals-milestones-cards">
             {milestones.map((item, index) => {
               const progressPercentage = Math.min((item.current / item.target) * 100, 100);
@@ -408,7 +285,7 @@ const Refferrals = () => {
                 <div className="milestone-card milestone-card-dark" key={index}>
                   <div className="milestone-row">
                     <span className="milestone-target">Target: {item.target} Members</span>
-                    <span className="milestone-bonus">${item.bonus} Bonus</span>
+                    <span className="milestone-bonus">AED {item.bonus} Bonus</span>
                   </div>
                   <div className="milestone-progress-bar">
                     <div
@@ -423,11 +300,47 @@ const Refferrals = () => {
               );
             })}
           </div>
-        </div>
+        </section>
 
           
 
-        {/* Updated Plan Content Section */}
+        <section className="withdraw-instructions withdraw-panel" style={{textAlign:'left'}}>
+                  <div className="withdraw-section-head">
+                    <h3>Performance-Focused</h3>
+                  </div>
+                  <ul>
+                    <li><FontAwesomeIcon icon={faCircleExclamation} /> Earn 10% daily commission on personal referrals' earnings.</li>
+                    <li><FontAwesomeIcon icon={faCircleExclamation} /> Earn 3% daily commission on the income of your referrals' referrals.</li>
+                    <li><FontAwesomeIcon icon={faCircleExclamation} /> Earn 1% daily commission on the income generated by the third layer of your team.</li>
+                  </ul>
+                </section>
+
+                      {/* <h3 className="milestone-main-title">Bonus Milestones</h3>
+
+          <div className="refferrals-milestones-cards referral-collect-wrap">
+            <div className="milestone-card milestone-card-dark milestone-card-highlight">
+              <div className="milestone-row referral-collect-row">
+                <div className="referral-collect-left">
+                  <span className="milestone-target referral-collect-title">Active Referral Bonus</span>
+                  <span className="referral-collect-subtitle">Bonus: Get AED 0.8 for each active referral (one-time when they purchase a plan)</span>
+                </div>
+                <button
+                  onClick={handleCollectBonus}
+                  disabled={collecting || collectibleBonuses.count === 0}
+                  className={`collect-bonus-btn ${collectibleBonuses.count > 0 ? 'collect-bonus-btn-active' : 'collect-bonus-btn-locked'}`}
+                >
+                  {collecting ? 'Collecting...' : collectibleBonuses.count > 0 ? `Collect AED ${collectibleBonuses.totalAmount.toFixed(2)}` : 'Locked'}
+                </button>
+              </div>
+              
+              {collectMessage && (
+                <div className={`collect-message ${collectMessage.includes('✅') ? 'collect-message-success' : 'collect-message-error'}`}>
+                  {collectMessage}
+                </div>
+              )}
+
+            </div>
+          </div> */}
 
         {/* Bottom Navigation */}
         <BottomNav />
