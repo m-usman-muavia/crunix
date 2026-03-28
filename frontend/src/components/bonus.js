@@ -252,10 +252,10 @@ const Bonus = () => {
           <div className="bonus-status-overview plans-status-overview">
             <div className="plans-status-card">
               <p className="plans-status-label"> Total Bonus</p>
-              <h3 className="plans-status-value"> </h3>
+              <h3 className="plans-status-value">0</h3>
             </div>
             <div className="plans-status-card">
-              <p className="plans-status-label">Total Bonus Collected</p>
+              <p className="plans-status-label">Bonus Collected</p>
               <h3 className="plans-status-value">AED {oldCollectedTotal.toFixed(2)}</h3>
             </div>
           </div>

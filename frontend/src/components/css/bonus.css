@@ -231,17 +231,13 @@
 }
 
 @media (max-width: 480px) {
-  .bonus-status-overview {
+  /* .bonus-status-overview {
     grid-template-columns: 1fr;
-  }
+  } */
 
   .bonus-referral-head {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .bonus-referral-stats {
-    grid-template-columns: 1fr;
   }
 
   .bonus-history-item {
