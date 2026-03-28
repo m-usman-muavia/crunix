@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import './App.css';
 import Login from './components/login';
 import Registration from './components/registration'; // Make sure this file exists
@@ -109,6 +111,31 @@ function App() {
             <Route path="/admin/bonus" element={<ProtectedRoute><BonusGenerator /></ProtectedRoute>} />
           </Routes>
         )}
+
+        <div className="app-social-fab-group" aria-label="Social links">
+          <a
+            className="app-social-fab app-facebook-fab"
+            href="https://www.facebook.com/sharrul.bara"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open Facebook"
+          >
+            <FontAwesomeIcon icon={faFacebookF} />
+          </a>
+
+          <a
+            className="app-social-fab app-whatsapp-fab"
+            href="https://chat.whatsapp.com/Eo0yBDib882CNoQTykUevc?mode=gi_t"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Join WhatsApp group"
+          >
+            <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <path d="M16 2.2C8.4 2.2 2.2 8.3 2.2 16c0 2.7.8 5.4 2.2 7.7L2 30l6.5-2.3c2.2 1.2 4.8 1.9 7.5 1.9 7.6 0 13.8-6.2 13.8-13.8S23.6 2.2 16 2.2zm0 25.2c-2.3 0-4.6-.7-6.5-2l-.5-.3-3.9 1.4 1.4-3.8-.3-.5c-1.3-2-2-4.3-2-6.7 0-6.5 5.3-11.7 11.7-11.7S27.6 9.3 27.6 15.8 22.4 27.4 16 27.4zm6.5-8.7c-.4-.2-2.3-1.1-2.6-1.3-.3-.1-.6-.2-.8.2-.2.4-.9 1.3-1.1 1.5-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3-1.9-1.1-1-1.9-2.3-2.1-2.7-.2-.4 0-.6.2-.8.2-.2.4-.4.6-.6.2-.2.2-.4.3-.6.1-.2 0-.4-.1-.6-.1-.2-.8-2-1.2-2.7-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.1 1-1.1 2.4s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.3 4.8.7.3 1.3.5 1.8.7.8.2 1.5.2 2.1.1.6-.1 2-.8 2.3-1.6.3-.8.3-1.5.2-1.6-.1-.1-.4-.2-.8-.4z" />
+            </svg>
+          </a>
+        </div>
+        
       </div>
     </BrowserRouter>
   );

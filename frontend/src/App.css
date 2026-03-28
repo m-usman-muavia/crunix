@@ -63,6 +63,61 @@ background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   animation: splashOrbFloat 5.6s ease-in-out infinite;
 }
 
+.app-social-fab-group {
+  position: fixed;
+  right: 18px;
+  bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1200;
+}
+
+.app-social-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-social-fab:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.app-whatsapp-fab {
+  background: #25d366;
+  box-shadow: 0 14px 30px rgba(9, 112, 53, 0.38);
+}
+
+.app-whatsapp-fab:hover {
+  box-shadow: 0 18px 34px rgba(9, 112, 53, 0.45);
+}
+
+.app-whatsapp-fab svg {
+  width: 30px;
+  height: 30px;
+  fill: currentColor;
+}
+
+.app-facebook-fab {
+  background: #1877f2;
+  box-shadow: 0 14px 30px rgba(24, 71, 140, 0.38);
+}
+
+.app-facebook-fab:hover {
+  box-shadow: 0 18px 34px rgba(24, 71, 140, 0.45);
+}
+
+.app-facebook-fab svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
 .app-splash-orb-1 {
   width: 38px;
   height: 38px;
@@ -252,4 +307,25 @@ background: radial-gradient(circle at 0% 0%, #ff914d, #ffde59);
   .mobile-app-frame {
     box-shadow: none;
   }
+
+  .app-social-fab-group {
+    right: 14px;
+    bottom: 86px;
+  }
+
+  .app-social-fab {
+    width: 32px;
+    height: 32px;
+  }
+  .app-whatsapp-fab svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+    .app-facebook-fab svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
 }
