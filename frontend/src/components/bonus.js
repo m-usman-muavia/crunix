@@ -6,7 +6,8 @@ import {
   faCheckCircle,
   faCoins,
   faTicket,
-  faArrowRotateRight
+  faArrowRotateRight,
+  faUsers
 } from '@fortawesome/free-solid-svg-icons';
 import './css/dashboard.css';
 import './css/plans.css';
@@ -20,6 +21,9 @@ const BONUS_HISTORY_KEY = 'bonusRedeemHistory';
 const Bonus = () => {
   const [bonusCode, setBonusCode] = useState('');
   const [bonusBalance, setBonusBalance] = useState(0);
+  const [activeReferrals, setActiveReferrals] = useState(0);
+  const [collectibleBonuses, setCollectibleBonuses] = useState({ count: 0, totalAmount: 0 });
+  const [collectingReferralBonus, setCollectingReferralBonus] = useState(false);
   const [history, setHistory] = useState([]);
   const [redeemingBonus, setRedeemingBonus] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
@@ -27,6 +31,8 @@ const Bonus = () => {
 
   useEffect(() => {
     fetchWallet();
+    fetchReferralStats();
+    fetchCollectibleBonuses();
     loadLocalHistory();
   }, []);
 
@@ -65,9 +71,55 @@ const Bonus = () => {
     }
   };
 
+  const fetchReferralStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/referral/stats`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch referral stats');
+      }
+
+      const data = await response.json();
+      setActiveReferrals(Number(data.activeReferrals || 0));
+    } catch (err) {
+      console.error('Error fetching referral stats:', err);
+      setActiveReferrals(0);
+    }
+  };
+
+  const fetchCollectibleBonuses = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/referral/collectible`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch collectible bonuses');
+      }
+
+      const data = await response.json();
+      setCollectibleBonuses({
+        count: Number(data.count || 0),
+        totalAmount: Number(data.totalAmount || 0)
+      });
+    } catch (err) {
+      console.error('Error fetching collectible bonuses:', err);
+      setCollectibleBonuses({ count: 0, totalAmount: 0 });
+    }
+  };
+
   const oldCollectedTotal = useMemo(() => {
     return history.reduce((sum, item) => sum + Number(item.amount || 0), 0);
   }, [history]);
+
+  const referralBonusRate = 3;
+  const canCollectReferralBonus = collectibleBonuses.count > 0 && !collectingReferralBonus;
 
   const handleCodeChange = (e) => {
     const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 6);
@@ -128,6 +180,47 @@ const Bonus = () => {
     }
   };
 
+  const handleCollectReferralBonus = async () => {
+    if (collectibleBonuses.count <= 0) {
+      setErrorMessage('No active referrals available for bonus collection.');
+      setErrorModalOpen(true);
+      return;
+    }
+
+    setCollectingReferralBonus(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/referral/collect-bonus`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to collect referral bonus');
+      }
+
+      setErrorMessage(data.message || 'Referral bonus collected successfully.');
+      setErrorModalOpen(true);
+
+      await Promise.all([
+        fetchWallet(),
+        fetchReferralStats(),
+        fetchCollectibleBonuses()
+      ]);
+    } catch (err) {
+      console.error('Error collecting referral bonus:', err);
+      setErrorMessage(err.message || 'Error collecting referral bonus. Please try again.');
+      setErrorModalOpen(true);
+    } finally {
+      setCollectingReferralBonus(false);
+    }
+  };
+
   const formatDateTime = (value) => {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return 'Unknown date';
@@ -167,6 +260,60 @@ const Bonus = () => {
             </div>
           </div>
         </div>
+        <section className="dashboard-showcase bonus-3AED-section">
+          <div className="bonus-card bonus-referral-card">
+            <div className="bonus-card-head bonus-referral-head">
+              <h3>
+                 Referral Reward
+              </h3>
+              {/* <span className="bonus-referral-pill">AED {referralBonusRate} / Active Referral</span> */}
+            </div>
+
+            <p className="bonus-description bonus-referral-description">
+              You will get a bonus of AED {referralBonusRate} on each active referral.
+            </p>
+
+            <div className="bonus-referral-stats">
+              <div className="bonus-referral-stat-card">
+                <p>Bonus</p>
+                <h4>3 AED </h4>
+              </div>
+              <div className="bonus-referral-stat-card">
+                <p>Active</p>
+                <h4>{activeReferrals}</h4>
+              </div>
+              <div className="bonus-referral-stat-card">
+                <p>Eligible</p>
+                <h4>{collectibleBonuses.count}</h4>
+              </div>
+            </div>
+
+            <div className="bonus-referral-actions">
+              <button
+                type="button"
+                className="bonus-submit-btn bonus-referral-collect-btn"
+                onClick={handleCollectReferralBonus}
+                disabled={!canCollectReferralBonus}
+              >
+                {collectingReferralBonus ? (
+                  <>
+                    <FontAwesomeIcon icon={faArrowRotateRight} spin /> Collecting...
+                  </>
+                ) : (
+                  <>
+                    <FontAwesomeIcon icon={faCheckCircle} /> Collect AED {(collectibleBonuses.count * referralBonusRate).toFixed(2)}
+                  </>
+                )}
+              </button>
+
+              {!canCollectReferralBonus && (
+                <p className="bonus-referral-hint">
+                  No active uncollected referral bonus available right now.
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
 
         <section className="dashboard-showcase bonus-redeem-section">
           <div className="bonus-card">
@@ -201,6 +348,8 @@ const Bonus = () => {
             </form>
           </div>
         </section>
+
+        
 
         <section className="dashboard-showcase bonus-history-section">
           <div className="dashboard-section-head">
