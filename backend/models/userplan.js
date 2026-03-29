@@ -35,6 +35,10 @@ const userPlanSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    activated_at: {
+        type: Date,
+        default: Date.now
+    },
     endDate: {
         type: Date,
         required: true

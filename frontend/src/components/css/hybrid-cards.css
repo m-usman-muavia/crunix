@@ -331,16 +331,14 @@
   }
 
   .hybrid-card-amount {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    width: 30%;
     min-width: auto;
     margin-top: 10px;
   }
 
   .hybrid-card-amount h4 {
     text-align: left;
+    font-size: 12px;
   }
 
   .hybrid-card-actions {

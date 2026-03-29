@@ -47,7 +47,7 @@ const SplashScreen = () => (
     <span className="app-splash-orb app-splash-orb-5" aria-hidden="true" />
     <div className="app-splash-content">
       <div className="app-splash-halo" />
-      <img src="/logo51200.png" alt="Crunix" className="app-splash-logo" />
+      <img src="/logo51200.png" alt="DUBAIOILNETWORK" className="app-splash-logo" />
       <div className="app-splash-brand">
         <h2 className="app-splash-title">Desert Oil Network </h2>
         <p className="app-splash-tagline">Powered by Dubai Oil Market</p>

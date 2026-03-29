@@ -120,6 +120,7 @@ router.post('/invest-now', verifyToken, async (req, res) => {
         daily_profit: plan.daily_profit,
         total_profit: plan.total_profit,
         duration_days: plan.duration_days,
+        activated_at: new Date(),
         endDate: endDate,
         lastAccruedAt: new Date(),
         status: 'active'
@@ -214,6 +215,8 @@ router.get('/user/active', verifyToken, async (req, res) => {
       currentEarnings: userPlan.totalEarned,
       status: userPlan.status,
       image_path: userPlan.planId?.image_path,
+      activated_at: userPlan.activated_at,
+      activatedAt: userPlan.activated_at,
       lastCollectTime: userPlan.lastCollectTime,
       accrualHistory: userPlan.accrualHistory || [],
       plan: {
@@ -315,15 +318,19 @@ router.post('/:planId/collect-income', verifyToken, async (req, res) => {
     // Check if 24 hours have passed since last collection
     const now = new Date();
     const lastCollectTime = userPlan.lastCollectTime ? new Date(userPlan.lastCollectTime) : null;
-    
-    if (lastCollectTime) {
-      const hoursPassed = (now - lastCollectTime) / (1000 * 60 * 60);
-      if (hoursPassed < 24) {
-        return res.status(400).json({ 
-          message: `Please wait ${Math.ceil(24 - hoursPassed)} hours before collecting again`,
-          hoursRemaining: Math.ceil(24 - hoursPassed)
-        });
-      }
+    const activatedAt = userPlan.activated_at ? new Date(userPlan.activated_at) : null;
+    const anchorTime = lastCollectTime || activatedAt || new Date(userPlan.investmentDate);
+
+    const hoursPassed = (now - anchorTime) / (1000 * 60 * 60);
+    if (hoursPassed < 24) {
+      const hoursRemaining = Math.ceil(24 - hoursPassed);
+      const isFirstCollection = !lastCollectTime;
+      return res.status(400).json({
+        message: isFirstCollection
+          ? `First collection will be available in ${hoursRemaining} hours`
+          : `Please wait ${hoursRemaining} hours before collecting again`,
+        hoursRemaining
+      });
     }
 
     // Collect daily profit

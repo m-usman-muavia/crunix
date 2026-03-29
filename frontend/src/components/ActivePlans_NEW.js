@@ -72,20 +72,32 @@ const ActivePlans = () => {
         }
     };
 
+    const getCollectionAnchorTime = (plan) => {
+        if (plan.lastCollectTime) {
+            return new Date(plan.lastCollectTime);
+        }
+
+        if (plan.activated_at || plan.activatedAt) {
+            return new Date(plan.activated_at || plan.activatedAt);
+        }
+
+        return plan.investmentDate ? new Date(plan.investmentDate) : null;
+    };
+
     const getCanCollect = (plan) => {
         if (plan.status !== 'active') return false;
-        const lastCollectTime = plan.lastCollectTime ? new Date(plan.lastCollectTime) : null;
-        if (!lastCollectTime) return true;
+        const anchorTime = getCollectionAnchorTime(plan);
+        if (!anchorTime || Number.isNaN(anchorTime.getTime())) return false;
         const now = new Date();
-        const hoursPassed = (now - lastCollectTime) / (1000 * 60 * 60);
+        const hoursPassed = (now - anchorTime) / (1000 * 60 * 60);
         return hoursPassed >= 24;
     };
 
     const getTimeUntilNextCollection = (plan) => {
-        const lastCollectTime = plan.lastCollectTime ? new Date(plan.lastCollectTime) : null;
-        if (!lastCollectTime) return 0;
+        const anchorTime = getCollectionAnchorTime(plan);
+        if (!anchorTime || Number.isNaN(anchorTime.getTime())) return 24 * 60 * 60;
         const now = new Date();
-        const nextCollectTime = new Date(lastCollectTime.getTime() + 24 * 60 * 60 * 1000);
+        const nextCollectTime = new Date(anchorTime.getTime() + 24 * 60 * 60 * 1000);
         const secondsLeft = Math.max(0, Math.ceil((nextCollectTime - now) / 1000));
         return secondsLeft;
     };
@@ -126,13 +138,13 @@ const ActivePlans = () => {
             await response.json();
             setErrorMessage('Daily earnings collected successfully!');
             setShowErrorModal(true);
-            
+
             // Set cooldown timer for this plan
             setTimers(prev => ({
                 ...prev,
                 [planId]: 24 * 60 * 60
             }));
-            
+
             fetchActivePlans();
         } catch (err) {
             console.error('Error collecting earnings:', err);
@@ -202,7 +214,7 @@ const ActivePlans = () => {
                             <h1 className="dashboard-modern-title">Active Plans</h1>
                         </div>
                         <div className="dashboard-header-actions">
-                          
+
                         </div>
                     </div>
 
@@ -246,7 +258,7 @@ const ActivePlans = () => {
                             return (
                                 <div className="active-plans-hybrid-card" key={plan._id} style={{ marginBottom: '16px' }}>
                                     {/* Card Header - Always Visible */}
-                                    <div 
+                                    <div
                                         className="hybrid-card-header"
                                         onClick={() => setExpandedPlan(isExpanded ? null : plan._id)}
                                         style={{ cursor: 'pointer' }}
@@ -265,13 +277,23 @@ const ActivePlans = () => {
                                             </div>
 
                                             <div className="hybrid-card-info">
-                                                <div style={{  alignItems: 'left', gap: '12px', marginBottom: '6px' }}>
-                                                    <h3 className="hybrid-card-title">{plan.planName || plan.plan?.name || 'Investment Plan'}</h3>
-                                                                                                    <p className="hybrid-card-meta">{formatDate(plan.investmentDate)}</p>
-
+                                                <div style={{ textAlign: 'left', gap: '12px', marginBottom: '6px' }}>
+                                                    <h3 className="hybrid-card-title" style={{textAlign:'left'}}>{plan.planName || plan.plan?.name || 'Investment Plan'}</h3>
+                                                    <p className="hybrid-card-meta">{formatDate(plan.investmentDate)}</p>
+                                                    <button
+                                                        onClick={() => handleCollectEarnings(plan._id)}
+                                                        className="action-btn collect-btn"
+                                                        style={{ textAlign: 'left', padding: '4px 8px', fontSize: '12px', borderRadius: '4px' }}
+                                                        disabled={!getCanCollect(plan)}
+                                                        title={!getCanCollect(plan) ? formatTimeRemaining(timers[plan._id] || getTimeUntilNextCollection(plan)) : 'Collect now'}
+                                                    >
+                                                        {getCanCollect(plan)
+                                                            ? 'Collect'
+                                                            : formatTimeRemaining(timers[plan._id] || getTimeUntilNextCollection(plan))}
+                                                    </button>
                                                 </div>
-                                                
-                                                
+
+
                                             </div>
                                         </div>
 
@@ -280,8 +302,8 @@ const ActivePlans = () => {
                                             <h4 style={{ fontSize: '20px', fontWeight: '700', color: '#f97316' }}>
                                                 AED{formatAmount(earned)}
                                             </h4>
-                                            <FontAwesomeIcon 
-                                                icon={faChevronDown} 
+                                            <FontAwesomeIcon
+                                                icon={faChevronDown}
                                                 style={{
                                                     marginTop: '10px',
                                                     transition: 'transform 0.3s ease',
@@ -327,7 +349,7 @@ const ActivePlans = () => {
                                                 {plan.status === 'active' && (
                                                     <>
                                                         {getCanCollect(plan) ? (
-                                                            <button 
+                                                            <button
                                                                 onClick={() => handleCollectEarnings(plan._id)}
                                                                 className="action-btn collect-btn"
                                                             >
@@ -335,7 +357,7 @@ const ActivePlans = () => {
                                                             </button>
                                                         ) : (
                                                             <div className="collection-timer">
-                                                                <FontAwesomeIcon icon={faClock} /> 
+                                                                <FontAwesomeIcon icon={faClock} />
                                                                 <span>{formatTimeRemaining(timers[plan._id] || getTimeUntilNextCollection(plan))}</span>
                                                             </div>
                                                         )}

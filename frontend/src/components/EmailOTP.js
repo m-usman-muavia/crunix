@@ -44,7 +44,7 @@ const VerifyEmail = () => {
     <div className="ref-page">
       <div className="ref-header">
         <h1 className="ref-header-title">Welcome!</h1>
-        <p className="ref-header-desc">Unlocking prosperity with opportunity to secure your future.</p>
+        <p className="ref-header-desc">Desert Oil Network is a Dubai-based platform generating daily profits based on oil price.</p>
       </div>
 
       <div className="ref-card">
