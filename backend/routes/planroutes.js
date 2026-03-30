@@ -195,6 +195,7 @@ router.post('/invest-now', verifyToken, async (req, res) => {
 router.get('/user/active', verifyToken, async (req, res) => {
   try {
     const userId = req.user.userId || req.user.id;
+    const now = new Date();
 
     const userPlans = await UserPlan.find({ 
       userId: userId,
@@ -203,28 +204,45 @@ router.get('/user/active', verifyToken, async (req, res) => {
     .populate('planId')
     .sort({ createdAt: -1 });
 
-    const formattedPlans = userPlans.map(userPlan => ({
-      _id: userPlan._id,
-      planName: userPlan.planName,
-      investmentAmount: userPlan.investment_amount,
-      dailyProfit: userPlan.daily_profit,
-      totalProfit: userPlan.total_profit,
-      duration_days: userPlan.duration_days,
-      investmentDate: userPlan.investmentDate,
-      endDate: userPlan.endDate,
-      currentEarnings: userPlan.totalEarned,
-      status: userPlan.status,
-      image_path: userPlan.planId?.image_path,
-      activated_at: userPlan.activated_at,
-      activatedAt: userPlan.activated_at,
-      lastCollectTime: userPlan.lastCollectTime,
-      accrualHistory: userPlan.accrualHistory || [],
-      plan: {
-        name: userPlan.planName,
+    const formattedPlans = userPlans.map(userPlan => {
+      const latestAccrualTimestamp = Array.isArray(userPlan.accrualHistory) && userPlan.accrualHistory.length > 0
+        ? userPlan.accrualHistory[userPlan.accrualHistory.length - 1]?.timestamp
+        : null;
+      const resolvedLastCollectTime = userPlan.lastCollectTime || latestAccrualTimestamp || null;
+      const collectionAnchor = resolvedLastCollectTime || userPlan.activated_at || userPlan.investmentDate;
+      const nextCollectAt = collectionAnchor
+        ? new Date(new Date(collectionAnchor).getTime() + 24 * 60 * 60 * 1000)
+        : null;
+      const canCollect =
+        userPlan.status === 'active' && nextCollectAt
+          ? now.getTime() >= nextCollectAt.getTime()
+          : false;
+
+      return {
+        _id: userPlan._id,
+        planName: userPlan.planName,
+        investmentAmount: userPlan.investment_amount,
+        dailyProfit: userPlan.daily_profit,
+        totalProfit: userPlan.total_profit,
         duration_days: userPlan.duration_days,
-        image_path: userPlan.planId?.image_path
-      }
-    }));
+        investmentDate: userPlan.investmentDate,
+        endDate: userPlan.endDate,
+        currentEarnings: userPlan.totalEarned,
+        status: userPlan.status,
+        image_path: userPlan.planId?.image_path,
+        activated_at: userPlan.activated_at,
+        activatedAt: userPlan.activated_at,
+        lastCollectTime: resolvedLastCollectTime,
+        nextCollectAt,
+        canCollect,
+        accrualHistory: userPlan.accrualHistory || [],
+        plan: {
+          name: userPlan.planName,
+          duration_days: userPlan.duration_days,
+          image_path: userPlan.planId?.image_path
+        }
+      };
+    });
 
     res.json(formattedPlans);
   } catch (error) {

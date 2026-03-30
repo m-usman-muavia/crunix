@@ -1,13 +1,20 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faClock, faImage } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBox, faArrowDown, faArrowUp, faUsers, faUser, faClock, faImage, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import '../css/dashboard.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css/style.css';
 import '../css/profile.css';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuthenticated');
+    navigate('/admin-login');
+  };
+
   return (
     <div className="main-wrapper">
       <div className="main-container">
@@ -17,10 +24,24 @@ const Dashboard = () => {
             <h4 className="dashboard-greeting">HI</h4>
             <p className="dashboard-name">Admin</p>
           </div>
-          <div className=''>
+          <div style={{ display: 'flex', gap: '10px' }}>
             <Link to="/plans" className="link-bold dashboard-whatsapp">
               <FontAwesomeIcon icon={faWhatsapp} />
             </Link>
+            <button
+              onClick={handleLogout}
+              className="link-bold dashboard-whatsapp"
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '20px',
+                color: 'inherit'
+              }}
+              title="Logout from Admin"
+            >
+              <FontAwesomeIcon icon={faSignOutAlt} />
+            </button>
           </div>
         </header>
 

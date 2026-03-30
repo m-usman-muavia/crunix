@@ -18,7 +18,7 @@ const ActivePlans = () => {
     const [expandedPlan, setExpandedPlan] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [showErrorModal, setShowErrorModal] = useState(false);
-    const [timers, setTimers] = useState({});
+    const [nowTick, setNowTick] = useState(Date.now());
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,19 +27,7 @@ const ActivePlans = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setTimers(prevTimers => {
-                const newTimers = { ...prevTimers };
-                let hasActiveTimers = false;
-                for (let planId in newTimers) {
-                    if (newTimers[planId] > 0) {
-                        newTimers[planId] -= 1;
-                        hasActiveTimers = true;
-                    } else if (newTimers[planId] < 0) {
-                        delete newTimers[planId];
-                    }
-                }
-                return newTimers;
-            });
+            setNowTick(Date.now());
         }, 1000);
         return () => clearInterval(interval);
     }, []);
@@ -72,33 +60,42 @@ const ActivePlans = () => {
         }
     };
 
-    const getCollectionAnchorTime = (plan) => {
-        if (plan.lastCollectTime) {
-            return new Date(plan.lastCollectTime);
+    const getNextCollectDate = (plan) => {
+        if (plan.nextCollectAt) {
+            const serverNext = new Date(plan.nextCollectAt);
+            if (!Number.isNaN(serverNext.getTime())) {
+                return serverNext;
+            }
         }
 
-        if (plan.activated_at || plan.activatedAt) {
-            return new Date(plan.activated_at || plan.activatedAt);
+        const anchor =
+            plan.lastCollectTime ||
+            plan.activated_at ||
+            plan.activatedAt ||
+            plan.investmentDate ||
+            null;
+
+        if (!anchor) {
+            return null;
         }
 
-        return plan.investmentDate ? new Date(plan.investmentDate) : null;
+        const anchorDate = new Date(anchor);
+        if (Number.isNaN(anchorDate.getTime())) {
+            return null;
+        }
+
+        return new Date(anchorDate.getTime() + 24 * 60 * 60 * 1000);
     };
 
     const getCanCollect = (plan) => {
         if (plan.status !== 'active') return false;
-        const anchorTime = getCollectionAnchorTime(plan);
-        if (!anchorTime || Number.isNaN(anchorTime.getTime())) return false;
-        const now = new Date();
-        const hoursPassed = (now - anchorTime) / (1000 * 60 * 60);
-        return hoursPassed >= 24;
+        return getTimeUntilNextCollection(plan) <= 0;
     };
 
     const getTimeUntilNextCollection = (plan) => {
-        const anchorTime = getCollectionAnchorTime(plan);
-        if (!anchorTime || Number.isNaN(anchorTime.getTime())) return 24 * 60 * 60;
-        const now = new Date();
-        const nextCollectTime = new Date(anchorTime.getTime() + 24 * 60 * 60 * 1000);
-        const secondsLeft = Math.max(0, Math.ceil((nextCollectTime - now) / 1000));
+        const nextCollectDate = getNextCollectDate(plan);
+        if (!nextCollectDate) return 0;
+        const secondsLeft = Math.max(0, Math.ceil((nextCollectDate.getTime() - nowTick) / 1000));
         return secondsLeft;
     };
 
@@ -139,12 +136,6 @@ const ActivePlans = () => {
             setErrorMessage('Daily earnings collected successfully!');
             setShowErrorModal(true);
 
-            // Set cooldown timer for this plan
-            setTimers(prev => ({
-                ...prev,
-                [planId]: 24 * 60 * 60
-            }));
-
             fetchActivePlans();
         } catch (err) {
             console.error('Error collecting earnings:', err);
@@ -174,6 +165,25 @@ const ActivePlans = () => {
         });
     };
 
+    const formatDateTime = (date) => {
+        if (!date) {
+            return 'N/A';
+        }
+
+        const parsed = new Date(date);
+        if (Number.isNaN(parsed.getTime())) {
+            return 'N/A';
+        }
+
+        return parsed.toLocaleString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
     const formatAmount = (value) => {
         const num = Number(value);
         return Number.isFinite(num) ? num.toFixed(2) : '0.00';
@@ -193,7 +203,7 @@ const ActivePlans = () => {
     };
 
     const filteredPlans = activePlans.filter(plan => {
-        return plan.status === 'active' || plan.status === 'paused' || plan.status === 'completed';
+        return plan.status === 'active' || plan.status === 'paused';
     });
 
     const totalEarnings = filteredPlans.reduce((sum, plan) => {
@@ -253,7 +263,15 @@ const ActivePlans = () => {
                             const earnedPercent = totalProfit > 0 ? Math.min(100, (earned / totalProfit) * 100) : 0;
                             const imagePath = plan.image_path || plan.plan?.image_path;
                             const isExpanded = expandedPlan === plan._id;
-                            const statusInfo = getStatusBadge(plan.status);
+                            const canCollect = getCanCollect(plan);
+                            const remainingSeconds = getTimeUntilNextCollection(plan);
+                            const nextCollectDate = getNextCollectDate(plan);
+                            const nextCollectionText = nextCollectDate
+                                ? formatDateTime(nextCollectDate)
+                                : 'N/A';
+                            const nextCollectionLabel = canCollect
+                                ? `Next collection: ${nextCollectionText} (Ready now)`
+                                : `Next collection: ${nextCollectionText}`;
 
                             return (
                                 <div className="active-plans-hybrid-card" key={plan._id} style={{ marginBottom: '16px' }}>
@@ -280,17 +298,17 @@ const ActivePlans = () => {
                                                 <div style={{ textAlign: 'left', gap: '12px', marginBottom: '6px' }}>
                                                     <h3 className="hybrid-card-title" style={{textAlign:'left'}}>{plan.planName || plan.plan?.name || 'Investment Plan'}</h3>
                                                     <p className="hybrid-card-meta">{formatDate(plan.investmentDate)}</p>
-                                                    <button
-                                                        onClick={() => handleCollectEarnings(plan._id)}
-                                                        className="action-btn collect-btn"
-                                                        style={{ textAlign: 'left', padding: '4px 8px', fontSize: '12px', borderRadius: '4px' }}
-                                                        disabled={!getCanCollect(plan)}
-                                                        title={!getCanCollect(plan) ? formatTimeRemaining(timers[plan._id] || getTimeUntilNextCollection(plan)) : 'Collect now'}
-                                                    >
-                                                        {getCanCollect(plan)
-                                                            ? 'Collect'
-                                                            : formatTimeRemaining(timers[plan._id] || getTimeUntilNextCollection(plan))}
-                                                    </button>
+                                                    {plan.status === 'active' && (
+                                                        <button
+                                                            onClick={() => handleCollectEarnings(plan._id)}
+                                                            className="action-btn collect-btn"
+                                                            style={{ textAlign: 'left', padding: '4px 8px', fontSize: '12px', borderRadius: '4px' }}
+                                                            disabled={!canCollect}
+                                                            title={!canCollect ? formatTimeRemaining(remainingSeconds) : 'Collect now'}
+                                                        >
+                                                            {canCollect ? 'Collect' : formatTimeRemaining(remainingSeconds)}
+                                                        </button>
+                                                    )}
                                                 </div>
 
 
@@ -339,16 +357,19 @@ const ActivePlans = () => {
                                                     <span className="detail-value">{formatDate(plan.endDate)}</span>
                                                 </div>
                                                 <div className="detail-item">
-                                                    <span className="detail-label">Status</span>
-                                                    <span className="detail-value">{statusInfo.label}</span>
+                                                    <span className="detail-label">Next Collection</span>
+                                                    <span className="detail-value">{nextCollectionText}</span>
                                                 </div>
                                             </div>
 
                                             {/* Action Buttons */}
                                             <div className="hybrid-card-actions">
+                                                {/* <p className="hybrid-card-meta" style={{ margin: '0 0 8px', textAlign: 'left' }}>
+                                                    {nextCollectionLabel}
+                                                </p> */}
                                                 {plan.status === 'active' && (
                                                     <>
-                                                        {getCanCollect(plan) ? (
+                                                        {canCollect ? (
                                                             <button
                                                                 onClick={() => handleCollectEarnings(plan._id)}
                                                                 className="action-btn collect-btn"
@@ -358,7 +379,7 @@ const ActivePlans = () => {
                                                         ) : (
                                                             <div className="collection-timer">
                                                                 <FontAwesomeIcon icon={faClock} />
-                                                                <span>{formatTimeRemaining(timers[plan._id] || getTimeUntilNextCollection(plan))}</span>
+                                                                <span>{formatTimeRemaining(remainingSeconds)}</span>
                                                             </div>
                                                         )}
                                                     </>

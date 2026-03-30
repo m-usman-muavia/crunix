@@ -19,6 +19,8 @@ import Profile from './components/profile';
 import VerifyEmail from './components/EmailOTP';
 import ForgotPassword from './components/forgotpassword';
 import ProtectedRoute from './components/protectedroute';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
+import AdminLogin from './components/AdminLogin';
 import AddPlan from './components/admin/addplans';
 import Accounts from './components/admin/accounts';
 import AdminDashboard from './components/admin/admindashboard';
@@ -98,17 +100,22 @@ function App() {
             <Route path="/refferrals" element={<ProtectedRoute><Refferrals /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-            <Route path="/admin/addplans" element={<ProtectedRoute><AddPlan /></ProtectedRoute>} />
-            <Route path="/admin/accounts" element={<ProtectedRoute><Accounts /></ProtectedRoute>} />
-            <Route path="/admin/users" element={<ProtectedRoute><CheckUser /></ProtectedRoute>} />
-            <Route path="/admin/" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/dashboard-image" element={<ProtectedRoute><DashboardImage /></ProtectedRoute>} />
-            <Route path="/admin/crx" element={<ProtectedRoute><CrxSettings /></ProtectedRoute>} />
-            <Route path="/admin/notifications" element={<ProtectedRoute><BroadcastNotification /></ProtectedRoute>} />
-            <Route path="/admin/accrual-history" element={<ProtectedRoute><AccrualHistory /></ProtectedRoute>} />
-            <Route path="/check-deposits" element={<ProtectedRoute><CheckDeposits /></ProtectedRoute>} />
-            <Route path="/check-withdrawals" element={<ProtectedRoute><CheckWithdrawals /></ProtectedRoute>} />
-            <Route path="/admin/bonus" element={<ProtectedRoute><BonusGenerator /></ProtectedRoute>} />
+            
+            {/* Admin Login Route */}
+            <Route path="/admin-login" element={<AdminLogin />} />
+            
+            {/* Admin Protected Routes */}
+            <Route path="/admin/addplans" element={<AdminProtectedRoute><AddPlan /></AdminProtectedRoute>} />
+            <Route path="/admin/accounts" element={<AdminProtectedRoute><Accounts /></AdminProtectedRoute>} />
+            <Route path="/admin/users" element={<AdminProtectedRoute><CheckUser /></AdminProtectedRoute>} />
+            <Route path="/admin/" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
+            <Route path="/admin/dashboard-image" element={<AdminProtectedRoute><DashboardImage /></AdminProtectedRoute>} />
+            <Route path="/admin/crx" element={<AdminProtectedRoute><CrxSettings /></AdminProtectedRoute>} />
+            <Route path="/admin/notifications" element={<AdminProtectedRoute><BroadcastNotification /></AdminProtectedRoute>} />
+            <Route path="/admin/accrual-history" element={<AdminProtectedRoute><AccrualHistory /></AdminProtectedRoute>} />
+            <Route path="/check-deposits" element={<AdminProtectedRoute><CheckDeposits /></AdminProtectedRoute>} />
+            <Route path="/check-withdrawals" element={<AdminProtectedRoute><CheckWithdrawals /></AdminProtectedRoute>} />
+            <Route path="/admin/bonus" element={<AdminProtectedRoute><BonusGenerator /></AdminProtectedRoute>} />
           </Routes>
         )}
 
