@@ -278,7 +278,7 @@ const CheckDeposits = () => {
 
                 <div style={{ fontSize: '14px', marginBottom: '10px' }}>
                   <p><strong>Email:</strong> {deposit.userId?.email || 'N/A'}</p>
-                  <p><strong>Amount:</strong> $ {deposit.deposit_amount}</p>
+                  <p><strong>Amount:</strong> AED {deposit.deposit_amount}</p>
                   <p><strong>Mobile:</strong> {deposit.sender_mobile}</p>
                   <p><strong>Transaction ID:</strong> {deposit.transaction_id}</p>
                   <p><strong>Date:</strong> {new Date(deposit.created_at).toLocaleString()}</p>

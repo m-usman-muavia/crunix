@@ -4,6 +4,8 @@ const withdrawalControllers = require('../controllers/withdrawalcontrollers');
 const verifyToken = require('../middleware/auth');
 
 // Routes
+router.get('/availability', verifyToken, withdrawalControllers.getWithdrawalAvailability);
+router.put('/availability', verifyToken, withdrawalControllers.updateWithdrawalAvailability);
 router.post('/create', verifyToken, withdrawalControllers.createWithdrawal);
 router.get('/all', verifyToken, withdrawalControllers.getAllWithdrawals);
 router.get('/my-withdrawals', verifyToken, withdrawalControllers.getUserWithdrawals);

@@ -132,6 +132,76 @@
   margin-top: 2px;
 }
 
+.withdraw-off-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1100;
+}
+
+.withdraw-off-modal-card {
+  width: min(480px, 100%);
+  background: linear-gradient(160deg, #fff7ed 0%, #ffffff 100%);
+  border: 1px solid #fed7aa;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+  padding: 18px 16px;
+}
+
+.withdraw-off-modal-card h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #9a3412;
+  font-weight: 900;
+}
+
+.withdraw-off-modal-subtitle {
+  margin: 8px 0 12px;
+  color: #7c2d12;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.withdraw-off-notice-list {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  color: #7c2d12;
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.withdraw-off-contact-btn,
+.withdraw-off-close-btn {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  text-align: center;
+}
+
+.withdraw-off-contact-btn {
+  display: inline-block;
+  text-decoration: none;
+  background: linear-gradient(120deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.withdraw-off-close-btn {
+  background: #fff;
+  color: #9a3412;
+  border: 1px solid #fdba74;
+}
+
 @media (max-width: 520px) {
 
 

@@ -600,14 +600,35 @@ const Dashboard = () => {
               <p className="dashboard-balance-label">Current Balance</p>
               <h3 className="dashboard-balance-value">AED {Number(balance || 0).toFixed(2)}</h3>
             </div>
-            <Link to="/active-plans" className="dashboard-modern-edit-link">SEE ALL</Link>
+            <Link to="/plans" className="dashboard-modern-edit-link">SEE ALL</Link>
           </div>
         </div>
 
-        {/* <section className="dashboard-showcase">
+                <section className="dashboard-showcase dashboard-quick-section">
+          <div className="dashboard-categories-row">
+            <Link to="/plans" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartGantt} /></span>
+              <span>Plans</span>
+            </Link>
+            <Link to="/bonus" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faHandHoldingDollar} /></span>
+              <span>Bonus</span>
+            </Link>
+            <Link to="/refferrals" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faUsersViewfinder} /></span>
+              <span>Referrals</span>
+            </Link>
+            <Link to="/profile" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faClipboardUser} /></span>
+              <span>Profile</span>
+            </Link>
+          </div>
+        </section>
+
+         {/* <section className="dashboard-showcase">
           <div className="dashboard-section-head">
             <h3>Special Offers</h3>
-            <Link to="/active-plans" className="dashboard-modern-edit-link2">See all</Link>
+            <Link to="/plans" className="dashboard-modern-edit-link2">See all</Link>
           </div>
           <div className="dashboard-special-row">
             <Link to="/active-plans" className="dashboard-special-card dashboard-special-card-image">
@@ -632,28 +653,9 @@ const Dashboard = () => {
               ))}
             </div>
           )}
-        </section> */}
+        </section>  */}
 
-        <section className="dashboard-showcase dashboard-quick-section">
-          <div className="dashboard-categories-row">
-            <Link to="/plans" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartGantt} /></span>
-              <span>Plans</span>
-            </Link>
-            <Link to="/bonus" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faHandHoldingDollar} /></span>
-              <span>Bonus</span>
-            </Link>
-            <Link to="/refferrals" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faUsersViewfinder} /></span>
-              <span>Referrals</span>
-            </Link>
-            <Link to="/profile" className="dashboard-category-item">
-              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faClipboardUser} /></span>
-              <span>Profile</span>
-            </Link>
-          </div>
-        </section>
+
 
         <section className="dashboard-showcase">
           <div className="dashboard-section-head dashboard-transaction-header">

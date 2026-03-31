@@ -425,15 +425,15 @@ const AddPlans = () => {
                             <div className="plan-details-grid">
                                 <div className="detail-row">
                                     <span className="detail-label">Investment</span>
-                                    <span className="detail-value text-bold">${plan.investment_amount}</span>
+                                    <span className="detail-value text-bold">AED{plan.investment_amount}</span>
                                 </div>
                                 <div className="detail-row">
                                     <span className="detail-label">Daily Income</span>
-                                    <span className="detail-value text-purple">${plan.daily_profit}</span>
+                                    <span className="detail-value text-purple">AED{plan.daily_profit}</span>
                                 </div>
                                 <div className="detail-row">
                                     <span className="detail-label">Total Return</span>
-                                    <span className="detail-value text-green">${plan.total_profit}</span>
+                                    <span className="detail-value text-green">AED{plan.total_profit}</span>
                                 </div>
                                 <div className="detail-row">
                                     <span className="detail-label">Purchase Limit</span>

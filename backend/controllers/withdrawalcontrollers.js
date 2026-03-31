@@ -1,7 +1,63 @@
 const Withdrawal = require('../models/withdrawal');
 const Wallet = require('../models/wallet');
 const User = require('../models/user');
+const WithdrawalSetting = require('../models/withdrawalsetting');
 const { createNotification } = require('./notificationcontrollers');
+
+const WITHDRAWAL_OFF_NOTICES = [
+  'withdrawal will be off from 9pm till 7am.',
+  'withdraw off on sunday',
+  'load on accounts plz wait for past withdraw to clear first'
+];
+
+const WITHDRAWAL_CONTACT_URL = 'https://chat.whatsapp.com/Eo0yBDib882CNoQTykUevc?mode=gi_t';
+
+const getOrCreateWithdrawalSetting = async () => {
+  let setting = await WithdrawalSetting.findOne();
+  if (!setting) {
+    setting = await WithdrawalSetting.create({ isEnabled: true });
+  }
+  return setting;
+};
+
+exports.getWithdrawalAvailability = async (req, res) => {
+  try {
+    const setting = await getOrCreateWithdrawalSetting();
+    return res.status(200).json({
+      isEnabled: !!setting.isEnabled,
+      notices: WITHDRAWAL_OFF_NOTICES,
+      contactUrl: WITHDRAWAL_CONTACT_URL,
+      updatedAt: setting.updatedAt
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+exports.updateWithdrawalAvailability = async (req, res) => {
+  try {
+    const { isEnabled } = req.body;
+
+    if (typeof isEnabled !== 'boolean') {
+      return res.status(400).json({ message: 'isEnabled must be boolean' });
+    }
+
+    const setting = await getOrCreateWithdrawalSetting();
+    setting.isEnabled = isEnabled;
+    setting.updatedBy = req.user.userId || req.user.id || req.user._id || null;
+    await setting.save();
+
+    return res.status(200).json({
+      message: `Withdrawals are now ${isEnabled ? 'ON' : 'OFF'}`,
+      isEnabled: !!setting.isEnabled,
+      notices: WITHDRAWAL_OFF_NOTICES,
+      contactUrl: WITHDRAWAL_CONTACT_URL,
+      updatedAt: setting.updatedAt
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 // Create withdrawal request
 exports.createWithdrawal = async (req, res) => {
@@ -14,6 +70,15 @@ exports.createWithdrawal = async (req, res) => {
 
     if (!userId) {
       return res.status(400).json({ message: 'User ID not found in token' });
+    }
+
+    const setting = await getOrCreateWithdrawalSetting();
+    if (!setting.isEnabled) {
+      return res.status(403).json({
+        message: 'Withdrawals are currently turned off by admin.',
+        notices: WITHDRAWAL_OFF_NOTICES,
+        contactUrl: WITHDRAWAL_CONTACT_URL
+      });
     }
 
     const startOfDay = new Date();

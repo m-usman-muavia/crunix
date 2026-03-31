@@ -25,13 +25,54 @@ const Withdrawal = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [isSundayBlockModal, setIsSundayBlockModal] = useState(false);
   const [countdownText, setCountdownText] = useState('');
+  const [withdrawalsEnabled, setWithdrawalsEnabled] = useState(true);
+  const [withdrawalOffModalOpen, setWithdrawalOffModalOpen] = useState(false);
+  const [withdrawalNotices, setWithdrawalNotices] = useState([
+    'withdrawal will be off from 9pm till 7am.',
+    'withdraw off on sunday',
+    'load on accounts plz wait for past withdraw to clear first'
+  ]);
+  const [withdrawalContactUrl, setWithdrawalContactUrl] = useState('https://chat.whatsapp.com/Eo0yBDib882CNoQTykUevc?mode=gi_t');
 
   const quickAmounts = [3, 10, 25, 50, 100];
   const accountOptions = ['jazzcash', 'easypaisa', 'hbl', 'ubl', 'meezan', 'sadapay', 'nayapay'];
 
   useEffect(() => {
     fetchWallet();
+    fetchWithdrawalAvailability();
   }, []);
+
+  const fetchWithdrawalAvailability = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/withdrawals/availability`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to load withdrawal availability');
+      }
+
+      const data = await response.json();
+      const isEnabled = Boolean(data?.isEnabled);
+      setWithdrawalsEnabled(isEnabled);
+
+      if (Array.isArray(data?.notices) && data.notices.length) {
+        setWithdrawalNotices(data.notices);
+      }
+
+      if (data?.contactUrl) {
+        setWithdrawalContactUrl(data.contactUrl);
+      }
+
+      if (!isEnabled) {
+        setWithdrawalOffModalOpen(true);
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   useEffect(() => {
     if (!isSundayBlockModal || !errorModalOpen) {
@@ -127,6 +168,11 @@ const Withdrawal = () => {
     e.preventDefault();
     setSuccessMessage('');
 
+    if (!withdrawalsEnabled) {
+      setWithdrawalOffModalOpen(true);
+      return;
+    }
+
     const today = new Date();
     if (today.getDay() === 0) {
       setIsSundayBlockModal(true);
@@ -215,6 +261,40 @@ const Withdrawal = () => {
           autoClose={!isSundayBlockModal}
           closeDuration={3000}
         />
+
+        {withdrawalOffModalOpen && (
+          <div className="withdraw-off-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="withdraw-off-title">
+            <div className="withdraw-off-modal-card">
+              <h2 id="withdraw-off-title">Withdrawal Currently Unavailable</h2>
+              <p className="withdraw-off-modal-subtitle">Please review the notices below:</p>
+              <ol className="withdraw-off-notice-list">
+                {withdrawalNotices.map((notice, index) => (
+                  <li key={`${notice}-${index}`}>{notice}</li>
+                ))}
+              </ol>
+
+              <a
+                href={withdrawalContactUrl}
+                className="withdraw-off-contact-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Contact Admin
+              </a>
+
+              <button
+                type="button"
+                className="withdraw-off-close-btn"
+                onClick={() => {
+                  setWithdrawalOffModalOpen(false);
+                  navigate('/dashboard');
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
         <section className="dashboard-modern-hero dashboard-service-hero">
           <div className="dashboard-modern-hero-top">
@@ -339,7 +419,7 @@ const Withdrawal = () => {
               <p className="form-hint">Add your emergency contact number</p>
             </div>
 
-            <button className="submit-btn" type="submit" disabled={submitLoading}>
+            <button className="submit-btn" type="submit" disabled={submitLoading || !withdrawalsEnabled}>
               {submitLoading ? 'Processing...' : 'Apply for Withdrawal'}
             </button>
           </form>

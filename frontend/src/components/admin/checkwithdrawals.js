@@ -13,6 +13,8 @@ const CheckWithdrawals = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [processing, setProcessing] = useState(null);
+  const [withdrawalsEnabled, setWithdrawalsEnabled] = useState(true);
+  const [toggleLoading, setToggleLoading] = useState(false);
   const [filters, setFilters] = useState({
     all: false,
     pending: true,
@@ -22,7 +24,64 @@ const CheckWithdrawals = () => {
 
   useEffect(() => {
     fetchWithdrawals();
+    fetchWithdrawalAvailability();
   }, []);
+
+  const fetchWithdrawalAvailability = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/withdrawals/availability`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch withdrawal settings');
+      }
+
+      const data = await response.json();
+      setWithdrawalsEnabled(Boolean(data?.isEnabled));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleWithdrawalToggle = async (event) => {
+    const nextValue = event.target.checked;
+    setToggleLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/withdrawals/availability`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ isEnabled: nextValue })
+      });
+
+      if (!response.ok) {
+        let errorMessage = 'Failed to update withdrawal setting';
+        try {
+          const data = await response.json();
+          if (data?.message) {
+            errorMessage = data.message;
+          }
+        } catch (parseError) {
+        }
+        throw new Error(errorMessage);
+      }
+
+      setWithdrawalsEnabled(nextValue);
+      setSuccessMessage(`Withdrawals are now ${nextValue ? 'ON' : 'OFF'}`);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setToggleLoading(false);
+    }
+  };
 
   const fetchWithdrawals = async () => {
     try {
@@ -216,6 +275,32 @@ const CheckWithdrawals = () => {
         {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
         {successMessage && <p style={{ color: 'green', textAlign: 'center', marginBottom: '15px' }}>{successMessage}</p>}
 
+        <div style={{
+          backgroundColor: '#fff9f0',
+          border: '1px solid #f3dec8',
+          borderRadius: '12px',
+          padding: '15px',
+          marginBottom: '15px',
+          boxShadow: '0 2px 8px rgba(249, 115, 22, 0.08)'
+        }}>
+          <p style={{ margin: '0 0 10px 0', fontWeight: 'bold', color: '#9a3412' }}>Withdrawal Control</p>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: toggleLoading ? 'not-allowed' : 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={withdrawalsEnabled}
+              onChange={handleWithdrawalToggle}
+              disabled={toggleLoading}
+              style={{ cursor: toggleLoading ? 'not-allowed' : 'pointer' }}
+            />
+            <span style={{ fontWeight: 700, color: '#7c2d12' }}>
+              Withdrawals {withdrawalsEnabled ? 'ON' : 'OFF'} {toggleLoading ? '(Updating...)' : ''}
+            </span>
+          </label>
+          <p style={{ margin: '10px 0 0', fontSize: '12px', color: '#9a3412' }}>
+            If OFF, users cannot apply for withdrawal and will see the withdrawal notice modal.
+          </p>
+        </div>
+
         {/* Filter Checkboxes */}
         <div style={{
           backgroundColor: '#fff',
@@ -297,7 +382,7 @@ const CheckWithdrawals = () => {
 
                 <div style={{ fontSize: '14px', marginBottom: '10px' }}>
                   <p><strong>Email:</strong> {withdrawal.userId?.email || 'N/A'}</p>
-                  <p><strong>Amount:</strong> $ {withdrawal.amount}</p>
+                  <p><strong>Amount:</strong> AED {withdrawal.amount}</p>
                   <p><strong>Withdrawal Method:</strong> {getMethodDisplay(withdrawal.method)}</p>
                   <p><strong>Account Number:</strong> {withdrawal.account_number}</p>
                   <p><strong>Mobile Number:</strong> {withdrawal.mobile_number}</p>
