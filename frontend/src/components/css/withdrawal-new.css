@@ -167,6 +167,7 @@
 }
 
 .withdraw-off-notice-list {
+  text-align: left;
   margin: 0 0 14px;
   padding-left: 20px;
   color: #7c2d12;

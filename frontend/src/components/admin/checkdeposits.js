@@ -133,6 +133,19 @@ const CheckDeposits = () => {
     });
   };
 
+  const formatAmount = (value) => {
+    const num = Number(value || 0);
+    return Number.isFinite(num) ? num.toFixed(2) : '0.00';
+  };
+
+  const filteredDeposits = getFilteredDeposits();
+  const totalDepositsAmount = deposits.reduce((sum, deposit) => {
+    return sum + Number(deposit.deposit_amount || deposit.amount || 0);
+  }, 0);
+  const filteredDepositsAmount = filteredDeposits.reduce((sum, deposit) => {
+    return sum + Number(deposit.deposit_amount || deposit.amount || 0);
+  }, 0);
+
   if (loading) {
     return (
       <div className="main-wrapper">
@@ -197,6 +210,34 @@ const CheckDeposits = () => {
         {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
         {successMessage && <p style={{ color: 'green', textAlign: 'center', marginBottom: '15px' }}>{successMessage}</p>}
 
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: '10px',
+          marginBottom: '15px'
+        }}>
+          <div style={{
+            backgroundColor: '#f0f9ff',
+            border: '1px solid #bae6fd',
+            borderRadius: '10px',
+            padding: '12px'
+          }}>
+            <p style={{ margin: 0, fontSize: '12px', color: '#0369a1', fontWeight: 700 }}>All Deposits</p>
+            <h3 style={{ margin: '6px 0 0', fontSize: '18px', color: '#0c4a6e' }}>AED {formatAmount(totalDepositsAmount)}</h3>
+            <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#0369a1' }}>Requests: {deposits.length}</p>
+          </div>
+          <div style={{
+            backgroundColor: '#ecfdf5',
+            border: '1px solid #a7f3d0',
+            borderRadius: '10px',
+            padding: '12px'
+          }}>
+            <p style={{ margin: 0, fontSize: '12px', color: '#065f46', fontWeight: 700 }}>Filtered Deposits</p>
+            <h3 style={{ margin: '6px 0 0', fontSize: '18px', color: '#064e3b' }}>AED {formatAmount(filteredDepositsAmount)}</h3>
+            <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#065f46' }}>Requests: {filteredDeposits.length}</p>
+          </div>
+        </div>
+
         {/* Filter Checkboxes */}
         <div style={{
           backgroundColor: '#fff',
@@ -253,7 +294,7 @@ const CheckDeposits = () => {
           </div>
         ) : (
           <div style={{ marginBottom: '80px' }}>
-            {getFilteredDeposits().map((deposit) => (
+            {filteredDeposits.map((deposit) => (
               <div key={deposit._id} style={{
                 backgroundColor: '#fff',
                 border: '1px solid #e0e0e0',

@@ -5,9 +5,9 @@ const WithdrawalSetting = require('../models/withdrawalsetting');
 const { createNotification } = require('./notificationcontrollers');
 
 const WITHDRAWAL_OFF_NOTICES = [
-  'withdrawal will be off from 9pm till 7am.',
-  'withdraw off on sunday',
-  'load on accounts plz wait for past withdraw to clear first'
+  'Withdrawals are closed from 9:00 PM to 9:00 AM.',
+  'No withdrawals are processed on Sundays.',
+  'Our Withdrawal account limit is currently full. Please try again later or contact support for urgent requests.'
 ];
 
 const WITHDRAWAL_CONTACT_URL = 'https://chat.whatsapp.com/Eo0yBDib882CNoQTykUevc?mode=gi_t';

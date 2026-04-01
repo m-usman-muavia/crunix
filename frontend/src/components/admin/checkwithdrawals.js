@@ -202,6 +202,19 @@ const CheckWithdrawals = () => {
     });
   };
 
+  const formatAmount = (value) => {
+    const num = Number(value || 0);
+    return Number.isFinite(num) ? num.toFixed(2) : '0.00';
+  };
+
+  const filteredWithdrawals = getFilteredWithdrawals();
+  const totalWithdrawalsAmount = withdrawals.reduce((sum, withdrawal) => {
+    return sum + Number(withdrawal.withdrawal_amount || withdrawal.amount || 0);
+  }, 0);
+  const filteredWithdrawalsAmount = filteredWithdrawals.reduce((sum, withdrawal) => {
+    return sum + Number(withdrawal.withdrawal_amount || withdrawal.amount || 0);
+  }, 0);
+
   const getMethodDisplay = (method) => {
     const methodMap = {
       'jazzcash': 'JazzCash',
@@ -274,6 +287,34 @@ const CheckWithdrawals = () => {
 
         {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
         {successMessage && <p style={{ color: 'green', textAlign: 'center', marginBottom: '15px' }}>{successMessage}</p>}
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: '10px',
+          marginBottom: '15px'
+        }}>
+          <div style={{
+            backgroundColor: '#fff7ed',
+            border: '1px solid #fdba74',
+            borderRadius: '10px',
+            padding: '12px'
+          }}>
+            <p style={{ margin: 0, fontSize: '12px', color: '#9a3412', fontWeight: 700 }}>All Withdrawals</p>
+            <h3 style={{ margin: '6px 0 0', fontSize: '18px', color: '#7c2d12' }}>AED {formatAmount(totalWithdrawalsAmount)}</h3>
+            <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#9a3412' }}>Requests: {withdrawals.length}</p>
+          </div>
+          <div style={{
+            backgroundColor: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            borderRadius: '10px',
+            padding: '12px'
+          }}>
+            <p style={{ margin: 0, fontSize: '12px', color: '#1d4ed8', fontWeight: 700 }}>Filtered Withdrawals</p>
+            <h3 style={{ margin: '6px 0 0', fontSize: '18px', color: '#1e3a8a' }}>AED {formatAmount(filteredWithdrawalsAmount)}</h3>
+            <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#1d4ed8' }}>Requests: {filteredWithdrawals.length}</p>
+          </div>
+        </div>
 
         <div style={{
           backgroundColor: '#fff9f0',
@@ -357,7 +398,7 @@ const CheckWithdrawals = () => {
           </div>
         ) : (
           <div style={{ marginBottom: '80px' }}>
-            {getFilteredWithdrawals().map((withdrawal) => (
+            {filteredWithdrawals.map((withdrawal) => (
               <div key={withdrawal._id} style={{
                 backgroundColor: '#fff',
                 border: '1px solid #e0e0e0',
