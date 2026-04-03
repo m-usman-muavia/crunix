@@ -25,13 +25,19 @@ router.get('/', verifyToken, async (req, res) => {
         main_balance: 0,
         bonus_balance: 0,
         referral_balance: 0,
-        crx_balance: 0
+        crx_balance: 0,
+        barrel_balance: 0
       });
       await wallet.save();
     }
 
     if (typeof wallet.crx_balance !== 'number') {
       wallet.crx_balance = 0;
+      await wallet.save();
+    }
+
+    if (typeof wallet.barrel_balance !== 'number') {
+      wallet.barrel_balance = 0;
       await wallet.save();
     }
     
@@ -41,6 +47,7 @@ router.get('/', verifyToken, async (req, res) => {
       bonus_balance: wallet.bonus_balance || 0,
       referral_balance: wallet.referral_balance || 0,
       crx_balance: wallet.crx_balance || 0,
+      barrel_balance: wallet.barrel_balance || 0,
       total_balance: (wallet.main_balance || 0) + (wallet.bonus_balance || 0) + (wallet.referral_balance || 0)
     });
   } catch (error) {

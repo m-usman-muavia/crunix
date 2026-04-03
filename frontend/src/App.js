@@ -31,11 +31,13 @@ import AccrualHistory from './components/admin/accrualhistory';
 import BonusGenerator from './components/admin/bonus';
 import DashboardImage from './components/admin/dashboardimage';
 import CrxSettings from './components/admin/crxsettings';
+import BarrelSettings from './components/admin/barrelsettings';
 import BroadcastNotification from './components/admin/broadcastnotification';
 import ActivePlans from './components/ActivePlans_NEW';
 import CollectIncome from './components/CollectIncome';
 import Notifications from './components/notifications';
 import CRXDigital from './components/CRXDigital';
+import OilTrading from './components/oiltrading';
 import CompletePlans from './components/CompletePlans_NEW';
 import AddToCart from './components/addtocart';
 import Bonus from './components/bonus';
@@ -89,6 +91,7 @@ function App() {
             <Route path="/add-to-cart" element={<ProtectedRoute><AddToCart /></ProtectedRoute>} />
             <Route path="/collect-income" element={<ProtectedRoute><CollectIncome /></ProtectedRoute>} />
             <Route path="/crx-digital" element={<ProtectedRoute><CRXDigital /></ProtectedRoute>} />
+            <Route path="/oil-trading" element={<ProtectedRoute><OilTrading /></ProtectedRoute>} />
             <Route path="/bonus" element={<ProtectedRoute><Bonus /></ProtectedRoute>} />
             <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
             <Route path="/depositconfirm" element={<ProtectedRoute><DepositConfirm /></ProtectedRoute>} />
@@ -111,6 +114,7 @@ function App() {
             <Route path="/admin/" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
             <Route path="/admin/dashboard-image" element={<AdminProtectedRoute><DashboardImage /></AdminProtectedRoute>} />
             <Route path="/admin/crx" element={<AdminProtectedRoute><CrxSettings /></AdminProtectedRoute>} />
+            <Route path="/admin/barrel" element={<AdminProtectedRoute><BarrelSettings /></AdminProtectedRoute>} />
             <Route path="/admin/notifications" element={<AdminProtectedRoute><BroadcastNotification /></AdminProtectedRoute>} />
             <Route path="/admin/accrual-history" element={<AdminProtectedRoute><AccrualHistory /></AdminProtectedRoute>} />
             <Route path="/check-deposits" element={<AdminProtectedRoute><CheckDeposits /></AdminProtectedRoute>} />

@@ -281,6 +281,7 @@ const Dashboard = () => {
     }
   };
 
+
   const fetchDashboardImages = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/dashboard-image`, {
@@ -602,10 +603,14 @@ const Dashboard = () => {
             </div>
             <Link to="/plans" className="dashboard-modern-edit-link">SEE ALL</Link>
           </div>
-        </div>
 
+        </div>
                 <section className="dashboard-showcase dashboard-quick-section">
           <div className="dashboard-categories-row">
+            <Link to="/oil-trading" className="dashboard-category-item">
+              <span className="dashboard-category-icon"><FontAwesomeIcon icon={faArrowUp} /></span>
+              <span>Oil Trade</span>
+            </Link>
             <Link to="/plans" className="dashboard-category-item">
               <span className="dashboard-category-icon"><FontAwesomeIcon icon={faChartGantt} /></span>
               <span>Plans</span>
@@ -618,10 +623,10 @@ const Dashboard = () => {
               <span className="dashboard-category-icon"><FontAwesomeIcon icon={faUsersViewfinder} /></span>
               <span>Referrals</span>
             </Link>
-            <Link to="/profile" className="dashboard-category-item">
+            {/* <Link to="/profile" className="dashboard-category-item">
               <span className="dashboard-category-icon"><FontAwesomeIcon icon={faClipboardUser} /></span>
               <span>Profile</span>
-            </Link>
+            </Link> */}
           </div>
         </section>
 

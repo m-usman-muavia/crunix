@@ -5,7 +5,8 @@ const walletSchema = new mongoose.Schema({
     main_balance: { type: Number, default: 0 },
     bonus_balance: { type: Number, default: 0 },
     referral_balance: { type: Number, default: 0 },
-    crx_balance: { type: Number, default: 0 }
+    crx_balance: { type: Number, default: 0 },
+    barrel_balance: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model('Wallet', walletSchema);

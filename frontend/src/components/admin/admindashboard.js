@@ -79,6 +79,10 @@ const Dashboard = () => {
             <span className="btn-icon">📈</span>
             CRX Price
           </Link>
+          <Link to="/admin/barrel" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <span className="btn-icon">🛢️</span>
+            Barrel Price
+          </Link>
           <Link to="/admin/notifications" className="action-btn buy-plan" style={{ textDecoration: 'none', color: 'inherit' }}>
             <span className="btn-icon">🔔</span>
             Notifications
@@ -110,6 +114,13 @@ const Dashboard = () => {
                     <Link to="/admin/accrual-history" className="link-bold nav-link-col">
                       <FontAwesomeIcon icon={faClock} />
                       <span>Accruals</span>
+                    </Link>
+                  </div>
+
+                  <div className="nav-item">
+                    <Link to="/admin/barrel" className="link-bold nav-link-col">
+                      <span style={{ fontSize: '18px' }}>🛢️</span>
+                      <span>Barrel</span>
                     </Link>
                   </div>
                   

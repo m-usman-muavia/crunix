@@ -13,6 +13,7 @@ const withdrawalRoutes = require("./routes/withdrawalroutes");
 const notificationRoutes = require("./routes/notificationroutes");
 const bonusCodeRoutes = require("./routes/bonuscoderoutes");
 const crxRoutes = require("./routes/crxroutes");
+const barrelRoutes = require("./routes/barrelroutes");
 const UserPlan = require("./models/userplan");
 const Wallet = require("./models/wallet");
 
@@ -56,6 +57,7 @@ app.use("/api/referral", referralRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/bonus", bonusCodeRoutes);
 app.use("/api/crx", crxRoutes);
+app.use("/api/barrel", barrelRoutes);
 
 // SERVING THE FRONTEND
 const buildPath = path.join(__dirname, "..", "frontend", "build");
